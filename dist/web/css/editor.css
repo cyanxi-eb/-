@@ -1,0 +1,32 @@
+/* ============================================================
+   editor.css — 编辑模式（CRUD + 存档）
+   ============================================================ */
+#editorView { max-width: 900px; margin: 0 auto 40px; padding: 0 20px; }
+.ed-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 14px 0 12px; }
+.ed-note { font-size: 0.78rem; color: var(--text-muted); margin-left: auto; }
+.ed-list { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg-secondary); }
+.ed-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 0.86rem; }
+.ed-row:last-child { border-bottom: none; }
+.ed-row:hover { background: rgba(66, 153, 225, 0.04); }
+.ed-code { font-family: monospace; font-size: 0.78rem; color: var(--accent); min-width: 60px; flex-shrink: 0; }
+.ed-cat { font-size: 0.76rem; color: var(--text-muted); background: var(--bg-primary); padding: 1px 8px; border-radius: 9px; flex-shrink: 0; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ed-q { flex: 1; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ed-ops { display: flex; gap: 6px; flex-shrink: 0; }
+.ed-btn { width: 30px; height: 30px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-primary); cursor: pointer; font-size: 0.9rem; }
+.ed-btn:hover { border-color: var(--accent); }
+.ed-btn.danger:hover { border-color: var(--danger); }
+
+.ed-form { border: 1px solid var(--accent); border-radius: 12px; padding: 16px; margin: 12px 0; background: var(--bg-secondary); }
+.ed-form h4 { margin-bottom: 12px; color: var(--accent); }
+.ed-form label { display: block; margin-bottom: 10px; font-size: 0.82rem; color: var(--text-secondary); }
+.ed-form input, .ed-form textarea {
+  width: 100%; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg-primary); color: var(--text-primary); font-size: 0.88rem; font-family: inherit;
+}
+.ed-form input:focus, .ed-form textarea:focus { outline: none; border-color: var(--accent); }
+.ed-form textarea { resize: vertical; line-height: 1.7; }
+.ed-form-ops { display: flex; gap: 8px; margin-top: 4px; }
+.ed-archives { margin-top: 16px; }
+.ed-archives h4 { font-size: 0.9rem; margin-bottom: 8px; color: var(--text-secondary); }
+.ed-archives .btn { margin: 0 6px 6px 0; font-size: 0.76rem; }
+.muted { color: var(--text-muted); }

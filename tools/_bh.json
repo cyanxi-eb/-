@@ -1,0 +1,1906 @@
+[
+  {
+    "id": 1,
+    "category": "软技能",
+    "question": "1. 简历怎么写",
+    "answer": "面试时候技能点写法:\n\n建议:不建议“熟练使用python语言,熟悉机器学习算法,熟悉深度学习模型”,建议:了解分类、回归、聚类等机器学习算法的原理,并能够结合实际业务加以运用;掌握RNN、CNN、Transformer等深度学习模型架构和原理,并具备企业实际项目应用经验面试之前建议:\n\n1)需要大家讲简短的自我介绍(不要讲以前Java转到AI、或者是机械转AI等)\n\n我叫什么我来自于什么我之前在哪里工作我目前来到贵公司希望应聘什么职位\n\n(看到贵公司工作氛围比较好,符合我的工作环境预期)\n\n2)项目讲解都要书面化项目名称:基于Neo4j图数据库实现医疗智能对话问答系统项目描述:\n\n简要介绍下项目背景,突出为什么做,以及做之后的优势数据来源是什么:如何获取的数据(自训练还是人工标注)\n\n开发并搭建了什么类型的模型,该模型支持什么任务,模型指标是什么基于第一个版本模型的某些弊端,提出模型优化改进方法:如修改参数、清洗数据、甚至是换新的模型,改进后模型的指标对比达成业务目标(如:通过智能客服对话,减少人工成本,提升服务质量)\n\n3)项目职责(简历中写)\n\n不要出现太多的参与,只允许有1项参与多状态少动作--多写数据分析的指标任务,少写数据采集,数据导入导出日常任务:\n\n(1)训练和测试数据的搜集和清洗\n\n(2)基于业务分析,开发和搭建模型\n\n(3)模型迭代优化,优化过程包括:dif数据修正、模型结构更改等等\n\n(4)开发模型API接口,便于项目功能的服务对外使用\n\n(5)模型实现A/B测试,并部署服务",
+    "extend": ""
+  },
+  {
+    "id": 2,
+    "category": "软技能",
+    "question": "2. 面试前针对项目撰写完成项目文档",
+    "answer": "建议大家准备完成自我介绍:\n\n自我介绍(参考)\n\n面试官,您好!\n\n我叫XXX,21年毕业于XXXX学校,主修专业为机械工程,本人在校期间,对人工智能方向非常感兴趣,因此在大三期间,申请进入了我校**老师的实验室,该老师的研究方向主要为:机器人与人工智能,在实验室这段时间,本人对机器学习算法以及NLP算法知识进行了系统学习和了解。21年毕业后,本人就职于**科技有限公司,主要岗位职责为:负责文本数据分析、中文分词、文本分类、NER以及知识图谱等相关NLP基础任务,主要参与项目:1)基于Neo4j图数据库搭建了一套辅助医疗诊断的智能问答系统;2)基于公司商业产品数据,实现了产品自动分类的过程。本人在工作中,态度比较端正,能够积极负责,对待同事也能够友好的相处,本人平时爱好主要为听音乐和阅读,那么以上就是本人的基本情况介绍,感谢面试官的聆听。项目介绍那我给您介绍一下最近的这个项目。这里应该写出是在什么时间什么地点基于什么场景做的这个项目,在开始介绍下面该项目是基于NLP技术的一款聊天机器人平台,其目的在于通过人工智能技术让机器像人类一样能够进行智能回复,解决现实中的各种问题。公司基于客户需求,为了方便病人快速了解所得疾病,基于Neo4j图数据库搭建了一套辅助医疗诊断的智能问答系统。本项目工作主要分为两个模块,分别为离线模块和在线模块,其中离线模块包括:1、基于BILSTM+CRF模型实现非结构化文本NER的抽取,共支持3种实体类型,其中模型指标为F1=91%,2、基于BERT+RNN完成命名实体审核任务,模型指标ACC=92%,3、设计schema,将实体以及对应关系导入到Neo4j图数据库中。以上是离线部分。在线部分为:负责主逻辑函数的开发,以及基于BERT模型实现句子主题相关服务的搭建,模型指标为ACC=96%,线上最大支持200qps。个人主要职责:1、负责非结构非结构化数据的处理:如脏数据清洗,正则过滤特殊符号等;2、负责模型的设计以及训练工作,并采用不同策略进行模型的优化,如:参数调节,结果后处理等;3、负责对话主逻辑服务的开发,借助werobot服务实现智能对话。在这里应该准备几个技术上遇到的难题,以及给出解决办法(可以将最后的遇到的问题在这里讲,根据情况做调整)\n\n技术点训练数据集以及测试集的大小是多少,是如何获得的(全是人工标注的吗)?\n\n一般数据量大小可以自己拟定,这里拟定训练集为20万条,测试集为1w;测试集人为标定训练集的获取方式:\n\n第一种回答方式:数据部⻔直接提供(已经打上标签),不需要我们负责, 第二种回答方式:半监督(自训练)方式针对第二种半监督(自训练)方式的实现过程(一般思路):\n\n1)首先人工标注1w条数据集(人工标注的数据我们一般认为准确率为100%),将标注好的数据集,分为训练集8000和测试集2000。\n\n2)利用8000训练集训练我们的基础模型如:bilstm+crf,根据训练好的模型去预测测试集,对比和人工标注的结果dif,如果准确率为96%,可以忽略dif,我们认为该模型效果不错,直接使用训练好的模型,接下面第3步\n\n3)利用第二步训练好的模型,去预测新一批数据(该部分数据为非标注数据),如新选取1w条,此时经过模型预测后,1w条新的数据已打上标签\n\n4)将第3步得到新的1w条数据和之前的8000人工标注数据合并,再次送入模型中训练,训练好的模型去预测2000条测试集,此时准确率可能为94%,如果我们定义模型准确率指标为95%为,那么此时训练集中引入了噪声,存在脏数据(也就是实体类别有标错的数据),可以根据2000条测试集的dif数据,人工筛选实体数据错误类型,对应查找训练集的数据,然后修改,修改完后重复4步骤,发现模型准确率为95%,即达标。在做NER抽取任务时,为什么BiLSTM模型后面还要加一个CRF?BiLSTM也能直接解析NER结果的在NER抽取任务中,BiLSTM模型可以用于对输入序列进行建模和特征提取,得到每个词对应的特征表示。然而,由于NER任务是一个序列标注任务,它需要考虑词之间的关系,以及如何将这些词标注为实体类别。BiLSTM模型可以得到每个位置上的词语的特征表示,但是它并不能直接捕捉到整个序列上的概率分布,也不能直接对整个序列进行标注。而这些都是CRF模型擅⻓的。CRF(条件随机场)是一个经典的序列标注模型,可以直接对整个序列进行建模,并且可以根据上下文信息、标注标签之间的相关性等因素来进行标注,从而得到更加准确的结果。因此,在NER抽取任务中,通常会将BiLSTM和CRF结合起来使用,BiLSTM用于提取特征表示,而CRF用于对整个序列进行标注,以得到最终的NER结果。",
+    "extend": ""
+  },
+  {
+    "id": 3,
+    "category": "软技能",
+    "question": "3. 面试前",
+    "answer": "1)Boss上搜索对应职位与HR及技术进行简单沟通,寻求符合匹配项的职位\n\n2)沟通中根据自己做过的项目简述核心要点,更详细部分可以进一步约面试详聊\n\n3)切记:不要针对一个公司准备一个简历,要使用我们的简历和项目寻求合适公司\n\n4)语言表达清楚:思维逻辑清晰,表达流畅\n\n5)所述内容不犯错\n\n(1)不说之前公司或者自己的坏话\n\n(2)往自己擅⻓的方面说\n\n(3)如果对于熟悉的内容多聊聊业务+技术;没听过,可以说后续很快能够学会。学会查看岗位职责,包含NLP岗位核心技术,比如文本翻译、语音识别、文本分类等",
+    "extend": ""
+  },
+  {
+    "id": 4,
+    "category": "软技能",
+    "question": "4. 1 投递简历当天没有收到面试邀约",
+    "answer": "- 当天投递，需要等待3天左右时间，需要查看简历建议⼤家去Boss直聘跟Boss聊天进⼀步预约⾯试",
+    "extend": ""
+  },
+  {
+    "id": 5,
+    "category": "软技能",
+    "question": "4. 2 讲解项目",
+    "answer": "- 清晰讲解项⽬业务场景描述+项⽬架构+⾃⼰负责部分+优化及坑",
+    "extend": ""
+  },
+  {
+    "id": 6,
+    "category": "软技能",
+    "question": "4. 3 讲解知识",
+    "answer": "- 知识点是什么+原理是什么+⼯作中怎么⽤+优化是什么如何学习⼀⻔新技术或技术栈 Github的开源社区+技术博客+相关论文阅读 \n![图2](./figures/fig_234422ee16.png)\n- 应⽤主要分为三个部分，⾸先应该了解它的应⽤场景，⽐如窗⼝的⼀些使⽤场景。然后，进⼀步地我们去了解它的编程接口,最后再深入了解它的一些抽象概念。因为一个框架或一项技术,肯定有它的编程接口和抽象概念来组成它的编程模型。我们可以通过查看文档的方式来熟悉它的应用。在对应用这三个部分有了初步的了解后,我们就可以通过阅读代码的方式去了解它的一些实现了。\n\n- 实现部分也分三个阶段，⾸先从⼯作流程开始，可以通过 API 层⾯不断的下钻来了解它的⼯作流程。接下来是它整体的设计模式,通常对一些框架来说,如果能构建一个比较成熟的生态,一定是在设计模式上有一些独特的地方,使其有一个比较好的扩展性。最后是它的数据结构和算法,因为为了能够处理海量数据并达到高性能,它的数据结构和算法一定有独到之处。我们可以做些深入了解。",
+    "extend": ""
+  },
+  {
+    "id": 7,
+    "category": "软技能",
+    "question": "4. 4 面试中关于技术选型的演变",
+    "answer": "比如:在进行NER任务时,第一个版本用的是BILSTM+CRF,但是第二个版本用了BERT+CRF,这里选用BERT的主要原因在于其更强的特征表达能力",
+    "extend": ""
+  },
+  {
+    "id": 8,
+    "category": "软技能",
+    "question": "5. 面试后",
+    "answer": "1)面试官面试后会给一定反馈,及时询问反馈\n\n2)如果对岗位和公司非常感兴趣可以多问几次,可以说明自己的意愿。\n\n3)切记:面试后需要找老师沟通存在什么问题",
+    "extend": ""
+  },
+  {
+    "id": 9,
+    "category": "Linux&Shell基础",
+    "question": "1. 1 Linux常用命令",
+    "answer": "参考答案:find、df、tar、ps、top、netstat等。(尽量说一些高级命令)",
+    "extend": ""
+  },
+  {
+    "id": 10,
+    "category": "Linux&Shell基础",
+    "question": "1. 2 Linux查看内存、磁盘存储、io 读写、端口占用、进程等命令",
+    "answer": "答案:\n\n1)查看内存:top\n\n2)查看磁盘存储情况:df -h\n\n3)查看磁盘IO读写情况:iotop(需要安装一下:yum install iotop)、iotop -o(直接查看输出 \n![图3](./figures/fig_0afc7d57d3.png)\n![图4](./figures/fig_184af1ab75.png)\n![图5](./figures/fig_e7b5b5bac5.png)\n![图6](./figures/fig_926950da66.png)\n![图7](./figures/fig_cebcb59af9.png)\n![图8](./figures/fig_a6ff70c771.png)\n![图9](./figures/fig_022bdde784.png)\n比较高的磁盘读写程序)\n\n4)查看端口占用情况:netstat -tunlp | grep 端口号\n\n5)查看进程:ps aux",
+    "extend": ""
+  },
+  {
+    "id": 11,
+    "category": "Linux&Shell基础",
+    "question": "2. 1 使用Linux命令查询file1中空行所在的行号",
+    "answer": "```Shell\n[root@node1 datas]$ awk '/^$/{print NR}' file1.txt\n5\n```",
+    "extend": ""
+  },
+  {
+    "id": 12,
+    "category": "Linux&Shell基础",
+    "question": "2. 2 有文件chengji.txt内容如下:",
+    "answer": "张三 40 李四 50 王五 60 使用Linux命令计算第二列的和并输出\n\n\n```\n1 [root@node1 datas]$ cat chengji.txt | awk -F \" \" '{sum+=$2} END{print sum}' 2 150\n```",
+    "extend": ""
+  },
+  {
+    "id": 13,
+    "category": "Linux&Shell基础",
+    "question": "2. 3 Shell脚本里如何检查一个文件是否存在?如果不存在如何处理?",
+    "answer": "```Shell\n#!/bin/bash\nif [ -f file.txt ]; then\necho \"⽂件存在!\"\nelse\necho \"⽂件不存在!\"\nfi\n```",
+    "extend": ""
+  },
+  {
+    "id": 14,
+    "category": "Linux&Shell基础",
+    "question": "2. 4 用Shell写一个脚本,对文本中无序的一列数字排序",
+    "answer": "![图10](./figures/fig_d8373cd0c5.png)\n![图11](./figures/fig_1763958b28.png)\n![图12](./figures/fig_83a38dff69.png)\n![图13](./figures/fig_08f76a7ea4.png)\n![图14](./figures/fig_ce733664b4.png)\n![图15](./figures/fig_55295e088a.png)\n![图16](./figures/fig_f76cb06322.png)\n![图17](./figures/fig_e2bc1450b8.png)\n```Shell\n[root@hadoop102  ~]# cat test.txt  # 1-10[root@hadoop102  ~]# sort -n test.txt|awk '{a+=$0;print $0}END{print \"SUM\n```\n```\n=\"a}'\n3 SUM=55\n```",
+    "extend": ""
+  },
+  {
+    "id": 15,
+    "category": "Linux&Shell基础",
+    "question": "2. 5 Shell脚本写出查找当前文件夹(/home)下所有的文本文件内容中包含有字符”shen”的文件名称",
+    "answer": "```Shell\n[root@hadoop102 datas]$ grep -r \"shen\" /home | cut -d \":\" -f 1\n/home/root/datas/sed.txt\n/home/root/datas/cut.txt\n```",
+    "extend": ""
+  },
+  {
+    "id": 16,
+    "category": "Python基础",
+    "question": "1. 编写程序在D盘根目录下创建一个文本文件test.txt,并向其中写入字符串hello world",
+    "answer": "```Python\nfp = open(r’D:\\test.txt’, ‘a+’)\nprint(‘hello world’, file=fp)\nfp.close()\n```",
+    "extend": ""
+  },
+  {
+    "id": 17,
+    "category": "Python基础",
+    "question": "2. 写出下面代码的优化版本,提高运行效率",
+    "answer": "```Python\nx = list(range(500))\nfor item in x:\nt = 5**5\nprint(item+t)\n```\n![图18](./figures/fig_62b8090cb7.png)\n![图19](./figures/fig_59aac8797c.png)\n![图20](./figures/fig_c25369065f.png)\n![图21](./figures/fig_83a38dff69.png)\n![图22](./figures/fig_ab13f84a95.png)\n![图23](./figures/fig_52b81a99c2.png)\n![图24](./figures/fig_1a1b6a0667.png)\n![图25](./figures/fig_c9d0fbf037.png)\n![图26](./figures/fig_8e3b6521e9.png)\n```Python\nx = list(range(500))\nt = 5**5\nfor item in x:\nprint(item+t)\n```",
+    "extend": ""
+  },
+  {
+    "id": 18,
+    "category": "Python基础",
+    "question": "3. 写出下面代码的执行结果",
+    "answer": "```Python\ndef Join(List, sep=None):\nreturn (sep or ',').join(List)\nprint(Join(['a', 'b', 'c']))\nprint(Join(['a', 'b', 'c'],':'))\n```\n```Python\na,b,c\na:b:c\n```",
+    "extend": ""
+  },
+  {
+    "id": 19,
+    "category": "Python基础",
+    "question": "4. 写出下面代码的运行结果",
+    "answer": "```Python\ndef Sum(a, b=3, c=5):\nreturn sum([a, b, c])\nprint(Sum(a=8, c=2))\nprint(Sum(8))\nprint(Sum(8,2))\n```\n```Python\n13\n16\n15\n```",
+    "extend": ""
+  },
+  {
+    "id": 20,
+    "category": "Python基础",
+    "question": "5. 写出下面代码的运行结果",
+    "answer": "![图27](./figures/fig_9e3ddbda77.png)\n![图28](./figures/fig_078e1fcfb3.png)\n![图29](./figures/fig_7111f2d5a7.png)\n![图30](./figures/fig_3415239ade.png)\n![图31](./figures/fig_4556e42292.png)\n![图32](./figures/fig_d9363263e6.png)\n```Python\ndef Sum(*p):\nreturn sum(p)\nprint(Sum(3, 5, 8))\nprint(Sum(8))\nprint(Sum(8, 2, 10))\n```\n```Python\n16\n8\n20\n```",
+    "extend": ""
+  },
+  {
+    "id": 21,
+    "category": "Python基础",
+    "question": "6. 编写函数,判断一个数字是否为素数,是则返回字符串YES,否则返回字符串NO",
+    "answer": "```Python\nimport math\ndef IsPrime(v):\nn = int(math.sqrt(v)+1)\nfor i in range(2,n):\nif v%i==0:\nreturn 'No'\nelse:\nreturn 'Yes'\n```",
+    "extend": ""
+  },
+  {
+    "id": 22,
+    "category": "Python基础",
+    "question": "7. 编写函数,模拟Python内置函数sorted()。",
+    "answer": "![图33](./figures/fig_d82cd6cfa1.png)\n![图34](./figures/fig_f4d24b20de.png)\n![图35](./figures/fig_d61a890f82.png)\n![图36](./figures/fig_4c83af1736.png)\n![图37](./figures/fig_a9f5e2bb0a.png)\n```Python\ndef Sorted(v):\nt = v[::]\nr = []\nwhile t:\ntt = min(t)\nr.append(tt)\nt.remove(tt)\nreturn r\n```",
+    "extend": ""
+  },
+  {
+    "id": 23,
+    "category": "Python基础",
+    "question": "8. 编写程序,实现分段函数计算,如下表所示。",
+    "answer": "| x | y |\n| --- | --- |\n| x<0 | 0 |\n| 0<=x<5 | x |\n| 5<=x<10 | 3x-5 |\n| 10<=x<20 | 0.5x-2 |\n| 20<=x | 0 |\n```Python\nx = input('Please input x:')\nx = eval(x)\nif x<0 or x>=20:\nprint(0)\nelif 0<=x<5:\nprint(x)\nelif 5<=x<10:\nprint(3*x-5)\nelif 10<=x<20:\nprint(0.5*x-2)\n```",
+    "extend": ""
+  },
+  {
+    "id": 24,
+    "category": "Python基础",
+    "question": "9. 请写一段Python代码实现删除一个list里面的重复元素",
+    "answer": "![图38](./figures/fig_de509eb539.png)\n![图39](./figures/fig_839997cf43.png)\n```Python\n>>> l = [1,1,2,3,4,5,4]>>> list(set(l))[1, 2, 3, 4, 5]或者d = {}for x in mylist: d[x] = 1mylist = list(d.keys())利⽤map()函数，把⽤户输⼊的不规范的英⽂名字，变为⾸字⺟⼤写，其他⼩写的规范名字。输⼊：[\n```\n```\n'adam', 'LISA', 'barT'],输出:['Adam', 'Lisa', 'Bart']:8 def normalize(name):\n9 return name[0].upper()+name[1:].lower()\n10 def normalizeList(inputlist):\n11 return list(map(normalize, inputlist))\n```",
+    "extend": ""
+  },
+  {
+    "id": 25,
+    "category": "Python基础",
+    "question": "10. 解释 Python 中的三元表达式",
+    "answer": "与 C++不同, 在 Python 中我们不需要使用?符号,而是使用如下语法:\n\n[on true] if [expression]else [on false] 如果 [expression] 为真, 则 [on true] 部分被执行。如果表示为假则 [on false] 部分被执行",
+    "extend": ""
+  },
+  {
+    "id": 26,
+    "category": "Python基础",
+    "question": "11. Python的可变类型和不可变类型?",
+    "answer": "可变类型:list、dict、set、可变集合",
+    "extend": ""
+  },
+  {
+    "id": 27,
+    "category": "Python高级",
+    "question": "1. 你知道深浅拷⻉的区别吗?",
+    "answer": "浅拷⻉: 拷⻉的是对象的引用,如果原对象改变,相应的拷⻉对象也会发生改变深拷⻉: 拷⻉对象中的每个元素,拷⻉对象和原有对象不在有关系,两个是独立的对象直接赋值:其实就是对象的引用(别名)。浅拷⻉(copy):拷⻉父对象,不会拷⻉对象的内部的子对象。深拷⻉(deepcopy): copy 模块的 deepcopy 方法,完全拷⻉了父对象及其子对象。",
+    "extend": ""
+  },
+  {
+    "id": 28,
+    "category": "Python高级",
+    "question": "2. 字典反转,列表反转的实现?",
+    "answer": "列表的反转:reversed 函数、sorted函数、切片技术、循环,递归,四种方式字典的反转:循环,推导式,压缩器三种方式列表反转:\n| Reversd函数 | Sorted函数 |\n| --- | --- |\n| listNode = [1,2,3,4,5] newList = list(reversed(listNode)) print(newList) #结果[5,4,3,2,1] | listNode = [1,2,3,4,5] newList = sorted(listNode,reverse = True) print(newList) #结果[5,4,3,2,1] |\n| 使⽤切⽚技术 | 使⽤循环，递归 |\n| --- | --- |\n| listNode = [1,2,3,4,5] li = listNode[::-1] print(li) #结果[5,4,3,2,1] | listNode = [1,2,3,4,5] new=[] head=listNode while head!=None:  new.append(head.val)  head=head.next new.reverse() print(new) def getLists(self,listNode):  if listNode is None:  return []  l = self.getLists(listNode.next)  return l + [listNode.val] lists = [1,2,3,4,5] getLists(lists) |\n字典反转:\n| 循环 | 推导式 | 压缩器 |\n| --- | --- | --- |\n![图40](./figures/fig_c721021f3b.png)\n![图41](./figures/fig_7140b021ff.png)\n| dic_a = {\"a\": 1, \"b\": 2} my_dic = {} for k,v in dic_a.items(): my_dic[v] = k print(my_dic) | dic_a = {\"a\": 1, \"b\": 2} my_dic = {k:v for v,k in dic_a.items()} print(my_dic) | dic_a = {\"a\": 1, \"b\": 2} my_dic = dict(zip(dic_a.values(),dic_a.keys ())) print(my_dic) |\n| --- | --- | --- |",
+    "extend": ""
+  },
+  {
+    "id": 29,
+    "category": "Python高级",
+    "question": "3. 装饰器是什么,什么场景用到装饰器,举个例子?",
+    "answer": "装饰器(Decorator)是一种结构型设计模式,它可以动态地给一个对象添加额外的职责,同时又不改变其原有的接口和实现。通俗地说,就是通过组合的方式,为对象添加新的行为或特性。在Python语言中,装饰器是一种语法糖,可以通过定义函数或类来实现。装饰器可以用于很多场景,例如:\n\n1)日志记录:可以定义一个装饰器函数,用于在函数调用时记录日志信息,如函数的参数、返回值等。\n\n2)性能分析:可以定义一个装饰器函数,用于在函数调用时计算函数的执行时间,以便进行性能优化。\n\n3)权限校验:可以定义一个装饰器函数,用于在函数调用时进行用户权限校验,以确保只有具有相应权限的用户可以访问该函数。下面是一个装饰器的例子,用于记录函数的执行时间:\n```Python\nimport timedef time_it(func): def wrapper(*args, **kwargs): start_time = time.time() result = func(*args, **kwargs) end_time = time.time() print(f\"函数 {func.__name__} 执⾏时间为：{end_time - start_time} 秒\") return result return wrapper@time_itdef my_function(): time.sleep(2) print(\"Hello, World!\")my_function()\n```\n| 在这个例⼦中，我们定义了⼀个装饰器函数time_it，它接受⼀个函数作为参数，并返回⼀个新的函数wrapper。wrapper函数可以记录函数执⾏前后的时间，并输出执⾏时间信息。在my_function函数前⾯加上@time_it装饰器，表示对my_function函数应⽤time_it装饰器。当调⽤my_function函数时，实际上会调⽤被time_it装饰过的wrapper函数，从⽽记录函数的执⾏时间。 |\n| --- |",
+    "extend": ""
+  },
+  {
+    "id": 30,
+    "category": "Python高级",
+    "question": "4. 装饰器的实质是什么?",
+    "answer": "![图42](./figures/fig_0f2d4d46d6.png)\n![图43](./figures/fig_d61a890f82.png)\n![图44](./figures/fig_cb5faad7fc.png)\n答:装饰器是要把原来的函数装饰成新的函数,并且返回这个函数本身的高阶函数。",
+    "extend": ""
+  },
+  {
+    "id": 31,
+    "category": "Python高级",
+    "question": "5. Python迭代器是什么?什么场景用到迭代器?举一个例子?",
+    "answer": "在Python中,迭代器(Iterator)是一个可以迭代访问序列元素的对象。迭代器对象实现了两个方法:__iter__()和__next__()。__iter__()方法返回迭代器对象本身,__next__()方法返回下一个元素。迭代器常用于遍历序列、集合、字典等容器类型数据。它的优点是可以惰性计算(lazy evaluation),即只有在需要时才会计算,避免了一次性加载所有数据的开销,同时也可以节省内存空间。在Python中,使用迭代器通常有以下场景:\n\n1)遍历大量数据集合:当需要处理大量的数据集合时,使用迭代器可以避免一次性加载所有数据,节省内存空间。\n\n2)实现自定义迭代器:当需要遍历自定义数据结构时,可以通过实现迭代器对象的__iter__()和__next__()方法来实现自定义迭代器。\n\n3)实现惰性计算:当需要进行惰性计算时,可以使用迭代器来实现,例如通过filter()、map()等高阶函数返回一个迭代器对象来进行惰性计算。下面是一个使用迭代器遍历列表的例子:\n```Python\nmy_list = [1, 2, 3, 4, 5]\nmy_iterator = iter(my_list)\nwhile True:\ntry:\nitem = next(my_iterator)\nprint(item)\nexcept StopIteration:\nbreak\n```\n| 在这个例⼦中，我们通过iter()函数将列表my_list转化为⼀个迭代器对象my_iterator，然后使⽤while循环和next()函数来依次访问迭代器中的元素。当所有元素都被访问完毕时，迭代器会抛出StopIteration异常，这时我们就可以跳出循环。 |\n| --- |",
+    "extend": ""
+  },
+  {
+    "id": 32,
+    "category": "Python高级",
+    "question": "6. Python生成器是什么?什么场景用到生成器?举一个例子?",
+    "answer": "在Python中,生成器(Generator)是一种特殊的迭代器,它使用生成器函数来生成序列中的元素,而不是在内存中一次性生成所有元素。生成器函数是使用yield关键字定义的函数,每次调用生成器函数时,它会返回一个迭代器对象,调用next()方法时,它会从上次暂停的位置继续执行,直到遇到下一个yield语句,然后返回一个值,并再次暂停。因此,生成器可以惰性地生成序列中的元素,并在需要时逐个生成元素,避免了一次性生成所有元素所带来的内存消耗。使用生成器的场景包括:\n\n1)生成大量的数据集合:当需要生成大量数据时,使用生成器可以避免一次性占用大量内存空间。\n\n2)实现自定义的迭代器:当需要自定义迭代器对象时,可以使用生成器函数来实现,避免了繁琐的迭代器对象的定义。\n\n3)实现惰性计算:当需要进行惰性计算时,可以使用生成器来实现,例如通过filter()、map()等高阶函数返回一个生成器对象来进行惰性计算。下面是一个使用生成器函数生成斐波那契数列的例子:\n![图45](./figures/fig_b77b185260.png)\n![图46](./figures/fig_d61a890f82.png)\n![图47](./figures/fig_8cea9e61a2.png)\n```Python\ndef fibonacci(n):\na, b = 0, 1\nfor i in range(n):\nyield a\na, b = b, a + b\nfib = fibonacci(10)\nfor num in fib:\nprint(num)\n```\n| 在这个例⼦中，我们定义了⼀个⽣成器函数fibonacci()，它的参数n表示需要⽣成的斐波那契数列的⻓度。在函数中，我们使⽤yield语句返回斐波那契数列中的每⼀个元素，这样每次调⽤next()函数时，它会返回下⼀个元素，并在下次调⽤时从上次暂停的位置继续执⾏。最后，我们使⽤for循环遍历⽣成器对象，并打印出每个元素。 |\n| --- |",
+    "extend": ""
+  },
+  {
+    "id": 33,
+    "category": "Python高级",
+    "question": "7. Python多线程与多进程的区别",
+    "answer": "在UNIX平台上,当某个进程终结之后,该进程需要被其父进程调用wait,否则进程成为僵尸进程 (Zombie)。所以,有必要对每个Process对象调用join()方法 (实际上等同于wait)。对于多线程来说, 由于只有一个进程,所以不存在此必要性。多进程应该避免共享资源。在多线程中,我们可以比较容易地共享资源,比如使用全局变量或者传递参数。在多进程情况下,由于每个进程有自己独立的内存空间,以上方法并不合适。此时我们可以通过共享内存和Manager的方法来共享资源。但这样做提高了程序的复杂度,并因为同步的需要而降低了程序的效率。",
+    "extend": ""
+  },
+  {
+    "id": 34,
+    "category": "Python高级",
+    "question": "8. 请写一段Python代码实现删除一个list里面的重复元素",
+    "answer": "主要用到了set()函数。 \n| l = [1,1,2,3,4,5,4] >>> list(set(l)) >>> [1, 2,3,4,5] | mylist=[1,1,2,3,4,5,4] d = {} for x in mylist:  d[x] = 1 mylist = list(d.keys()) print(mylist) |\n| --- | --- |",
+    "extend": ""
+  },
+  {
+    "id": 35,
+    "category": "Python高级",
+    "question": "9. 请设计一个decorator,它可作用于任何函数上,并打印该函数的执行时间",
+    "answer": "![图48](./figures/fig_dcb1737ed7.png)\n![图49](./figures/fig_fc8035b05e.png)\n```Python\n# -*- coding: utf-8 -*-import time, functoolsdef metric(fn): @functools.wraps(fn) def wrapper(*args, **kw): time0 = time.time() ret = fn(*args, **kw) time1 = time.time() print('%s executed in %s ms' % (fn.__name__, time1-time0)) return ret return wrapper\n```",
+    "extend": ""
+  },
+  {
+    "id": 36,
+    "category": "Python高级",
+    "question": "10. 装饰器的实质是什么?",
+    "answer": "或者说为什么装饰器要写2层嵌套函数,里层函数完全就已经实现了装饰的功能为什么不直接用里层函数名作为装饰器名称?\n\n答:装饰器是要把原来的函数装饰成新的函数,并且返回这个函数本身的高阶函数",
+    "extend": ""
+  },
+  {
+    "id": 37,
+    "category": "Python高级",
+    "question": "11. Python下多线程的限制以及多进程中传递参数的方式",
+    "answer": "python多线程有个全局解释器锁(global interpreter lock),这个锁的意思是任一时间只能有一个线程使用解释器,跟单cpu跑多个程序一个意思,大家都是轮着用的,这叫“并发”,不是“并行”。多进程间共享数据,可以使用 multiprocessing.Value 和 multiprocessing.Array",
+    "extend": ""
+  },
+  {
+    "id": 38,
+    "category": "Python高级",
+    "question": "12. Python是如何进行内存管理的?",
+    "answer": "Python引用了一个内存池(memory pool)机制,即Pymalloc机制(malloc:n.分配内存),用于管理对小块内存的申请和释放内存池(memory pool)的概念:\n\n当创建大量消耗小内存的对象时,频繁调用new/malloc会导致大量的内存碎片,致使效率降低。内存池的概念就是预先在内存中申请一定数量的,大小相等的内存块留作备用,当有新的内存需求时,就先从内存池中分配内存给这个需求,不够了之后再申请新的内存。这样做最显著的优势就是能够减少内存碎片,提升效率。内存池的实现方式有很多,性能和适用范围也不一样。python中的内存管理机制——Pymalloc:\n\npython中的内存管理机制都有两套实现,一套是针对小对象,就是大小小于256bits时,pymalloc会在内存池中申请内存空间;当大于256bits,则会直接执行new/malloc的行为来申请内存空间。关于释放内存方面,当一个对象的引用计数变为0时,python就会调用它的析构函数。在析构时,也采用了内存池机制,从内存池来的内存会被归还到内存池中,以避免频繁地释放动作。",
+    "extend": ""
+  },
+  {
+    "id": 39,
+    "category": "Python高级",
+    "question": "13. Python里面如何拷⻉一个对象?",
+    "answer": "标准库中的copy模块提供了两个方法来实现拷⻉.一个方法是copy,它返回和参数包含内容一样的对象,使用deepcopy方法,对象中的属性也被复制",
+    "extend": ""
+  },
+  {
+    "id": 40,
+    "category": "Python高级",
+    "question": "14. Python里面search()和match()的区别?",
+    "answer": "![图50](./figures/fig_e0a98271e0.png)\n![图51](./figures/fig_8eb4f6b0f9.png)\n![图52](./figures/fig_98ba510654.png)\n![图53](./figures/fig_8e3b6521e9.png)\nmatch()函数只检测re是不是在string的开始位置匹配,search()会扫描整个string查找匹配, 也就是说match()只有在0位置匹配成功的话才有返回,如果不是开始位置匹配成功的话,match()就返回none。",
+    "extend": ""
+  },
+  {
+    "id": 41,
+    "category": "Python高级",
+    "question": "15. lambda表达式格式以及应用场景?",
+    "answer": "lambda函数就是可以接受任意多个参数(包括可选参数)并且返回单个表达式值得函数。语法:lambda [arg1 [,arg2,.....argn]]:expression \n```Python\ndef calc(x,y):\nreturn x*y\n# 将上述⼀般函数改写为匿名函数：\nlambda x,y:x*y\n```\n应用:\n\n1)lambda函数比较轻便,即用即仍,适合完成只在一处使用的简单功能。\n\n2)匿名函数,一般用来给filter,map这样的函数式编程服务\n\n3)作为回调函数,传递给某些应用,比如消息处理。",
+    "extend": ""
+  },
+  {
+    "id": 42,
+    "category": "Python高级",
+    "question": "16. *args和**kwarg作用",
+    "answer": "*args代表位置参数,它会接收任意多个参数并把这些参数作为元组传递给函数。\n\n**kwargs代表的关键字参数,允许你使用没有事先定义的参数名。位置参数一定要放在关键字参数的前面。作用:使用*args和**kwargs可以非常方便的定义函数,同时可以加强扩展性,以便日后的代码维护。",
+    "extend": ""
+  },
+  {
+    "id": 43,
+    "category": "Python高级",
+    "question": "17. is和==的区别",
+    "answer": "==是python标准操作符中的比较操作符,用来比较判断两个对象的value(值)是否相等;\n\nis也被叫做同一性运算符,这个运算符比较判断的是对象间的唯一身份标识,也就是id是否相同。",
+    "extend": ""
+  },
+  {
+    "id": 44,
+    "category": "Python高级",
+    "question": "18. 简述Python的深浅拷⻉以及应用场景?",
+    "answer": "导入模块:import copy 浅拷⻉:copy.copy 深拷⻉:copy.deepcopy 浅拷⻉指仅仅拷⻉数据集合的第一层数据,深拷⻉指拷⻉数据集合的所有层。<br>   所以对于只有一层的数据集合来说深浅拷⻉的意义是一样的,比如字符串,数字,还有仅仅一层的字典、列表、元祖等.\n\n应用:\n![图54](./figures/fig_b38fed5508.png)\n![图55](./figures/fig_81a6587016.png)\n![图56](./figures/fig_0324bdcb99.png)\n![图57](./figures/fig_f52d469349.png)\n![图58](./figures/fig_aec0888f18.png)\n浅拷⻉在拷⻉大量数据且不需要改变内部元素的值的时候,能大量的减少内存的使用;\n\n深拷⻉在拷⻉大量数据的时候,需要在前后内部元素的内容进行改变的时候,可以修改拷⻉出来的模板",
+    "extend": ""
+  },
+  {
+    "id": 45,
+    "category": "Python高级",
+    "question": "19. Python垃圾回收机制?",
+    "answer": "1)回收计数引用为0的对象,释放其占用空间\n\n2)循环垃圾回收器。释放循环引用对象",
+    "extend": ""
+  },
+  {
+    "id": 46,
+    "category": "数据处理与统计分析",
+    "question": "1. 准备工作",
+    "answer": "```Python\nimport numpy as np\nimport pandas as pd\n```\n在进行下面的数据处理与统计分析爱操作时,要先导入上面的数据分析包pandas、numpy",
+    "extend": ""
+  },
+  {
+    "id": 47,
+    "category": "数据处理与统计分析",
+    "question": "2. 1 如何用Python的列表创建一个series?",
+    "answer": "```Python\ns = pd.Series([1, 3, 5, np.nan, 6, 8])\n```\n输出:\n\n一个series是一个一维的标记数组,可以容纳任何数据类型(整数、字符串、浮点数、Python对象等)。必须记住,与 Python列表不同,一个series总是包含相同类型的数据。",
+    "extend": ""
+  },
+  {
+    "id": 48,
+    "category": "数据处理与统计分析",
+    "question": "2. 2 如何使用列表创建一个DataFrame?",
+    "answer": "![图59](./figures/fig_efc8dc0ab6.png)\n![图60](./figures/fig_aded90a6b2.png)\n![图61](./figures/fig_f927a5e607.png)\n![图62](./figures/fig_7111f2d5a7.png)\n![图63](./figures/fig_87491768ee.png)\n![图64](./figures/fig_ba1ef32038.png)\n![图65](./figures/fig_b2d8f199d8.png)\n![图66](./figures/fig_e0659de049.png)\n![图67](./figures/fig_af6711b6d5.png)\n![图68](./figures/fig_e067da4769.png)\n![图69](./figures/fig_91c6eb8f47.png)\n![图70](./figures/fig_bab66cc3fd.png)\n![图71](./figures/fig_7652aa6c36.png)\n![图72](./figures/fig_3604454d40.png)\n![图73](./figures/fig_d4866246c5.png)\n![图74](./figures/fig_0184f13c1e.png)\n```Python\n# 导⼊pandasimport pandas as pd\n# 字符串列表\nlst =  [\"Gamer47\",\"Shox\",\"Simple\"]\n# 在列表中调⽤DataFrame构造函数\ndf = pd.DataFrame(lst)\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 49,
+    "category": "数据处理与统计分析",
+    "question": "2. 3 如何使用Series 字典对象生成 DataFrame?",
+    "answer": "```Python\ndf2 = pd.DataFrame({'A': 1., 'B': pd.Timestamp('20130102'), 'C': pd.Series(1, index=list(range(4)), dtype='float32')\n```\n```\n,\n4 'D': np.array([3] * 4, dtype='int32'),\n5 'E': pd.Categorical([\"test\", \"train\", \"test\", \"train\"]),\n6 'F': 'foo'})\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 50,
+    "category": "数据处理与统计分析",
+    "question": "2. 4 如何在pandas中创建一个空的DataFrame?",
+    "answer": "要创建一个完全空的pandas dataframe,我们使用以下操作: \n![图75](./figures/fig_903ef3e79c.png)\n![图76](./figures/fig_1e1f28adb0.png)\n![图77](./figures/fig_9588a466ae.png)\n![图78](./figures/fig_c8b8945c3d.png)\n![图79](./figures/fig_fc6162844d.png)\n![图80](./figures/fig_77580811eb.png)\n![图81](./figures/fig_34823a6eb6.png)\n```Python\nimport pandas as pd\ndf = pd.DataFrame()\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 51,
+    "category": "数据处理与统计分析",
+    "question": "2. 5 查看数据",
+    "answer": "已知有这样的数据,如何进行查看\n```Python\ndates = pd.date_range('20130101', periods=6)df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 52,
+    "category": "数据处理与统计分析",
+    "question": "2. 8 如何快速查看数据的统计摘要?",
+    "answer": "![图82](./figures/fig_7d72272582.png)\n![图83](./figures/fig_5da814b3fa.png)\n![图84](./figures/fig_0e2a2e0f37.png)",
+    "extend": ""
+  },
+  {
+    "id": 53,
+    "category": "数据处理与统计分析",
+    "question": "3. 1简述Pandas Index有哪些?在panda中建立索引意味着简单地从DataFrame中选择特定的数据行和列。",
+    "answer": "pandas支持四种类型的多轴索引,它们是: \n![图85](./figures/fig_fb5de8b4a6.png)\n![图86](./figures/fig_f0e8423ae2.png)\n![图87](./figures/fig_01a472366c.png)\nDataframe.[ ] 此函数称为索引运算符 Dataframe.loc[ ] : 此函数用于标签 Dataframe.iloc[ ] : 此函数用于基于位置或整数的 Dataframe.ix[] : 此函数用于基于标签和整数的",
+    "extend": ""
+  },
+  {
+    "id": 54,
+    "category": "数据处理与统计分析",
+    "question": "3. 2 如何设置索引?",
+    "answer": "panda set_index()是一种将列表、序列或dataframe设置为dataframe索引的方法。语法:DataFrame.set_index(keys, inplace=False)参数:\n\nkeys:列标签或列标签/数组列表,需要设置为索引的列 inplace:默认为False,适当修改DataFrame(不要创建新对象)\n\n改变索引列\n```Python\nimport pandas as pd\n#就是读取csv⽂本⽂件到DataFrame变量中\ndata = pd.read_csv(\"employees.csv\")\ndata.set_index(\"First Name\", inplace = True)\n#观察数据\ndata.head()\n```",
+    "extend": ""
+  },
+  {
+    "id": 55,
+    "category": "数据处理与统计分析",
+    "question": "3. 3 如何重置索引?",
+    "answer": "Pandas Series.reset_index()函数的作用是:生成一个新的DataFrame或带有重置索引的Series。例1: 使用 Series.reset_index() 函数重置给定Series对象的索引 \n```Python\n# 导⼊pandas包import pandas as pd# 创建 Seriessr = pd.Series([10, 25, 3, 11, 24, 6])# 创建索引index_ = ['Coca Cola', 'Sprite', 'Coke', 'Fanta', 'Dew', 'ThumbsUp'] # 设置索引sr.index = index_# 打印seriesprint(sr)\n```\n输出: \n![图88](./figures/fig_a4c9023448.png)\n![图89](./figures/fig_0cbcd3c9f9.png)\n![图90](./figures/fig_a356240c7f.png)\n![图91](./figures/fig_10fdde77fc.png)\n![图92](./figures/fig_748eb8c88e.png)\n![图93](./figures/fig_034199550a.png)\n现在,我们将使用Series.reset_index()函数来重置给定的series对象的索引 \n```Python\n# 重置索引\nresult = sr.reset_index()\n# 打印\nprint(result)\n```\n输出 :\n\n从输出中可以看到,该 Series.reset_index() 函数已将给定Series对象的索引重置为默认值。它保留了索引,并将其转换为列。",
+    "extend": ""
+  },
+  {
+    "id": 56,
+    "category": "数据处理与统计分析",
+    "question": "4. 1 先创建数据",
+    "answer": "```Python\ndates = pd.date_range('20130101', periods=6)df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))\n```",
+    "extend": ""
+  },
+  {
+    "id": 57,
+    "category": "数据处理与统计分析",
+    "question": "4. 2 选择单列,产生 Series",
+    "answer": "![图94](./figures/fig_38f2820647.png)\n![图95](./figures/fig_31092c56ba.png)\n![图96](./figures/fig_01fea76665.png)\n![图97](./figures/fig_e9e120cb6c.png)",
+    "extend": ""
+  },
+  {
+    "id": 58,
+    "category": "数据处理与统计分析",
+    "question": "4. 3 按标签选择",
+    "answer": "用标签提取一行数据:\n\n用标签选择多列数据:",
+    "extend": ""
+  },
+  {
+    "id": 59,
+    "category": "数据处理与统计分析",
+    "question": "5. 运算",
+    "answer": "![图98](./figures/fig_84761b7b57.png)\n![图99](./figures/fig_6366145da8.png)\n![图100](./figures/fig_8ea869937e.png)\n![图101](./figures/fig_a331b7db8e.png)\n![图102](./figures/fig_6ca9241be9.png)\n![图103](./figures/fig_0d9d008b64.png)\n![图104](./figures/fig_698396eeb5.png)\n![图105](./figures/fig_2ecf1abcfd.png)\n![图106](./figures/fig_2e87c87a6f.png)\n![图107](./figures/fig_e44d0394f3.png)",
+    "extend": ""
+  },
+  {
+    "id": 60,
+    "category": "数据处理与统计分析",
+    "question": "5. 1 如何得到一个数列的最小值、第25百分位、中值、第75位和最大值?",
+    "answer": "```Python\nimport pandas as pd\nimport numpy as np\nfrom numpy import percentile\np = pd.Series(np.random.normal(14, 6, 22))\nstate = np.random.RandomState(120)\np = pd.Series(state.normal(14, 6, 22))\nprint(percentile(p, q=[0, 25, 50, 75, 100]))\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 61,
+    "category": "数据处理与统计分析",
+    "question": "5. 2 如何获得panda DataFrame中一个列的平均值?",
+    "answer": "Pandas dataframe.mean(axis=None)函数返回所请求轴(axis=0代表对列进行求平均值,axis=1代表对行进行求平均值)\n\n的值的平均值。示例:使用 mean() 函数查找索引轴上所有观测值的平均值。 \n```Python\nimport pandas as pd\ndf = pd.DataFrame({\"A\":[12, 4, 5, 44, 1],\n\"B\":[5, 2, 54, 3, 2],\n\"C\":[20, 16, 7, 3, 8],\n\"D\":[14, 3, 17, 2, 6]})\ndf\n```\n输出:\n\n让我们使用datafame .mean()函数来查找索引轴上的平均值。",
+    "extend": ""
+  },
+  {
+    "id": 62,
+    "category": "数据处理与统计分析",
+    "question": "5. 3 如何将函数应用到DataFrame中的每个数据元素?",
+    "answer": "![图108](./figures/fig_3cf79227f0.png)\n![图109](./figures/fig_a0f8a19656.png)\n![图110](./figures/fig_43880cfa04.png)\n![图111](./figures/fig_6e7a8e8d3d.png)\n![图112](./figures/fig_32ac4f1e6f.png)\n![图113](./figures/fig_81f5505fe0.png)\n![图114](./figures/fig_b28a898511.png)\n![图115](./figures/fig_173cbeb244.png)\n可以使用 apply() 函数以便将函数应用于给定dataframe中的每一行。让我们来看看我们完成这项任务的方式。实例: \n```Python\nimport pandas as pd\ndef add(a, b, c):\nreturn a + b + c\ndef main():\n```\n```\n5\n6 data = {\n7 'A':[1, 2, 3],\n8 'B':[4, 5, 6],\n9 'C':[7, 8, 9] }\n10\n11 df = pd.DataFrame(data)\n12 print(\"Original DataFrame:\\n\", df)\n13\n14 df['add'] = df.apply(lambda row : add(row['A'],\n15 row['B'], row['C']), axis = 1)\n16 print('\\nAfter Applying Function: ')\n17 print(df)\n18 if __name__ == '__main__':\n19 main()\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 63,
+    "category": "数据处理与统计分析",
+    "question": "5. 4 如何在panda中获得一个DataFrame的行数和列数?",
+    "answer": "![图116](./figures/fig_34a531bc4c.png)\n![图117](./figures/fig_e8d36435fb.png)\n![图118](./figures/fig_f219dd9100.png)\n![图119](./figures/fig_7aa2f325d8.png)\n![图120](./figures/fig_2032e67c43.png)\n![图121](./figures/fig_0c996a4178.png)\n![图122](./figures/fig_2740418e46.png)\n![图123](./figures/fig_1614f23eb4.png)\n![图124](./figures/fig_19c603b82a.png)\n```Python\nimport numpy as np\n```\n```\n2 3 raw_data = {'name': ['Willard Morris', 'Al Jennings', 'Omar Mullins', 'Spen cer McDaniel'], 4 'age': [20, 19, 22, 21],'favorite_color': ['blue', 'red', 'yell ow', \"green\"],\n5 'grade': [88, 92, 95, 70]} 6 df = pd.DataFrame(raw_data, columns = ['name', 'age', 'favorite_color', 'gr ade'])\n```\n输出:\n\n获取df的行和列计数 \n```Python\ndf.shape\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 64,
+    "category": "数据处理与统计分析",
+    "question": "5. 5 如何在panda DataFrame中获得列值的总和?",
+    "answer": "![图125](./figures/fig_2114223b62.png)\n![图126](./figures/fig_74548b0401.png)\n![图127](./figures/fig_52bfe86355.png)\n![图128](./figures/fig_870eb90844.png)\nPandas dataframe.sum()函数返回所请求轴的值的和语法: DataFrame.sum(axis=None, skipna=None, )参数:\n\n- axis : {index (0), columns (1)},axis=0代表对列进⾏求和，axis=1代表对⾏进⾏求和 skipna : 计算结果时排除NA /空值示例1:使用 sum() 函数查找索引轴上所有值的总和 \n```Python\n# 导⼊数据\nimport pandas as pd\ndf = pd.read_csv(\"NBAPlayers.txt\",delimiter=\"\\t\")\n```\n```\n4\n5 # 现在求出沿索引轴的所有值的和。我们将跳过计算和时的NaN值。\n6 # 查找索引轴的和,默认情况下,轴设置为0\n7 df.sum(axis = 0, skipna = True)\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 65,
+    "category": "数据处理与统计分析",
+    "question": "6. 合并",
+    "answer": "如何将新行追加到pandas DataFrame?Pandas dataframe.append()函数的作用是:将其他dataframe的行追加到给定的dataframe的末尾,返回一个新的dataframe对象。语法:DataFrame.append( ignore_index=False,)\n\n参数:\n\n- ignore_index : 如果为真，就不要使⽤索引标签示例1: 创建两个数据框,然后将第二个附加到第一个。 \n![图129](./figures/fig_e743085b02.png)\n![图130](./figures/fig_7749e9e90c.png)\n![图131](./figures/fig_4e86de719b.png)\n![图132](./figures/fig_57414e5914.png)\n![图133](./figures/fig_e5727545b5.png)\n![图134](./figures/fig_6946f72e32.png)\n![图135](./figures/fig_8dbaee708e.png)\n![图136](./figures/fig_8eaf9b227a.png)\n![图137](./figures/fig_291cf7fbd8.png)\n![图138](./figures/fig_ba2d1667a4.png)\n![图139](./figures/fig_01a6a3dbab.png)\n![图140](./figures/fig_94d9258b99.png)\n![图141](./figures/fig_ead2936204.png)\n![图142](./figures/fig_2c092f1c5a.png)\n```Python\nimport pandas as pd\n```\n```\n2\n3 # 使用dictionary创建第一个Dataframe 4 df1 =df =pd.DataFrame({\"a\":[1, 2, 3, 4],\"b\":[5, 6, 7, 8]}) 5\n6 # 使用dictionary创建第二个Dataframe\n7 df2 =pd.DataFrame({\"a\":[1, 2, 3],\"b\":[5, 6, 7]})\n8 # 现在将df2附加到df1的末尾\n9 df1.append(df2)\n```\n输出:\n\n请注意,第二个DataFrame的索引值保留在附加的DataFrame中。如果我们不希望发生这种情况,则可以设置ignore_index = True。\n\ndf.append(df2, ignore_index = True)\n\n输出 :",
+    "extend": ""
+  },
+  {
+    "id": 66,
+    "category": "数据处理与统计分析",
+    "question": "7. 分组(Grouping)",
+    "answer": "![图143](./figures/fig_5abbf0be0f.png)\n![图144](./figures/fig_dfa4fed90b.png)\n![图145](./figures/fig_839c9c64d3.png)\n![图146](./figures/fig_432f821ec4.png)\n![图147](./figures/fig_98ba510654.png)\n![图148](./figures/fig_bc6d713f0a.png)\n![图149](./figures/fig_21be243354.png)\n![图150](./figures/fig_103a121dd6.png)\n![图151](./figures/fig_fb80f21224.png)\n![图152](./figures/fig_23143471ad.png)\n![图153](./figures/fig_66e2c9f109.png)\n![图154](./figures/fig_43aa46110c.png)\n![图155](./figures/fig_14a8ea9482.png)\n![图156](./figures/fig_51cc8db649.png)\n“group by” 指的是涵盖下列一项或多项步骤的处理流程: \n```Python\n●●●1\ndf = pd.DataFrame({'A': ['foo', 'bar', 'foo', 'bar','foo', 'bar', 'foo', 'f\n```\n```\noo'],\n2 'B': ['one', 'one', 'two', 'three','two', 'two', 'one', 't\nhree'],\n```\n| 3 | df | 'C': np.random.randn(8), 'D': np.random.randn(8)}) |\n| --- | --- | --- |\n| 4 |  |  |\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 67,
+    "category": "数据处理与统计分析",
+    "question": "1. 先分组,再用sum()函数计算每组的汇总数据:",
+    "answer": "```Python\ndf.groupby('A').sum()\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 68,
+    "category": "数据处理与统计分析",
+    "question": "2. 多列分组后,生成多层索引,也可以应用 sum 函数:",
+    "answer": "![图157](./figures/fig_5bc99511a8.png)\n![图158](./figures/fig_ed4a954a24.png)\n![图159](./figures/fig_53bd8b8131.png)\n![图160](./figures/fig_d83ba3dffc.png)\n![图161](./figures/fig_f52d469349.png)\n![图162](./figures/fig_aec0888f18.png)\n```Python\ndf.groupby(['A', 'B']).sum()\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 69,
+    "category": "数据处理与统计分析",
+    "question": "8. 重塑(Reshaping)",
+    "answer": "如何将numpy数组转换为给定形状的DataFrame? \n```Python\nimport pandas as pd\nimport numpy as np\np = pd.Series(np.random.randint(1, 7, 8))\n```\n输出: \n![图163](./figures/fig_58018245f6.png)\n![图164](./figures/fig_a3ff25bf89.png)\n![图165](./figures/fig_c7e1c63178.png)\n![图166](./figures/fig_bb8c3264d4.png)\n![图167](./figures/fig_46d18cdb4b.png)\n![图168](./figures/fig_7ab6af00ce.png)\n![图169](./figures/fig_b97f25c6da.png)\n![图170](./figures/fig_189b0f2850.png)\n![图171](./figures/fig_1866427df5.png)\n![图172](./figures/fig_08aa5d7f2f.png)\n![图173](./figures/fig_5a013025ec.png)\n![图174](./figures/fig_82fe2c9405.png)\n将series p重新组合成一个2行4列的dataframe \n```Python\ninfo = pd.DataFrame(p.values.reshape(2,4))\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 70,
+    "category": "数据处理与统计分析",
+    "question": "9. 数据透视表",
+    "answer": "透视表是一种可以对数据动态排布并且分类汇总的表格格式,在pandas中它被称作pivot_table。pivot_table(data, values=None, index=None, columns=None)参数: \n```Python\n●●●1234567\nimport pandas as pdimport numpy as np df = pd.DataFrame({'A': ['one', 'one', 'two', 'three'] * 3, 'B': ['A', 'B', 'C'] * 4, 'C': ['foo', 'foo', 'foo', 'bar', 'bar', 'bar'] * 2, 'D': np.random.randn(12), 'E': np.random.randn(12)})\n```\n打印输出:\n![图175](./figures/fig_512d7f9463.png)\n![图176](./figures/fig_b2e8642d58.png)\n![图177](./figures/fig_712f1e0fe6.png)\n![图178](./figures/fig_6ee06b929a.png)\n![图179](./figures/fig_aec0888f18.png)\n用上述数据生成数据透视表非常简单:\n```Python\npd.pivot_table(df, values='D', index=['A', 'B'], columns=['C'])\n```\n返回结果:",
+    "extend": ""
+  },
+  {
+    "id": 71,
+    "category": "数据处理与统计分析",
+    "question": "10. Panda DataFrame里的操作",
+    "answer": "![图180](./figures/fig_07e78e5869.png)\n![图181](./figures/fig_3831011d0e.png)\n![图182](./figures/fig_ede567834b.png)\n![图183](./figures/fig_ba714c8fda.png)\n![图184](./figures/fig_954ecbee7e.png)\n![图185](./figures/fig_98ba510654.png)\n![图186](./figures/fig_b3216b1991.png)\n![图187](./figures/fig_72e2fc3284.png)\n![图188](./figures/fig_1d53399375.png)\n![图189](./figures/fig_81271e5c35.png)\n![图190](./figures/fig_4f1797624d.png)\n![图191](./figures/fig_241b25173e.png)\n![图192](./figures/fig_b663bf93c1.png)\n![图193](./figures/fig_81e99524f7.png)\n![图194](./figures/fig_d407ce7c85.png)",
+    "extend": ""
+  },
+  {
+    "id": 72,
+    "category": "数据处理与统计分析",
+    "question": "10. 1 如何将列添加到pandas DataFrame?",
+    "answer": "源数据: \n```Python\n# 导⼊pandas\nimport pandas as pd\n# 定义⼀个包含学⽣数据的字典\ndata = {\"Name\": [\"Jai\",\"Princi\", \"Gaurav\" ,\"Anuj\"],\n\"Height\": [5.1, 6.2, 5.1, 5.2],\n\"Qualification\": [\"Msc\", \"Ma\",\"Msc\", \"Msc\"]}\n# 将字典转换成DataFrame\ndf = pd.DataFrame(data)\n```\n输出:\n\n添加列: \n```Python\n# 声明要转换为列的列表\naddress = [\"Delhi\", \"Bangalore\", \"Chennai\" ,\"Patna\"]\n# 使⽤“address”作为列名\ndf[\"Address\"] = address\n# 观察结果\ndf\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 73,
+    "category": "数据处理与统计分析",
+    "question": "10. 2 如何向panda DataFrame添加索引、行或列?",
+    "answer": "![图195](./figures/fig_3b781a2b31.png)\n![图196](./figures/fig_cc778d2195.png)\n![图197](./figures/fig_727cfdcf0e.png)\n![图198](./figures/fig_44c22787ff.png)\n![图199](./figures/fig_2dedcc1479.png)\n![图200](./figures/fig_01fab193df.png)\n![图201](./figures/fig_73fda577c4.png)\n![图202](./figures/fig_3c95b80c59.png)\n![图203](./figures/fig_1f464aac0a.png)\n向DataFrame添加索引如果您创建了一个DataFrame, panda允许将输入添加到索引参数中。它将确保您拥有所需的索引。否则,在默认情况下,DataFrame包含一个数值索引,该索引从0开始,在DataFrame的最后一行结束。向DataFrame添加行、列我们可以使用.loc、iloc和ix将行、列插入到DataFrame中。添加具有特定索引名的行: \n```Python\nimport pandas as pdemployees = pd.DataFrame( data={'Name': ['John Doe', 'William Spark'], 'Occupation': ['Chemist', 'Statistician'], 'Date Of Join': ['2018-01-25', '2018-01-26'], 'Age': [23, 24]}, index=['Emp001', 'Emp002'], columns=['Name', 'Occupation', 'Date Of Join', 'Age']) print(\"\\n------------ BEFORE ----------------\\n\") print(employees) employees.loc['Emp003'] = ['Sunny', 'Programmer', '2018-01-25', 45] print(\"\\n------------ AFTER ----------------\\n\") print(employees)\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 74,
+    "category": "数据处理与统计分析",
+    "question": "10. 3 如何在panda DataFrame上进行迭代?",
+    "answer": "您可以通过结合使用for循环和对DataFrame的iterrows()调用来遍历DataFrame的行。 \n![图204](./figures/fig_95fcc94a25.png)\n![图205](./figures/fig_ba235785ad.png)\n![图206](./figures/fig_74548b0401.png)\n![图207](./figures/fig_56cc91af38.png)\n![图208](./figures/fig_1214d18719.png)\n![图209](./figures/fig_79c0a1d0d3.png)\n![图210](./figures/fig_d1ec0b7292.png)\n![图211](./figures/fig_6327813015.png)\n![图212](./figures/fig_8b73436c86.png)\n```Python\nimport pandas as pdimport numpy as np\ndf = pd.DataFrame(\n[{'c1':10, 'c2':100},\n{'c1':11,'c2':110},\n{'c1':12,'c2':120}])\nfor index, row in df.iterrows():\nprint(row['c1'], row['c2'])\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 75,
+    "category": "数据处理与统计分析",
+    "question": "10. 4 我们如何排序DataFrame?",
+    "answer": "我们可以通过以下几种有效地在DataFrame中执行排序:\n\n- 按标签按实际值\n\n(1)按标签可以使用sort_index()方法对数据dataframe进行排序。可以通过传递axis参数和排序顺序来实现。默认情况下,按升序对行标签进行排序。\n```Python\nimport numpy as npunsorted_df = pd.DataFrame(np.random.randn(10,2),index=[1,4,6,2,3,5,9,8,0,7\n```\n```\n],\n3 columns = ['col2','col1'])\n4 sorted_df=unsorted_df.sort_index()\n5 print (sorted_df)\n```\n输出:\n\n排序顺序通过将布尔值传递给升序参数,可以控制排序的顺序。\n![图213](./figures/fig_ba405b6db3.png)\n![图214](./figures/fig_3d255ab1aa.png)\n![图215](./figures/fig_95f57427f2.png)\n![图216](./figures/fig_74548b0401.png)\n![图217](./figures/fig_a7563243f2.png)\n![图218](./figures/fig_7f2dee7738.png)\n```Python\nimport pandas as pd\nimport numpy as np\nunsorted_df = pd.DataFrame(np.random.randn(10,2),\nindex=[1,4,6,2,3,5,9,8,0,7],\ncolumns = ['col2','col1'])\nsorted_df = unsorted_df.sort_index(ascending=False)\nprint(sorted_df)\n```\n输出:\n\n对列进行排序通过传递值1的axis参数,可以对列标签进行排序,让我们考虑下面的例子来理解这个问题。 \n```Python\nimport pandas as pd\nimport numpy as np\nunsorted_df = pd.DataFrame(np.random.randn(10, 2),\nindex=[1, 4, 6, 2, 3, 5, 9, 8, 0, 7],\ncolumns = ['col2', 'col1'])\nsorted_df = unsorted_df.sort_index(axis=1)\nprint(sorted_df)\n```\n输出: \n![图219](./figures/fig_e211b8d9b6.png)\n![图220](./figures/fig_f34e3efbe8.png)\n![图221](./figures/fig_7716bc94d1.png)\n![图222](./figures/fig_f707bf5d5e.png)\n![图223](./figures/fig_aec0888f18.png)\n(2)按照实际值 DataFrame.sort_values(by, axis=0, ascending=True, inplace=False) sort_values提供了一个功能,我们可以在其中指定要排序的值的DataFrame列名。它是通过传递“by”参数来完成的。参数解析: \n```Python\n●●●●12345\nimport numpy as npimport pandas as pdfrom pandas import DataFrame data=[[\"a\",2,301],[\"b\",1,201],[\"c\",2,201],[\"d\",1,301],[\"e\",2,301]] df=pd.DataFrame(data,columns=[\"A\",\"B\",\"C\"])\n```\n查看源数据: \n![图224](./figures/fig_93e5d8dd78.png)\n![图225](./figures/fig_49613c2749.png)\n![图226](./figures/fig_0b15adeb2f.png)\n![图227](./figures/fig_9ea39e307d.png)\n![图228](./figures/fig_fdbc6cfe31.png)\n![图229](./figures/fig_515a80e223.png)\n![图230](./figures/fig_1fdf8dd58a.png)\n![图231](./figures/fig_f52d469349.png)\n![图232](./figures/fig_f1026d25df.png)\n![图233](./figures/fig_1a0bb54540.png)\n![图234](./figures/fig_88fcbf9a80.png)\n![图235](./figures/fig_82f86498c5.png)\n```Python\ndf.sort_values(by=[\"C\",\"B\"],ascending=[False,True],inplace=True)\n```\n输出:\n\n\n```\n1 data_1=[[300,2,301],[2,1,201],[3,300,201],[100,1,301],[500,2,301]] 2 df_1=pd.DataFrame(data_1,columns=[\"A\",\"B\",\"C\"])\n```\n输出:\n\n\n```\n1 df_1.sort_values(by=0,axis=1,inplace=True)\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 76,
+    "category": "数据处理与统计分析",
+    "question": "10. 5 如何删除panda DataFrame中的行?",
+    "answer": "![图236](./figures/fig_b2c20d0b67.png)\n![图237](./figures/fig_f60299494c.png)\n![图238](./figures/fig_74548b0401.png)\n![图239](./figures/fig_4535661378.png)\n![图240](./figures/fig_ba7dae4835.png)\n![图241](./figures/fig_1e2b23f6de.png)\n![图242](./figures/fig_de5933e0dd.png)\n![图243](./figures/fig_a6cddf1f74.png)\n![图244](./figures/fig_6c6cdd6095.png)\n![图245](./figures/fig_18d8a9039e.png)\n![图246](./figures/fig_73bbd38b60.png)\n![图247](./figures/fig_b66118bc9f.png)\n```Python\nimport pandas as pd data = {'name': ['Jason', 'Molly', 'Tina', 'Jake', 'Amy'],  'year': [2012, 2012, 2013, 2014, 2014],  'reports': [4, 24, 31, 2, 3]}df = pd.DataFrame(data, index = ['Cochice', 'Pima', 'Santa Cruz', 'Maricop\n```\n```\na', 'Yuma'])\n6 df\n```\n输出:\n\n删除行\n```Python\ndf.drop(['Cochice', 'Pima'])\n```\n输出 :",
+    "extend": ""
+  },
+  {
+    "id": 77,
+    "category": "数据处理与统计分析",
+    "question": "10. 6 如何删除panda DataFrame中的列?",
+    "answer": "![图248](./figures/fig_554a2e2beb.png)\n![图249](./figures/fig_ab4b10c0df.png)\n![图250](./figures/fig_9c262e0757.png)\n![图251](./figures/fig_3717761e00.png)\n![图252](./figures/fig_f6d2bf8aa3.png)\n![图253](./figures/fig_97f246e06d.png)\n![图254](./figures/fig_9e93ad9d14.png)\n![图255](./figures/fig_c726f56df9.png)\n![图256](./figures/fig_9eddba27c5.png)\n![图257](./figures/fig_eadb404e9b.png)\n![图258](./figures/fig_b462c6bd0b.png)\n![图259](./figures/fig_8171bb7e58.png)\n![图260](./figures/fig_9344bfe2e4.png)\n![图261](./figures/fig_99e231da49.png)\n![图262](./figures/fig_22a1083b5c.png)\n![图263](./figures/fig_c0fb11257e.png)\n![图264](./figures/fig_085d4e8f21.png)\n![图265](./figures/fig_ca273c0077.png)\n![图266](./figures/fig_c79b3f7929.png)\n![图267](./figures/fig_c10f9d3020.png)\n```Python\n# 创建源数据test_dict = {'id':[1,2,3,4,5,6], 'name':['Alice','Bob','Cindy','Eric','Helen','Grace '], 'math':[90,89,99,78,97,93], 'english':[89,94,80,94,94,90]}# 直接写⼊参数test_dicttest_dict_df = pd.DataFrame(test_dict)# 字典型赋值test_dict_df = pd.DataFrame(data=test_dict)test_dict_df\n```\n输出:\n\n删除列删除列,我们使用drop()函数,则要增加参数axis=1 \n```Python\ntest_dict_df.drop(['id'],axis=1)\n```\n输出:",
+    "extend": ""
+  },
+  {
+    "id": 78,
+    "category": "机器学习",
+    "question": "1. 如何理解机器学习数据集的相关概念?",
+    "answer": "![图268](./figures/fig_46600c76d1.png)",
+    "extend": ""
+  },
+  {
+    "id": 79,
+    "category": "机器学习",
+    "question": "2. 机器学习中特征的理解",
+    "answer": "def:特征选择和降维特征选择:原有特征选择出子集,不改变原来的特征空间降维:将原有的特征重组成为包含信息更多的特征,改变了原有的特征空间降维的主要方法\n\n- Principal Component Analysis(主成分分析) Singular Value Decomposition(奇异值分解)\n\n特征选择的方法\n\n- Filter⽅法：卡⽅检验、信息增益、相关系数 Wrapper⽅法其主要思想是:将子集的选择看作是一个搜索寻优问题,生成不同的组合,对组合进行评价,再与其他的组合进行比较。这样就将子集的选择看作是一个是一个优化问题,这里有很多的优化算法可以解决,尤其是一些启发式的优化算法,如GA,PSO,DE,ABC等,详⻅“优化算法——人工蜂群算法(ABC)”,“优化算法——粒子群算法(PSO)”。\n\n- Embedded⽅法其主要思想是:在模型既定的情况下学习出对提高模型准确性最好的属性。这句话并不是很好理解,其实是讲在确定模型的过程中,挑选出那些对模型的训练有重要意义的属性。主要方法:正则化。岭回归就是在基本线性回归的过程中加入了正则项。",
+    "extend": ""
+  },
+  {
+    "id": 80,
+    "category": "机器学习",
+    "question": "3. 机器学习三要素如何理解?",
+    "answer": "统计学习=模型+策略+算法\n\n- 模型：规律y=ax+b 策略：什么样的模型是好的模型？损失函数算法：如何⾼效找到最优参数，模型中的参数a和b",
+    "extend": ""
+  },
+  {
+    "id": 81,
+    "category": "机器学习",
+    "question": "4. 机器学习中,有哪些特征选择的工程方法?",
+    "answer": "数据和特征决定了机器学习的上限,而模型和算法只是逼近这个上限而已\n\n1)计算每一个特征与相应变量的相关性:工程上常用的手段有计算皮尔逊系数和互信息系数,皮尔逊系数只能衡量线性相关性而互信息系数能够很好地度量各种相关性,但是计算相对复杂一些,好在很多toolkit里边都包含了这个工具(如sklearn的MINE),得到相关性之后就可以排序选择特征了;\n\n2)构建单个特征的模型,通过模型的准确性为特征排序,借此来选择特征;\n\n3)通过L1正则项来选择特征:L1正则方法具有稀疏解的特性,因此天然具备特征选择的特性,但是要注意,L1没有选到的特征不代表不重要,原因是两个具有高相关性的特征可能只保留了一个,如果要确定哪个特征重要应再通过L2正则方法交叉检验*;\n\n4)训练能够对特征打分的预选模型:RandomForest和Logistic Regression等都能对模型的特征打分,通过打分获得相关性后再训练最终模型;\n\n5)通过特征组合后再来选择特征:如对用户id和用户特征最组合来获得较大的特征集再来选择特征,这种做法在推荐系统和广告系统中比较常⻅,这也是所谓亿级甚至十亿级特征的主要来源,原因是用户数据比较稀疏,组合特征能够同时兼顾全局模型和个性化模型,这个问题有机会可以展开讲。\n\n6)通过深度学习来进行特征选择:目前这种手段正在随着深度学习的流行而成为一种手段,尤其是在计算机视觉领域,原因是深度学习具有自动学习特征的能力,这也是深度学习又叫unsupervised feature learning的原因。从深度学习模型中选择某一神经层的特征后就可以用来进行最终目标模型的训练了。",
+    "extend": ""
+  },
+  {
+    "id": 82,
+    "category": "机器学习",
+    "question": "5. 机器学习中的正负样本",
+    "answer": "在分类问题中,这个问题相对好理解一点,比如人脸识别中的例子,正样本很好理解,就是人脸的图片,负样本的选取就与问题场景相关,具体而言,如果你要进行教室中学生的人脸识别,那么负样本就是教室的窗子、墙等等,也就是说,不能是与你要研究的问题毫不相关的乱七八糟的场景图片,这样的负样本并没有意义。负样本可以根据背景生成,有时候不需要寻找额外的负样本。一般3000-10000的正样本需要5,000,000-100,000,000的负样本来学习,在互金领域一般在入模前将正负比例通过采样的方法调整到3)1-5:1。",
+    "extend": ""
+  },
+  {
+    "id": 83,
+    "category": "机器学习",
+    "question": "6. 线性分类器与非线性分类器的区别及优劣",
+    "answer": "区别:所谓线性分类器即用一个超平面将正负样本分离开,表达式为 y=wx 。这里强调的是平面。而非线性的分类界面没有这个限制,可以是曲面,多个超平面的组合等。典型的线性分类器有感知机,LDA,逻辑斯特回归,SVM(线性核);\n\n典型的非线性分类器有朴素⻉叶斯(有文章说这个本质是线性的,http://dataunion.org/12344.html),kNN,决策树,SVM(非线性核)\n\n优缺点:1.线性分类器判别简单、易实现、且需要的计算量和存储量小。为解决比较复杂的线性不可分样本分类问题,提出非线性判别函数。:超曲面,非线性判别函数计算复杂,实际应用上受到较大的限制。在线性分类器的基础上,用分段线性分类器可以实现复杂的分类面。解决问题比较简便的方法是采用多个线性分界面将它们分段连接,用分段线性判别划分去逼近分界的超曲面。如果一个问题是非线性问题并且它的类边界不能够用线性超平面估计得很好,那么非线性分类器通常会比线性分类器表现得更精准。如果一个问题是线性的,那么最好使用简单的线性分类器来处理。",
+    "extend": ""
+  },
+  {
+    "id": 84,
+    "category": "机器学习",
+    "question": "7. 如何解决过拟合问题?",
+    "answer": "解释过拟合:模型在训练集表现好,在真实数据表现不好,即模型的泛化能力不够。从另外一个方面来讲,模型在达到经验损失最小的时候,模型复杂度较高,结构⻛险没有达到最优。解决:\n\n- 学习⽅法上：限制机器的学习，使机器学习特征时学得不那么彻底，因此这样就可以降低机器学到局部特征和错误特征的⼏率，使得识别正确率得到优化. 数据上：要防⽌过拟合，做好特征的选取。训练数据的选取也是很关键的，良好的训练数据本身的局部特征应尽可能少,噪声也尽可能小.",
+    "extend": ""
+  },
+  {
+    "id": 85,
+    "category": "机器学习",
+    "question": "8. L1和L2正则的区别,如何选择L1和L2正则?",
+    "answer": "![图269](./figures/fig_294f4b7f3f.png)\n![图270](./figures/fig_306e1b1fd7.png)\n![图271](./figures/fig_02fe2e79f2.png)\nL0正则化的值是模型参数中非零参数的个数。也就是如果我们使用L0范数,即希望w的大部分元素都是0. (w是稀疏的)所以可以用于ML中做稀疏编码,特征选择。通过最小化L0范数,来寻找最少最优的稀疏特征项。但不幸的是,L0范数的最优化问题是一个NP hard问题,而且理论上有证明,L1范数是L0范数的最优凸近似,因此通常使用L1范数来代替。\n\nL1正则化表示各个参数绝对值之和。\n\nL1范数的解通常是稀疏性的,倾向于选择数目较少的一些非常大的值或者数目较多的insignificant的小值。\n\nL2正则化标识各个参数的平方的和的开方值。\n\nL2范数越小,可以使得w的每个元素都很小,接近于0,但L1范数不同的是他不会让它等于0而是接近于0.",
+    "extend": ""
+  },
+  {
+    "id": 86,
+    "category": "机器学习",
+    "question": "9. 有监督学习和无监督学习的区别",
+    "answer": "有监督学习:对具有概念标记(分类)的训练样本进行学习,以尽可能对训练样本集外的数据进行标记(分类)预测。这里,所有的标记(分类)是已知的。因此,训练样本的岐义性低。监督学习中只要输入样本集,机器就可以从中推演出制定目标变量的可能结果.如协同过滤推荐算法,通过对训练集进行监督学习,并对测试集进行预测,从而达到预测的目的.\n\n无监督学习:对没有概念标记(分类)的训练样本进行学习,以发现训练样本集中的结构性知识。这里,所有的标记(分类)是未知的。因此,训练样本的岐义性高。聚类就是典型的无监督学习监督学习的典型例子就是决策树、神经网络以及疾病监测,而无监督学习就是很早之前的⻄洋双陆棋和聚类。",
+    "extend": ""
+  },
+  {
+    "id": 87,
+    "category": "机器学习",
+    "question": "10. 有了解过哪些机器学习的算法?",
+    "answer": "问题分析:\n\n考官主要考察的是学员是否对于人工智能方面的感兴趣,是否有空闲时间了解过机器学习算法这方面的知识,有则更好。核心答案讲解:\n\n学员需要根据自己的实际情况去回答,学员也可以自己课下空余的时间去掌握一两常用的机器学习算法,以此来增加自己的筹码。决策树模型:\n\n构建决策树三要素\n\n1-特征选择信息熵---信息增益---信息增益大的 H(x)= -sum(pi*log(pi))\n\nGain(A)=Info(D)-Info_A(D)\n\nGini:Gini系数是对信息熵关于ln(x)在x=0处的一阶泰勒展开近似得到是信息GIni系数\n\n2-决策树的构成 ID3算法:\n\n算法输入:特征和样本构成的数据集算法输出:ID3的决策树算法步骤:\n\n(1)如果所有的属性都被处理完毕\n\n(2)计算各个节点的信息增益,选择最大的信息增益所代表的特征构建决策树(信息熵--sum(pi*log(pi)))\n\n(3)如果上述的属性没有处理完毕,需要从剩余的属性中继续获取其他的信息增益较大的值对应的特征。\n\n(4)递归构建决策树算法模型算法优化选择信息增益率--C4.5算法算法的停止迭代条件:\n\n(1)迭代次数\n\n(2)树的深度\n\n(3)树的叶子节点的个数\n\n(4)树的分支节点含有样本的个数\n\n(5)树的最大不纯度的下降 C4.5 Cart树---gini系数\n\n3-决策树剪枝先剪枝后剪枝问题扩展在算法的推导过程中,会大量的使用到数学的推导公式,而数学思想对于程序员来说是必不可缺的一种思想,可以在讲解的时候,概括性的给学员讲一下数学的相关知识。信息熵数学公式(sum(pi*log(pi)))+信息增益数学公式(总体的信息熵-以A节点作为划分节点的信息熵)\n\n结合项目中使用此问题在项目中是没有什么体现的,面试官就是想考察一下面试者本身具有的学习能力,以此来评估该面试者的可培养价值,以及潜力。但是机器学习算法在推荐系统项目中、以后数据挖掘工作中会起到至关重要作用。",
+    "extend": ""
+  },
+  {
+    "id": 88,
+    "category": "机器学习",
+    "question": "11. 你对LR是怎么理解的?LR的损失函数是怎样的?",
+    "answer": "答:首先,LR是逻辑斯特回归,是分类算法。\n\nLR的原理是在线性回归的基础上增加一个非线性函数,这里用的是sigmod函数,得到的结果是以概率的形式输出类别的结果。\n\nLR的损失函数是似然函数,似然函数的log对数的形式,得到是交叉熵损失,对应的是分类中最重要交叉熵损失函数。交叉熵损失和其他的损失函数区别就在于交叉熵损失是定义在概率分布基础上的,它通常是被用于基于多项式的逻辑斯特回归和神经网络中,还有用在EM算法中。对数损失是用来度量分类器的预测输出的概率分布和真是分布的差距,而不是比较离散类标签是否相等。",
+    "extend": ""
+  },
+  {
+    "id": 89,
+    "category": "机器学习",
+    "question": "12. 机器学习对于二分类问题如何做多分类?",
+    "answer": "决策树中ID3和C4.5算法都是可以解决多分类问题,而logisticModel、SVM只能解决二分类问题,如何将二分类问题拓展到多分类上,使用常用的方法有两种:\n\nOvo-One vs one:通过将任意两个分类的组合形式来进行多分类 Ovr-One vs rest:C(n,2)f分类结果 http://scikit-learn.org/stable/modules/classes.html",
+    "extend": ""
+  },
+  {
+    "id": 90,
+    "category": "机器学习",
+    "question": "13. KMeans算法和KNN算法区别?",
+    "answer": "KMeans算法是聚类的算法,KNN是一个分类算法 KNN是通过K值设定最近邻的个数,通过当前样本点到各个点之间的距离的求解,通过少数服从多数的投票原则划分当前样本点KMeans通过K值设定有几个聚类中心,通过将各个样本点到聚类中心的距离,将离中心点最小距离的样本进行组合,从而将样本点分成不同的簇,通过均值的方法迭代聚类中心,直到迭代次数或mse误差或聚类中心不在改变停止迭代。",
+    "extend": ""
+  },
+  {
+    "id": 91,
+    "category": "机器学习",
+    "question": "14. 请问GBDT和XGBoost的区别是什么?",
+    "answer": "XGBoost类似于GBDT的优化版,不论是精度还是效率上都有了提升。与GBDT相比,具体的优点有:\n\n损失函数是用泰勒展式二项逼近,而不是像GBDT里的就是一阶导数;对树的结构进行了正则化约束,防止模型过度复杂,降低了过拟合的可能性;节点分裂的方式不同,GBDT是用的基尼系数,XGBoost是经过优化推导后的。",
+    "extend": ""
+  },
+  {
+    "id": 92,
+    "category": "机器学习",
+    "question": "15. 在k-means或kNN,我们是用欧氏距离来计算最近的邻居之间的距离。为什么不用曼哈顿距离?",
+    "answer": "曼哈顿距离只计算水平或垂直距离,有维度的限制。另一方面,欧氏距离可用于任何空间的距离计算问题。因为,数据点可以存在于任何空间,欧氏距离是更可行的选择。例如:想象一下国际象棋棋盘,象或⻋所做的移动是由曼哈顿距离计算的,因为它们是在各自的水平和垂直方向做的运动。",
+    "extend": ""
+  },
+  {
+    "id": 93,
+    "category": "机器学习",
+    "question": "16. LR和SVM的联系与区别?",
+    "answer": "1)LR和SVM都可以处理分类问题,且一般都用于处理线性二分类问题(在改进的情况下可以处理多分类问题)\n\n2)两个方法都可以增加不同的正则化项,如L1、L2等等。所以在很多实验中,两种算法的结果是很接近的。区别:\n\n(1)LR是参数模型,SVM是非参数模型。 \n![图272](./figures/fig_d105b0a1bc.png)\n![图273](./figures/fig_f833ee7a49.png)\n(2)从目标函数来看,区别在于逻辑回归采用的是Logistical Loss,SVM采用的是hinge loss.这两个损失函数的目的都是增加对分类影响较大的数据点的权重,减少与分类关系较小的数据点的权重。\n\n(3)SVM的处理方法是只考虑Support Vectors,也就是和分类最相关的少数点,去学习分类器。而逻辑回归通过非线性映射,大大减小了离分类平面较远的点的权重,相对提升了与分类最相关的数据点的权重。\n\n(4)逻辑回归相对来说模型更简单,好理解,特别是大规模线性分类时比较方便。而SVM的理解和优化相对来说复杂一些,SVM转化为对偶问题后,分类只需要计算与少数几个支持向量的距离,这个在进行复杂核函数计算时优势很明显,能够大大简化模型和计算。\n\n(5)Logic 能做的 SVM能做,但可能在准确率上有问题,SVM能做的Logic有的做不了。",
+    "extend": ""
+  },
+  {
+    "id": 94,
+    "category": "机器学习",
+    "question": "17. LR与线性回归的区别与联系?",
+    "answer": "逻辑回归的模型本质上是一个线性回归模型,逻辑回归都是以线性回归为理论支持的。但线性回归模型无法做到sigmoid的非线性形式,sigmoid可以轻松处理0/1分类问题。",
+    "extend": ""
+  },
+  {
+    "id": 95,
+    "category": "机器学习",
+    "question": "18. 为什么XGBoost要用泰勒展开,优势在哪里?",
+    "answer": "XGBoost使用了一阶和二阶偏导, 二阶导数有利于梯度下降的更快更准. 使用泰勒展开取得二阶倒数形式, 可以在不选定损失函数具体形式的情况下用于算法优化分析.本质上也就把损失函数的选取和模型算法优化/参数选择分开了. 这种去耦合增加了XGBoost的适用性。写出最终的决策公式。",
+    "extend": ""
+  },
+  {
+    "id": 96,
+    "category": "机器学习",
+    "question": "20. 线性分类器与非线性分类器的区别以及优劣",
+    "answer": "![图274](./figures/fig_b46b43bd61.png)\n![图275](./figures/fig_9a8bae0ee9.png)\n如果模型是参数的线性函数,并且存在线性分类面,那么就是线性分类器,否则不是。常⻅的线性分类器有:LR,⻉叶斯分类,单层感知机、线性回归。常⻅的非线性分类器:决策树、RF、GBDT、多层感知机。\n\nSVM两种都有(看线性核还是高斯核)。线性分类器速度快、编程方便,但是可能拟合效果不会很好。非线性分类器编程复杂,但是效果拟合能力强。",
+    "extend": ""
+  },
+  {
+    "id": 97,
+    "category": "机器学习",
+    "question": "21. 简单说说⻉叶斯定理?",
+    "answer": "⻉叶斯定理的公式表达式:",
+    "extend": ""
+  },
+  {
+    "id": 98,
+    "category": "深度学习",
+    "question": "1. 谈谈深度学习中的归一化问题。",
+    "answer": "![图276](./figures/fig_a64129f141.png)",
+    "extend": ""
+  },
+  {
+    "id": 99,
+    "category": "深度学习",
+    "question": "1. 1 什么是数据归一化?",
+    "answer": "归一化(标准化)可以定义为:归一化就是要把你需要处理的数据经过处理后(通过某种算法)限制在你需要的一定范围内。首先归一化是为了后面数据处理的方便,其次是保证模型运行时收敛加快。归一化和标准化的区别:\n\n简单来说归一化的分母是大于等于标准化的分母的,且归一化的分子是小于分母,故归一化是把x限制在[0,1]之间,而标准化没有限制,且对噪点不敏感",
+    "extend": ""
+  },
+  {
+    "id": 100,
+    "category": "深度学习",
+    "question": "1. 2 为什么要进行数据归一化?",
+    "answer": "取消量纲使得剃度始终朝着最小值的方向前进少走弯路加速收敛若样本x的一个特征A是从10000-100000,另一个特征B是从0.1-1,这样训练神经网络时候会导致B的作用非常小,这是不希望看到的。同时这样会导致求偏导时A的参数变化大,B的参数变化小,这样会导致lost最小化是不停的走弯路,浪费时间",
+    "extend": ""
+  },
+  {
+    "id": 101,
+    "category": "深度学习",
+    "question": "1. 4 哪些模型不需要归一化",
+    "answer": "概率模型不需要归一化,因为它们不关心变量的值,而是关心变量的分布和变量之间的条件概率,如决策树、rf。而像adaboost、svm、lr、KNN、KMeans之类的最优化问题就需要归一化。\n\nbatch 归一化:不仅对输入x进行归一化,同时对各个隐藏层的z进行归一化为什么batch 归一化会有用?\n\n简单来说就是在mini-batch归一化时,因为只使用了部分数据,故归一化时存在噪声的,这就相当于给神经网络增加了噪声,相当于dropout,给隐藏单元增加了噪声,使后面的隐藏单元不过分依赖于任何一个隐藏单元,有轻微正则化的作用",
+    "extend": ""
+  },
+  {
+    "id": 102,
+    "category": "深度学习",
+    "question": "2. LSTM结构推导,为什么比RNN好?",
+    "answer": "解析:\n\n推导forget gate,input gate,cell state, hidden information等的变化;因为LSTM有进有出且当前的cell informaton是通过input gate控制之后叠加的,RNN是叠乘,因此LSTM可以防止梯度消失或者爆炸",
+    "extend": ""
+  },
+  {
+    "id": 103,
+    "category": "深度学习",
+    "question": "3. Sigmoid、Tanh、ReLu这三个激活函数有什么缺点或不足",
+    "answer": "解析:\n\nsigmoid、Tanh、ReLU的缺点在121问题中已有说明,为了解决ReLU的dead cell的情况,发明了Leaky Relu, 即在输入小于0时不让输出为0,而是乘以一个较小的系数,从而保证有导数存在。同样的目的,还有一个ELU,函数示意图如下。\n![图277](./figures/fig_52f00dad66.png)\n![图278](./figures/fig_cb03ea125a.png)\n![图279](./figures/fig_aef6a8d359.png)\n还有一个激活函数是Maxout,即使用两套w,b参数,输出较大值。本质上Maxout可以看做Relu的泛化版本,因为如果一套w,b全都是0的话,那么就是普通的ReLU。Maxout可以克服Relu的缺点,但是参数数目翻倍。",
+    "extend": ""
+  },
+  {
+    "id": 104,
+    "category": "深度学习",
+    "question": "4. 为什么引入非线性激励函数?",
+    "answer": "![图280](./figures/fig_f9c2aed494.png)\n![图281](./figures/fig_67a8c84421.png)\n解析:\n\n第一,对于神经网络来说,网络的每一层相当于f(wx+b)=f(w'x),对于线性函数,其实相当于f(x)=x,那么在线性激活函数下,每一层相当于用一个矩阵去乘以x,那么多层就是反复的用矩阵去乘以输入。根据矩阵的乘法法则,多个矩阵相乘得到一个大矩阵。所以线性激励函数下,多层网络与一层网络相当。比如,两层的网络f(W1*f(W2x))=W1W2x=Wx。第二,非线性变换是深度学习有效的原因之一。原因在于非线性相当于对空间进行变换,变换完成后相当于对问题空间进行简化,原来线性不可解的问题现在变得可以解了。下图可以很形象的解释这个问题,左图用一根线是无法划分的。经过一系列变换后,就变成线性可解的问题了。\n![图282](./figures/fig_1df6331832.png)\n如果不用激励函数(其实相当于激励函数是f(x) = x),在这种情况下你每一层输出都是上层输入的线性函数,很容易验证,无论你神经网络有多少层,输出都是输入的线性组合,与没有隐藏层效果相当,这种情况就是最原始的感知机\n\n(Perceptron)了。正因为上面的原因,我们决定引入非线性函数作为激励函数,这样深层神经网络就有意义了(不再是输入的线性组合, 可以逼近任意函数)。最早的想法是sigmoid函数或者tanh函数,输出有界,很容易充当下一层输入(以及一些人的生物解释)。",
+    "extend": ""
+  },
+  {
+    "id": 105,
+    "category": "深度学习",
+    "question": "5. 请问人工神经网络中为什么ReLu要好过于tanh和sigmoid ?",
+    "answer": "解析:\n\n先回忆sigmoid、tanh和RelU的函数图第一,采用sigmoid等函数,算激活函数时(指数运算),计算量大,反向传播求误差梯度时,求导涉及除法和指数运算,计算量相对大,而采用Relu激活函数,整个过程的计算量节省很多。第二,对于深层网络,sigmoid函数反向传播时,很容易就会出现梯度消失的情况(在sigmoid接近饱和区时,变换太缓慢,导数趋于0,这种情况会造成信息丢失),这种现象称为饱和,从而无法完成深层网络的训练。而ReLU就不会有饱和倾向,不会有特别小的梯度出现。第三,Relu会使一部分神经元的输出为0,这样就造成了网络的稀疏性,并且减少了参数的相互依存关系,缓解了过拟合问题的发生(以及一些人的生物解释balabala)。当然现在也有一些对relu的改进,比如prelu,random relu等,在不同的数据集上会有一些训练速度上或者准确率上的改进,具体的大家可以找相关的paper看。多加一句,现在主流的做法,会多做一步batch normalization,尽可能保证每一层网络的输入具有相同的分布。而最新的paper,他们在加入bypass connection之后,发现改变batch normalization的位置会有更好的效果。",
+    "extend": ""
+  },
+  {
+    "id": 106,
+    "category": "深度学习",
+    "question": "6. 为什么LSTM模型中既存在sigmoid又存在tanh两种激活函数,而不是选择统一一种sigmoid或",
+    "answer": "者tanh?这样做的目的是什么?\n\n解析:\n\nsigmoid 用在了各种gate上,产生0~1之间的值,这个一般只有sigmoid最直接了,相当于要么是1则记住,要么是0则忘掉。tanh 用在了状态和输出上,是对数据的处理,这个用其他激活函数或许也可以。",
+    "extend": ""
+  },
+  {
+    "id": 107,
+    "category": "深度学习",
+    "question": "7. 如何解决RNN梯度爆炸和弥散的问题?",
+    "answer": "解析:\n\n为了解决梯度爆炸问题,Thomas Mikolov首先提出了一个简单的启发性的解决方案,就是当梯度大于一定阈值的的时候,将它截断为一个较小的数。具体如算法1所述:\n\n算法:当梯度爆炸时截断梯度(伪代码)\n![图283](./figures/fig_00839239e2.png)\n![图284](./figures/fig_cf50d7ffa4.png)\n下图可视化了梯度截断的效果。它展示了一个小的rnn(其中W为权值矩阵,b为bias项)的决策面。这个模型是一个一小段时间的rnn单元组成;实心箭头表明每步梯度下降的训练过程。当梯度下降过程中,模型的目标函数取得了较高的误差时,梯度将被送到远离决策面的位置。截断模型产生了一个虚线,它将误差梯度拉回到离原始梯度接近的位置。梯度爆炸,梯度截断可视化为了解决梯度弥散的问题,我们介绍了两种方法。第一种方法是将随机初始化改为一个有关联的矩阵初始化。第二种方法是使用ReLU(Rectified Linear Units)代替sigmoid函数。ReLU的导数不是0就是1.因此,神经元的梯度将始终为1,而不会当梯度传播了一定时间之后变小。",
+    "extend": ""
+  },
+  {
+    "id": 108,
+    "category": "深度学习",
+    "question": "8. 什么样的资料集不适合用深度学习?",
+    "answer": "解析:",
+    "extend": ""
+  },
+  {
+    "id": 109,
+    "category": "深度学习",
+    "question": "1. 数据集太小,数据样本不足时,深度学习相对其它机器学习算法,没有明显优势。",
+    "answer": "2、数据集没有局部相关特性,目前深度学习表现比较好的领域主要是图像/语音/自然语言处理等领域,这些领域的一个共性是局部相关性。图像中像素组成物体,语音信号中音位组合成单词,文本数据中单词组合成句子,这些特征元素的组合一旦被打乱,表示的含义同时也被改变。对于没有这样的局部相关性的数据集,不适于使用深度学习算法进行处理。举个例子:预测一个人的健康状况,相关的参数会有年龄、职业、收入、家庭状况等各种元素,将这些元素打乱,并不会影响相关的结果。",
+    "extend": ""
+  },
+  {
+    "id": 110,
+    "category": "深度学习",
+    "question": "9. 广义线性模型是怎被应用在深度学习中?",
+    "answer": "解析:\n\nA Statistical View of Deep Learning (I): Recursive GLMs 深度学习从统计学⻆度,可以看做递归的广义线性模型。广义线性模型相对于经典的线性模型(y=wx+b),核心在于引入了连接函数g(.),形式变为:y=g−1(wx+b)。深度学习时递归的广义线性模型,神经元的激活函数,即为广义线性模型的链接函数。逻辑回归(广义线性模型的一种)的Logistic函数即为神经元激活函数中的Sigmoid函数,很多类似的方法在统计学和神经网络中的名称不一样,容易引起初学者(这里主要指我)的困惑。下图是一个对照表",
+    "extend": ""
+  },
+  {
+    "id": 111,
+    "category": "深度学习",
+    "question": "10. 如何解决梯度消失和梯度膨胀",
+    "answer": "![图285](./figures/fig_9b95a91528.png)\n![图286](./figures/fig_1526dfba92.png)\n解析:\n\n(1)梯度消失:\n\n根据链式法则,如果每一层神经元对上一层的输出的偏导乘上权重结果都小于1的话,那么即使这个结果是0.99,在经过足够多层传播之后,误差对输入层的偏导会趋于0 可以采用ReLU激活函数有效的解决梯度消失的情况,也可以用Batch Normalization解决这个问题。 \n![图287](./figures/fig_fe3ec2aab6.png)\n(2)梯度膨胀根据链式法则,如果每一层神经元对上一层的输出的偏导乘上权重结果都大于1的话,在经过足够多层传播之后,误差对输入层的偏导会趋于无穷大可以通过激活函数来解决,或用Batch Normalization解决这个问题",
+    "extend": ""
+  },
+  {
+    "id": 112,
+    "category": "深度学习",
+    "question": "11. 如何形象的理解LSTM的三个⻔?",
+    "answer": "0)从RNN说起循环神经网络(Recurrent Neural Network,RNN)是一种用于处理序列数据的神经网络。相比一般的神经网络来说,他能够处理序列变化的数据。比如某个单词的意思会因为上文提到的内容不同而有不同的含义,RNN就能够很好地解决这类问题。\n\n1)普通RNN 先简单介绍一下一般的RNN。其主要形式如下图所示(图片均来自台大李宏毅教授的PPT):\n\n这里:\n\nx 为当前状态下数据的输入, h 表示接收到的上一个节点的输入。\n\ny 为当前节点状态下的输出,而  h' 为传递到下一个节点的输出。通过上图的公式可以看到,输出 h' 与 x 和 h 的值都相关。而 y 则常常使用 h' 投入到一个线性层(主要是进行维度映射)然后使用softmax进行分类得到需要的数据。对这里的y如何通过 h' 计算得到往往看具体模型的使用方式。通过序列形式的输入,我们能够得到如下形式的RNN。 \n![图288](./figures/fig_10fb8c7c75.png)\n![图289](./figures/fig_ce3c9e553b.png)\n2)LSTM",
+    "extend": ""
+  },
+  {
+    "id": 113,
+    "category": "深度学习",
+    "question": "2. 1 什么是LSTM",
+    "answer": "⻓短期记忆(Long short-term memory, LSTM)是一种特殊的RNN,主要是为了解决⻓序列训练过程中的梯度消失和梯度爆炸问题。\n\nLSTM结构(图右)和普通RNN的主要输入输出区别如下所示。相比RNN只有一个传递状态,LSTM有两个传输状态,一个(cell state),和一个(hidden state)。其中,RNN中的对于LSTM中的。其中对于传递下去的改变得很慢,通常输出的是上一个状态传过来的加上一些数值。而则在不同节点下往往会有很大的区别。总的说来,控制 LSTM的记忆单元(memory cell)有 3 个 gate,分别是输入⻔(input gate)、输出⻔(output gate)和遗忘⻔(forget gate),所以 LSTM 这种特殊的神经元有四个输入、一个输出:\n\n输入:对应下图指向红色框框的四个箭头输出:红色框框一个对外指向的箭头\n![图290](./figures/fig_272a594d1e.png)\nLSTM内部主要有三个阶段:\n\n(1)忘记阶段。这个阶段主要是对上一个节点传进来的输入进行选择性忘记。简单来说就是会 “忘记不重要的,记住重要的”。具体来说是通过计算得到的(f表示forget)来作为忘记⻔控,来控制上一个状态的哪些需要留哪些需要忘。\n\n(2) 选择记忆阶段。这个阶段将这个阶段的输入有选择性地进行“记忆”。主要是会对输入进行选择记忆。哪些重要则着重记录下来,哪些不重要,则少记一些。当前的输入内容由前面计算得到的表示。而选择的⻔控信号则是由(i代表information)来进行控制。将上面两步得到的结果相加,即可得到传输给下一个状态的。也就是上图中的第一个公式。\n\n(3) 输出阶段。这个阶段将决定哪些将会被当成当前状态的输出。主要是通过来进行控制的。并且还对上一阶段得到的进行了放缩(通过一个tanh激活函数进行变化)。与普通RNN类似,输出往往最终也是通过变化得到。",
+    "extend": ""
+  },
+  {
+    "id": 114,
+    "category": "深度学习",
+    "question": "3. 总结",
+    "answer": "以上,就是LSTM的内部结构。通过⻔控状态来控制传输状态,记住需要⻓时间记忆的,忘记不重要的信息;而不像普通的RNN那样只能够“呆萌”地仅有一种记忆叠加方式。对很多需要“⻓期记忆”的任务来说,尤其好用。但也因为引入了很多内容,导致参数变多,也使得训练难度加大了很多。因此很多时候我们往往会使用效果和LSTM相当但参数更少的GRU来构建大训练量的模型。\n\n12 深度学习基础类问题\n\n1: hmm原理、主要问题、解决方法?\n\nHMM的原理:\n\nHMM由两个关键组成部分构成:隐藏状态(Hidden State)和观测状态(Observation State)。隐藏状态是不可⻅的,代表系统内部的状态,而观测状态是可⻅的,代表我们可以观测到的数据。HMM假设隐藏状态与观测状态之间存在⻢尔可夫性质,即当前的隐藏状态只与前一个隐藏状态相关,与其他状态无关。\n\nHMM的主要问题:\n\n评估问题(Evaluation Problem):给定一个观测序列和HMM模型,计算该观测序列出现的概率。解码问题(Decoding Problem):给定一个观测序列和HMM模型,找到最可能的隐藏状态序列。学习问题(Learning Problem):给定一组观测序列,学习HMM模型的参数,包括隐藏状态转移概率、观测状态概率以及初始隐藏状态概率。\n\nHMM的解决方法:\n\n前向-后向算法(Forward-Backward Algorithm)用于解决评估问题,通过动态规划计算观测序列的概率。\n\nViterbi算法用于解决解码问题,通过动态规划找到最可能的隐藏状态序列。\n\nBaum-Welch算法(也称为Expectation-Maximization算法)用于解决学习问题,通过迭代计算最优的模型参数。 2: 集成学习介绍下有哪些,讲讲rf的随机是什么?\n\n集成学习(Ensemble Learning)是一种机器学习方法,通过组合多个基本学习器(弱学习器)的预测结果,以达到更好的整体性能。集成学习可以通过减小泛化误差、提高模型的稳定性和鲁棒性等方面来改进机器学习模型。以下是几种常⻅的集成学习方法:\n\nBagging(自助聚合):基于自助采样(bootstrap sampling)的集成方法,通过有放回地从训练数据中随机抽样产生多个训练集,每个训练集用于训练一个基本学习器,最后通过投票或平均等方式来进行预测。\n\nBoosting(提升):基于序列化的集成方法,通过迭代地训练一系列弱学习器,每次迭代都根据前一轮的结果对训练数据进行加权,使得模型能够更关注之前预测错误的样本。最终将多个弱学习器进行加权组合得到最终的预测结果。Random Forest(随机森林):是一种基于决策树的集成学习方法。它利用了Bagging的思想,同时引入了决策树的随机性。在每个决策树的构建过程中,随机从特征集合中选取一部分特征子集,然后根据这个子集构建决策树。这种随机选择特征的过程增加了树之间的差异性,提高了集成模型的多样性。\n\n3: 深度学习有哪些熟悉的优化算法?\n\n梯度下降(Gradient Descent):梯度下降是最基础和常用的优化算法。它通过计算损失函数关于模型参数的梯度,并按照梯度的反方向更新参数,从而使损失函数逐步减小。随机梯度下降(Stochastic Gradient Descent,SGD):SGD是梯度下降的一种变体,它在每次参数更新时只使用一个样本(或一小批样本)的梯度,从而减少计算量。SGD通常具有更快的收敛速度,但可能引入更多的噪声。动量优化(Momentum Optimization):动量优化在SGD的基础上引入了动量项,用于加速参数更新。动量项考虑了之前的参数更新方向,使得在梯度方向变化较小的情况下能够继续前进,从而加快收敛速度。\n\nAdaGrad(Adaptive Gradient):AdaGrad算法对梯度进行逐元素平方累积,并将其作为学习率的分母,从而使得学习率能够自适应地进行调整。它适用于处理稀疏梯度和非平稳问题,但可能会导致学习率过早衰减。\n\nRMSProp(Root Mean Square Propagation):RMSProp算法改进了AdaGrad中学习率过早衰减的问题。它引入了一个衰减系数,使得过去梯度的贡献逐渐减小,从而平衡了历史梯度信息和当前梯度信息的重要性。\n\nAdam(Adaptive Moment Estimation):Adam算法结合了动量优化和RMSProp的思想,通过计算梯度的一阶矩估计和二阶矩估计来调整学习率。Adam通常在深度学习中表现出色,具有较快的收敛速度和良好的泛化性能。\n\n4: fasttext和word2vec差异?\n\nWord2Vec:Word2Vec模型主要有两种训练算法,分别是Skip-gram和CBOW(Continuous Bag of Words)。这些算法通过在上下文中预测目标词汇或通过目标词汇预测上下文来学习词向量。\n\nFastText:FastText是基于Word2Vec的扩展,它将单词视为字符级别的n-gram序列的集合。FastText通过学习字符级别的n-gram向量表示来捕捉词汇内部的信息,并将它们组合成单词向量。\n\n5: 介绍一下GLove?\n\nGloVe(Global Vectors for Word Representation)是一种用于生成词向量的无监督学习算法。它通过对全局词汇统计信息进行建模来学习词向量,旨在捕捉单词之间的语义关系。\n\nGloVe算法的核心思想是将词汇共现矩阵作为训练数据,并利用矩阵分解的方法学习词向量。词汇共现矩阵是一个记录单词在上下文中共同出现的频率的矩阵。GloVe认为,共同出现的频率可以提供有关词汇之间关系的有用信息。\n\nGloVe算法的训练过程可以简要概括如下:",
+    "extend": ""
+  },
+  {
+    "id": 115,
+    "category": "深度学习",
+    "question": "3. 学习词向量:通过最小化损失函数,使用梯度下降等优化算法来更新词汇的词向量表示。",
+    "answer": "GloVe的优势在于能够同时捕捉全局共现信息和局部语义信息。\n\n6: attention为什么使用多头?",
+    "extend": ""
+  },
+  {
+    "id": 116,
+    "category": "深度学习",
+    "question": "4. 并行计算加速:注意力机制的计算通常是高度并行的,而多头注意力进一步增加了并行计算的程度。多个注意力头可以同时计算,加快了模型的训练和推理速度。",
+    "answer": "7: 交叉熵和对数似然损失的区别和联系?\n\n交叉熵损失:交叉熵损失是用于衡量两个概率分布之间的差异的度量。在分类任务中,它衡量了模型的预测概率分布与实际标签的概率分布之间的差异。对数似然损失:对数似然损失是用于估计参数的最大似然估计的一个重要组成部分。它衡量了模型生成观测数据的概率与实际观测数据的概率之间的差异。\n\n8: 交叉熵和KL散度的区别和联系?\n\n交叉熵:交叉熵是一种度量两个概率分布之间的差异的度量方法。对于两个概率分布P和Q,交叉熵可以通过以下公式表示:H(P, Q) = -ΣP(x)log(Q(x))。交叉熵是基于信息论的概念,用于衡量在使用概率分布Q来编码从真实分布P中得到的信息的平均信息量。\n\nKL散度:KL散度也是一种度量两个概率分布之间的差异的度量方法。对于两个概率分布P和Q,KL散度可以通过以下公式表示:D(P||Q) = ΣP(x)log(P(x)/Q(x))。KL散度衡量了在使用概率分布Q来表示真实分布P时产生的额外信息量。\n\n9: rnn怎么产生梯度爆炸的,lstm怎么解决梯度消失的梯度爆炸:\n\n梯度爆炸指的是在反向传播过程中,梯度值变得非常大,导致权重更新过大,模型难以收敛。在RNN中,梯度爆炸通常是由于反向传播过程中梯度值的指数级增⻓。当时间步数较大或激活函数的导数较大时,梯度爆炸问题尤为突出。梯度消失:\n\n梯度消失指的是在反向传播过程中,梯度值变得非常小,导致权重更新过小,模型难以学习⻓期依赖关系。在传统的RNN中,梯度消失问题常常是由于反向传播过程中梯度值的指数级衰减。当时间步数较大或激活函数的导数较小时,梯度消失问题尤为突出。\n\nLSTM解决梯度消失:\n\nLSTM是一种特殊的RNN变体,通过引入⻔控机制来解决梯度消失问题。\n\nLSTM中的⻔控单元(Gate Units)可以控制信息的流动,允许模型选择性地保留和更新信息。\n\nLSTM中的遗忘⻔(Forget Gate)可以决定前一时刻的记忆是否被遗忘,输入⻔(Input Gate)可以决定当前输入的哪部分信息被添加到记忆中,输出⻔(Output Gate)可以决定输出的哪部分记忆被传递到下一层或输出层。通过⻔控机制,LSTM可以有效地捕捉和传递⻓期依赖关系,从而解决了传统RNN中的梯度消失问题。总结而言,RNN中的梯度爆炸和梯度消失问题会影响模型的训练和学习能力。LSTM通过引入⻔控机制,特别是遗忘⻔、输入⻔和输出⻔,解决了梯度消失的问题,使得模型能够更好地处理⻓期依赖关系。\n\n10: 过拟合的解决方法?\n\n数据集扩充(Data Augmentation)\n\n正则化(Regularization):常⻅的正则化方法包括L1正则化和L2正则化。提前停止(Early Stopping)\n\nDropout 模型复杂度控制可以尝试减少模型的层数、减少神经元的数量、减少参数的数量等来降低模型的复杂度。\n\n11: Adam怎么更新的? (Adam怎么优化?)\n\nAdam(Adaptive Moment Estimation)是一种常用的优化算法,结合了自适应学习率和动量的特性,用于训练深度学习模型下面是Adam算法的更新规则:",
+    "extend": ""
+  },
+  {
+    "id": 117,
+    "category": "深度学习",
+    "question": "6. 参数更新:根据修正后的动量和动量方差,更新参数的值。",
+    "answer": "12: 讲讲学习率衰减?\n\n学习率衰减(Learning Rate Decay)是指在训练过程中逐渐降低学习率的策略。通过衰减学习率,可以在训练的早期阶段使用较大的学习率以快速收敛,然后逐渐降低学习率以细化参数更新并提高模型的泛化能力。常⻅的学习率衰减方法:固定衰减(Fixed Decay)、指数衰减(Exponential Decay) 13: 讲讲评估方式都有什么?\n\n准确率(Accuracy)\n\n精确率(Precision)和召回率(Recall)\n\nF1值(F1 Score)\n\n14: F1公式讲一讲?\n\nF1值是精确率(Precision)和召回率(Recall)的调和均值,用于综合评估分类模型的性能。F1值的计算公式如下:\n\nF1 = 2 * (精确率 * 召回率) / (精确率 + 召回率)\n\n15: pytorch里怎么从CPU迁移到GPU?\n\n检查是否有可用的GPU设备:\n\n使用torch.cuda.is_available()函数检查系统是否具有可用的GPU设备。如果返回True,表示有可用的GPU。将模型参数迁移到GPU:model.to(device)\n\n将输入数据迁移到GPU:\n\n将输入数据从CPU迁移到GPU需要使用.to(device)方法\n\n16: Bert为啥能解一词多意?\n\nBERT能够解决一词多义的问题,主要是因为其预训练阶段采用了无监督的自编码器任务。\n\nBERT模型的预训练过程包括两个任务:Masked Language Model(MLM)和Next Sentence Prediction(NSP)。在MLM任务中,BERT会随机遮盖输入文本的一些单词,并要求模型预测这些被遮盖的单词是什么。这个任务促使BERT学习到单词在上下文中的语义和语法信息,从而能够理解和预测句子中未知的单词。\n\n17: Textcnn会不会? 详细介绍一下细节?\n\nTextCNN(Text Convolutional Neural Network)是一种用于文本分类的卷积神经网络模型。它通过卷积操作在文本输入上提取局部特征,并通过池化操作将这些特征进行压缩和提取,最后使用全连接层进行分类。下面是TextCNN的详细介绍及其关键细节:",
+    "extend": ""
+  },
+  {
+    "id": 118,
+    "category": "深度学习",
+    "question": "7. 损失函数和训练:",
+    "answer": "18: 标签平滑是怎么做的,有什么作用?\n\n标签平滑(Label Smoothing)是一种在训练分类模型时用于减少过拟合和提高模型泛化能力的技术。它通过在真实标签和其他类别标签之间引入一些平滑的噪声,来调整训练数据的标签分布。标签平滑的具体做法是将真实标签(通常为one-hot向量)中的某个固定的位置的值从1减少到一个较小的正数(如0.9),同时将其他位置的值增加到一个较小的正数(如0.1)。这样可以使得真实标签不再是严格的离散概率分布,而是一个更平滑的分布。标签平滑的作用有以下几个方面:\n\n减少过拟合、提高泛化能力、降低模型对错误标签的敏感性、提升模型的不确定性估计\n\n19: NER中加入CRF的原因是什么?\n\n在命名实体识别(Named Entity Recognition,NER)任务中,加入条件随机场(Conditional Random Field,CRF)的目的是为了提高序列标注模型的性能和准确度。以下是加入CRF的原因:\n\n建模上下文依赖。解决标签偏置问题。全局推断。标签转换特征。\n\n20: transformer为什么用layer norm不用batch norm,解释下,什么情况可以用batch norm?\n\n序列⻓度变化:在Transformer中,输入序列的⻓度通常是可变的,因为它们可能具有不同数量的词语或位置编码。Batch Normalization依赖于在每个批次中计算样本的均值和方差,而样本数目在不同的批次中是不同的。这导致在每个批次上计算的均值和方差存在差异,这可能会影响模型的稳定性。相比之下,Layer Normalization是对每个样本的特征维度进行归一化,不依赖于批次,因此对序列⻓度的变化更加鲁棒。训练和推断的一致性:在训练和推断过程中,Batch Normalization的行为是不同的。在训练时,Batch Normalization使用每个批次的均值和方差进行归一化,但在推断时,需要使用累计的整体均值和方差。这意味着在推断过程中,需要记录每个批次的均值和方差,增加了推断的复杂性。相比之下,Layer Normalization的计算过程在训练和推断中是一致的,更加简单和可靠。并行计算:Batch Normalization的计算涉及对每个特征维度的均值和方差进行计算,因此在处理序列时无法进行有效的并行计算。而Layer Normalization的计算是在特征维度上进行的,可以更好地支持并行计算,因此在处理⻓序列时更加高效。\n\n21: 激活函数sigmoid的梯度最大点在哪儿,等于多少?\n\nSigmoid函数的梯度最大点发生在其输入为零的位置。在数学上,Sigmoid函数定义如下:\n\nsigmoid(x) = 1 / (1 + exp(-x))\n\n梯度是函数关于输入变量的导数。对于Sigmoid函数,它的导数可以通过对Sigmoid函数进行求导得到:\n\nsigmoid'(x) = sigmoid(x) * (1 - sigmoid(x))\n\n要找到梯度最大点,我们需要求解 sigmoid'(x) = 0 的方程\n\n22: fasttext结构是怎么样的?怎么迁移学习的,具体过程?fasttext对比lstm优点?为什么有这些优点?具体讲下层次softmax和ngram(lstm都有哪些结构)?\n\nFastText的结构如下:\n\n输入层:将文本表示为词袋模型,将文本中的词语转换为固定⻓度的向量表示。隐含层:包含一个或多个线性映射层,将输入的词向量映射到低维表示。输出层:使用softmax函数进行多类别分类。对于文本分类任务,输出层的每个节点对应一个类别。迁移学习是将已经在一个任务上训练好的模型应用于另一个相关任务上的技术。在FastText中,迁移学习可以通过两种方式进行:\n\n特征提取:将预训练的FastText模型用作特征提取器,提取文本的低维向量表示作为输入,然后使用这些向量表示来训练新的分类器。在这种情况下,只需冻结预训练模型的参数,只更新新的分类器的参数。\n\nFine-tuning:在迁移学习中,除了使用预训练的FastText模型提取特征外,还可以继续对整个模型进行训练,以更好地适应新的任务。在这种情况下,可以通过微调预训练模型的参数,使其更好地适应新任务的特征。\n\nFastText相对于LSTM(⻓短期记忆网络)具有以下优点:\n\n训练速度快:FastText采用了层次Softmax和N-gram的技术,这些技术使得它在处理大规模数据时非常高效。相比之下,LSTM模型通常需要更多的计算资源和时间来训练。文本表示的简单性:FastText将文本表示为词袋模型,将每个词语的向量平均作为整个文本的向量表示。这种简化的表示方法对于短文本和少量标记数据的任务效果较好,并且可以在低维空间中对文本进行分类。层次Softmax是FastText中使用的一种技术,用于加速多类别分类的训练过程。它通过将类别的分布改变为树形结构,将原本计算复杂度较高的Softmax函数转化为一系列较小规模的二分类问题,从而提高了训练速度。 23: batch_size对训练的影响过拟合, 怎么处理?\n\n过小的批量大小可能导致以下问题:\n\n不稳定的梯度估计:小批量中的样本数量较少,梯度的估计可能不准确,导致训练过程中的参数更新不稳定。较⻓的训练时间:由于需要处理更多的批次,训练时间可能会增加。过大的批量大小可能导致以下问题:\n\n内存消耗:较大的批量大小需要更多的内存来存储计算图和中间结果,当内存不足时,无法训练较大批量大小的模型。梯度下降步⻓较大:较大的批量大小会导致梯度下降的步⻓增大,可能导致优化过程无法收敛或收敛到次优解。要处理批量大小对过拟合的影响,可以尝试以下方法:\n\n调整批量大小:可以通过尝试不同的批量大小来寻找一个合适的取值。较小的批量大小可以增加噪声,有助于正则化,但可能导致训练过程不稳定。较大的批量大小可以减少噪声,但可能导致模型过拟合。通过尝试不同的批量大小,找到一个平衡点来控制过拟合。使用正则化技术:除了调整批量大小外,可以采用正则化技术来控制过拟合。例如,L1正则化、L2正则化、Dropout等技术可以帮助减少模型的过拟合现象。增加数据量:过拟合通常是由于训练数据较少导致的,增加训练数据量可以有效减轻过拟合。通过数据增强技术、收集更多的标记数据或使用迁移学习等方法来增加数据量。使用早停策略:早停是一种常用的防止过拟合的方法。在训练过程中,监控模型在验证集上的性能,当性能不再提升时停止训练,避免过度拟合训练数据。\n\n24: 层次softmax为什么用霍夫曼树,其他树行不行?\n\n层次Softmax(Hierarchical Softmax)是一种用于加速多类别分类任务的方法,通过使用树形结构来替代传统的Softmax函数,从而减少计算复杂度。层次Softmax中使用霍夫曼树的主要原因是它具有一些优势,使得它在构建和训练过程中更加高效。以下是层次Softmax使用霍夫曼树的主要原因:\n\n压缩类别表示:霍夫曼树通过将高频词语放置在树的较浅层,而低频词语放置在树的较深层,从而将较大的类别空间压缩为较小的码空间。这样可以减少类别之间的距离,提高模型训练的效率。减少计算复杂度:霍夫曼树的结构使得计算每个类别的概率只需要遍历树的路径,而不需要计算所有类别的概率。相比传统的Softmax函数,层次Softmax使用霍夫曼树可以显著降低计算复杂度,特别是在处理大规模多类别分类任务时。子类别的共享参数:在霍夫曼树中,具有相同父节点的子类别共享参数,这样可以减少模型中需要训练的参数数量。共享参数可以提高模型的泛化能力,并且在训练数据稀缺的情况下,可以更好地处理未⻅过的类别。\n\n25: 维特比算法时间复杂度, 维特比算法原理?\n\n维特比算法(Viterbi algorithm)是一种用于解码隐⻢尔可夫模型(Hidden Markov Model,HMM)的动态规划算法。它可以在给定观测序列的情况下,寻找最有可能的隐藏状态序列。维特比算法的时间复杂度取决于隐⻢尔可夫模型的状态数量和观测序列的⻓度。假设状态数量为N,观测序列的⻓度为T,则维特比算法的时间复杂度为O(N^2 * T)。维特比算法的原理如下:\n\n初始化:对于初始时刻t=1,计算每个隐藏状态i的初始概率,即在t=1时刻状态为i的概率乘以从初始状态到状态i的转移概率。递推:对于每个时刻t=2到T,计算每个隐藏状态i的最大概率和对应的路径。对于每个状态i,在t-1时刻的每个状态j,计算从状态j转移到状态i的概率乘以状态j的最大概率。选择最大概率作为状态i的最大概率,并记录该路径。终止:在最后时刻T,选择具有最大概率的隐藏状态作为最终的状态,并记录路径。回溯:从终止时刻开始,根据记录的路径逆向回溯,得到最有可能的隐藏状态序列。\n\n26: CRF和HMM的优缺点,模型的结构上有什么不同吗,模型的输入输出是什么样子呢?\n\nCRF(条件随机场)和HMM(隐⻢尔可夫模型)是常用于序列标注任务的统计模型,虽然它们都处理序列数据,但在模型结构、优缺点以及输入输出方面存在一些区别。\n\nCRF的优点:\n\n与HMM相比,CRF能够建模更复杂的特征关系。CRF的特征函数可以考虑更大范围的上下文信息,从而捕捉更丰富的特征相关性,提升模型性能。\n\nCRF直接对标签序列进行建模,因此可以进行端到端的训练和预测,无需生成观测序列。\n\nCRF能够有效地处理标签间的依赖关系,对标签之间的约束进行建模,从而提高标注的准确性。\n\nCRF可以灵活地利用各种特征,包括基于词、基于字符的特征等,适用于多种序列标注任务。\n\nCRF的缺点:\n\nCRF在建模时需要考虑的特征较多,容易出现维度灾难问题,导致计算复杂度较高。\n\nCRF对于⻓距离依赖关系的建模能力相对有限,特别是当标签序列的⻓度较⻓时。\n\nHMM的优点:\n\nHMM具有简单的模型结构和较低的计算复杂度,适合处理较短的序列和简单的序列标注任务。\n\nHMM具有较好的可解释性,可以通过转移概率和发射概率来解释模型的行为。\n\nHMM的缺点:\n\nHMM假设观测状态只依赖于隐藏状态,忽略了观测状态之间的关系,限制了模型的表达能力。\n\nHMM对于标签之间的依赖关系建模能力较弱,很难处理复杂的标签约束。\n\n27: 说一下层次softmax和负采样?\n\n层次 softmax(Hierarchical Softmax)和负采样(Negative Sampling)都是用于解决大规模分类任务的方法,特别在自然语言处理(NLP)中广泛应用于词向量模型,如 Word2Vec。层次 softmax 是一种基于二叉树的分类方法。在传统的 softmax 中,需要计算所有类别的概率分布,计算复杂度为 O(V),其中 V 是类别(词汇)的数量。而层次 softmax 使用了一个二叉树结构,将类别组织成一个层次化的结构。在预测时,通过沿着二叉树的路径移动来计算目标类别的概率分布,从而减少了计算复杂度。层次 softmax 的优点是可以加速模型的训练和推断过程,特别适用于大规模分类任务。负采样是另一种解决大规模分类任务的方法,其思想是通过训练一个二分类模型,将目标类别与一组随机采样的负类别进行区分。具体过程如下:对于每个训练样本,随机选择一些负类别(通常是根据词频进行采样),将目标类别标记为正例,负类别标记为负例,然后使用二分类模型(如 logistic 回归)进行训练。负采样的优点是大大降低了计算复杂度,因为只需要计算少量的正负例对的概率,而不需要计算所有类别的概率分布。\n\n28: add norm层的作用?\n\n归一化:通过对输入进行归一化操作,使得输入的均值和方差保持稳定,有助于加速模型的收敛和提高训练效果。归一化可以缓解梯度消失和梯度爆炸等问题,提高模型的数值稳定性。残差连接:Add Norm层通常与残差连接一起使用,用于将前一层的输出与当前层的输出相加。残差连接允许信息在网络中直接传递,有助于缓解梯度消失、加速训练过程和提高模型的表达能力。\n\n29: gelu函数和relu函数的区别?\n\nReLU函数是一种分段线性函数,在输入为正时输出与输入相等,而在输入为负时输出为零。ReLU函数的定义为:\n\nReLU(x) = max(0, x)\n\nReLU函数简单且计算高效,容易实现,并且在一定程度上可以缓解梯度消失问题。然而,ReLU函数在输入为负时输出为零,导致一部分神经元变得不活跃,称为“神经元死亡”问题。这可能导致网络的表示能力受限,特别是在深层网络中。\n\nGELU函数是一种连续、平滑的非线性激活函数,它在近似ReLU的同时具有更平滑的曲线。GELU函数的定义为:\n\nGELU函数通过引入高斯误差函数(Gaussian Error Function)的近似来实现平滑性。相比于ReLU函数,GELU函数在输入为负时不会完全抑制激活,而是通过一个平滑的曲线逐渐减小输出值。这种平滑性可以提供更好的梯度传播和表示能力,使得神经网络更容易学习复杂的函数关系\n\n30: 介绍梯度优化的各种算法,详细的发展历史,优化原因?\n\n梯度下降法(Gradient Descent):梯度下降法是最早也是最基础的梯度优化算法之一,起源于数值分析领域。它通过迭代更新参数,沿着梯度的反方向移动,逐渐接近目标函数的最优解。随着机器学习和深度学习的发展,梯度下降法得到广泛应用。随机梯度下降法(Stochastic Gradient Descent,SGD):随机梯度下降法是对梯度下降法的改进,引入了随机采样的思想。它通过每次只使用一个样本的梯度来更新参数,减少了计算开销,加快了训练速度。SGD广泛应用于深度学习中,尤其在大规模数据集上的训练中效果显著。动量法(Momentum):动量法是一种在梯度下降法基础上添加动量项的优化算法。它引入了一个动量参数,用于累积之前梯度的信息,并加速参数更新的方向。动量法在训练过程中具有惯性,有助于跳出局部最优解,加快收敛速度。AdaGrad:AdaGrad是一种自适应学习率的优化算法,根据参数的历史梯度信息来自动调整学习率。它通过对梯度进行累积,将较大梯度的参数学习率适当减小,较小梯度的参数学习率适当增大。AdaGrad对于稀疏数据集和非平稳目标函数具有一定的优势。\n\nRMSProp:RMSProp是对AdaGrad算法的改进,用于解决AdaGrad学习率过于降低的问题。它引入了一个衰减因子,对历史梯度进行指数加权平均。\n\n31: rouge指标是怎么计算的?\n\nROUGE是一组用于自动评估文本摘要生成质量的指标。ROUGE指标包括ROUGE-N和ROUGE-L。\n\nROUGE-N衡量生成摘要中的N-gram重叠程度。具体计算步骤如下:\n\n预处理:对参考摘要和生成摘要进行预处理,包括分词和去除标点符号等。计算N-gram:将参考摘要和生成摘要分别转换为N-gram序列。N-gram是由连续的N个单词组成的序列。计算重叠:统计生成摘要中与参考摘要重叠的N-gram数量。这包括计算匹配的N-gram数和参考摘要中的总N-gram数。计算精确率、召回率和F1值:使用计算得到的匹配的N-gram数、参考摘要中的N-gram数和生成摘要中的N-gram数,计算精确率(Precision)、召回率(Recall)和F1值。\n\nROUGE-L衡量生成摘要与参考摘要的最⻓公共子序列。具体计算步骤如下:\n\n预处理:对参考摘要和生成摘要进行预处理,包括分词和去除标点符号等。计算最⻓公共子序列:通过动态规划算法计算生成摘要和参考摘要之间的最⻓公共子序列。计算精确率、召回率和F1值:使用计算得到的最⻓公共子序列⻓度、参考摘要的⻓度和生成摘要的⻓度,计算精确率、召回率和F1值。\n\n32: 用过xgboost吗,原理你了解吗?他是怎么做并行的?\n\nXGBoost是一种基于梯度提升树的集成学习算法,用于解决分类和回归问题。它通过构建多个弱学习器(决策树)的集合来提高预测性能。\n\nXGBoost的原理如下:\n\n初始化:将初始预测值设置为训练数据样本的平均值。迭代训练:通过迭代训练来逐步改善预测结果。\n\na. 计算残差:计算当前预测值与实际标签之间的残差。\n\nb. 构建决策树:使用残差作为目标,构建一颗决策树来拟合残差。\n\nc. 更新预测值:将新构建的决策树与之前的决策树进行加权相加,更新预测值。\n\nd. 迭代训练:重复执行步骤a-c,直到达到指定的迭代次数或满足停止条件。得到最终预测结果:将所有决策树的预测结果相加得到最终的预测结果。\n\nXGBoost的并行化方法主要有两个方面:\n\n列并行化:在构建决策树时,XGBoost可以并行计算特征列上的直方图,以加快特征的分割和选择过程。这样可以将数据集按列划分,分配给多个线程并行处理。行并行化:在计算目标函数的梯度和构建决策树时,XGBoost可以并行计算不同样本的梯度和叶子节点的更新。这样可以将数据集按行划分,分配给多个线程并行处理。",
+    "extend": ""
+  },
+  {
+    "id": 119,
+    "category": "NLP基础",
+    "question": "1. 语言模型类问题",
+    "answer": "1)介绍一下BERT?BERT和BiLSTM 有什么区别?BERT 和 Attention是什么关系?解释Q,K,V分别的作用?",
+    "extend": ""
+  },
+  {
+    "id": 120,
+    "category": "NLP基础",
+    "question": "1. 4: Q即Query, 代表查询张量, K即Key, 代表关键信息张量. Q和K的交互计算可以通过注意力机制进行信息流的匹配; 将匹配后的结果和V=Value进行取值, 得到最终我们想要的结果.",
+    "answer": "2)介绍一下GLove?\n\n自从2013年Google提出Word2Vec词向量后, 斯坦福大学NLP研究小组于2014年提出来Glove词向量.\n\n在 Glove模型被提出之前, 学习词向量的模型主要有两大类:  \n| ●● | 全局矩阵分解⽅法, 例如潜在语义分析(Latent semantic analysis, LSA) |  |\n| --- | --- | --- |\n|  | ○ | 虽然LSA 这样的⽅法有效地利⽤了统计信息, 但在单词类⽐任务上表现相对较差, 这表明不是最优的向量空间结构 |\n|  | 局部上下⽂窗⼝⽅法, 例如skip-gram模式的Word2Vec模型 |  |\n|  | ○ | 像 skip-gram 这样的⽅法可能在类⽐任务上做得更好, 但是他们很少利⽤语料库的统计数据, 因为它们在单独的局部上下⽂窗⼝上训练, ⽽不是在全局共现计数上训练 |\nGloVe 的全称叫 Global Vectors for Word Representation, 它是一个基于全局词频统计的模型, 实现分三个步骤:\n\n- 构建共现矩阵词向量和共现矩阵的近似关系构造损失函数 GloVe 是一个新的全局对数双线性回归模型, 用于词向量的无监督学习. 它结合了全局矩阵分解和局部上下文窗口方法两者的优点. GloVe 模型通过只训练词-词共现矩阵中的非零元素, 而不是整个稀疏矩阵或大型语料库中的单个上下文窗口, 有效地利用了统计信息. GloVe 模型生成了一个具有有意义子结构的向量空间。\n\n3)词向量是什么,有哪些方式生成词向量,句子的词向量是什么词向量是自然语言的数字化表示, 以方便计算机进行处理。词向量主要有3种模式:\n\n- one-hot Word2Vec (Glove) Word Embedding (BERT系列)\n\n句子的词向量: \n![图291](./figures/fig_1a0a2a01d1.png)\n![图292](./figures/fig_96be147643.png)\n- 可以通过分词后, 每个单词词向量的加权平均. 也可以直接采⽤BERT输出层的语义向量, 作为整个句⼦的词向量(本质上就是句向量).\n\n4)说一下前缀树?\n\n前缀树, 又称单词查找树, Trie树, 是一种树形结构, 是一种哈希树的变种.\n\n典型应用是用于统计, 排序和保存大量的字符串, 所以经常被搜索引擎系统用于文本词频统计. 它的优点是利用字符串的公共前缀来减少查询时间, 最大限度地减少无谓的字符串比较, 查询效率比哈希树高.\n\nTrie的核心思想是空间换时间, 利用字符串的公共前缀来降低查询时间的开销以达到提高效率的目的.\n\n前缀树(Trie树)有3个基本特性:\n\n- 根节点不包含字符, 除根节点外每⼀个节点都只包含⼀个字符. 从根节点到某⼀节点, 路径上经过的字符连接起来, 为该节点对应的字符串. 每个节点的所有⼦节点包含的字符都不相同.\n\n搜索前缀树的方法:\n\n从根结点开始一次搜索. \n```Python\n●\n●\n●\n●\n1\n2\n3\n4\n5\n```\n```\n6\n7 # 添加单词\n8 def add(self, word):\n9 node = self.root\n10 for char in word:\n11 node = node.setdefault(char, {})\n12 node[self.end] = None\n13\n14 # 搜索单词是否存在\n15 def search(self, word):\n16 node = self.root\n17 for char in word:\n18 if char not in node:\n19 return False\n20 node = node[char]\n21 return self.end in nod\n```\n5)讲讲迁移学习,特征迁移和微调迁移?\n\n迁移学习主要用于AI构建新模型时, 将已有的预训练模型作为起点, 直接继承过来的方法. 可以达到站在巨人肩膀上的功效.\n\nFeature-representation-transfer(特征迁移): 指找到一些好的有代表性的特征, 通过特征变换把source domain和target domain的特征变换到同样的空间, 使得这个空间中source domain和target domain的数据具有相同的分布.\n\n所谓的微调迁移即Fine tuning, 指将预训练模型集成为自己的训练起点, 在特定的数据集上进行二次微调训练. 6)bert和transformer的区别?\n\nBERT是基于Transformer架构的模型, 采用了Transformer Encoder的部分, 舍弃了Decoder的部分.\n\nBERT的编码器包含12层Encoder Block, 而2017版本的Transformer包含6层Encoder Block.\n\nBERT中的位置编码是可训练的, 而Transformer中是写死不变的.\n\nTransformer中的激活函数采用Relu, BERT中的激活函数采用Gelu.\n\n7)bert怎么解决超级⻓的文本如果不截断呢?了解XLnet么?\n\nBERT限制文本序列⻓度不超过512(本质不超过510), 在面对更⻓的文本时可以有以下几种方案:\n\n- 截断只取前⾯510个字符截断只取后⾯510个字符不截断的方法:\n\n- 将超⻓⽂本进⾏切分, 每段510个字符, 分别处理. 然后平均值输出.\n\nXLNet是经典的排列语言模型, 采用特殊的mask机制将token前面, 后面的信息都展示给token, 相当于可以同时\"看⻅\"前面的信息和后面的信息. XLNet也可以应对更⻓的序列⻓度.\n\n8)Word2vec是怎么计算的, 点乘还是加权求和?\n\n隐藏层张量是通过加权平均得到的.\n\n9)霍夫曼树如何训练Word2vec的,介绍一下?\n\n首先对全体语料进行词频统计.\n\n根据单词的词频, 构建霍夫曼树. 每个单词都是哈夫曼树的叶子节点, 词频对应相应节点的权值.\n\n真实的训练中, 采用层次softmax, 负采样两种优化方法.\n\n在霍夫曼树中, 隐藏层到输出层的softmax映射不是一下子完成的, 而是沿着霍夫曼树一步步完成的, 因此这种softmax取名为\"Hierarchical Softmax\"\n\n- 根节点对应词向量w. 所有中间节点对应于⼀个逻辑回归的判断, 将路径标记为0或1. 所有的叶⼦节点对应最终的单词x. 从叶⼦节点x到根节点root的路径上的概率累乘, 就是单词出现的概率.\n\n利用哈夫曼树的两大优点:\n\n- 计算量从N, 降低到logN 哈夫曼树越靠近根节点, 路径越短, 参数更新越快, 达到加速训练和收敛的⽬的.\n\n10)有论文说bert不加crf效果和加了crf效果差不多,有没有看相关论文? 你自己预想只用bert和bert+crf来做ner会有什么样的差别\n\n- 有看论⽂, 在特定数据集上的结果不能推⼴到⽣产实际中. BERT + CRF会让模型更快的收敛, 可以⽤更⼩的数据集来得到最优结果.",
+    "extend": ""
+  },
+  {
+    "id": 121,
+    "category": "NLP基础",
+    "question": "2. 1 AI医生",
+    "answer": "1)为什么不用MySQL用neo4j?\n\n在AI领域neo4j更适配, 而且选型的时候考虑到后期的多级查询, 多跳推理, 都是neo4j更合适.\n\n对于图结构的数据, mysql中的多表匹配查询速度跟不上, 相比较neo4j就更匹配当前的应用场景. 2) crf太大了, 为什么不用规则?\n\n医疗数据纷繁复杂, 我们用了一部分规则, 但是规则表扩展的太大太快, 无法覆盖足够多的case, 所以用CRF更优, 更满足应用场景的泛化性.\n\n3) 图谱样式,内容,怎么用的,为什么要提取这个内容?\n\n多种类型的节点, 疾病, 症状, 药品, 饮⻝, 康复等. 提取的内容都是为了后续的查询与问答做准备. 4)项目有几个人,之间是如何进行合作的,做了多久?\n\n仅供参考1: 项目组3个人, 一个爬虫 + 数据, 一个模型训练 + 调优, 一个后端部署和联调测试.\n\n仅供参考2: 项目组6个人, 数据1个人, 模型+后端3个人, 产品1个人, 前端1个人\n\n5)为什么用shufful构建负样例?有领域之外的新词怎么办?\n\nshuffle只是构建负例的一种方法, 还可以删除, 插入等.\n\n加入白名单词表 + 领域外新词作为负例重新训练模型.\n\n6)你的NER任务为啥不单独训练一个医疗领域的字向量呢?\n\n这个有做, 并且工业界的实践一定要做垂直领域词向量的训练!!!\n\n7)ner任务中准确率、召回率、F1score怎么计算的?\n\n- 准确率(Accuracy): 正确分类的实体数量 / 所有实体的总数量精确率(Precision): 预测正确的正例实体数量 / 预测为正例的实体数量, 定义为P 召回率(Recall): 预测正确的正例实体数量 / 实际为正例的实体数量, 定义为R F1 = 2 * P * R / (P + R)\n\n8)要求从头到尾讲一遍项目流程,从项目背景开始讲起?\n\n所有同学按照自己的学习理解, 改造成独特的背景 + 项目流程, 形成项目文档, 代课老师检查 + 复盘!!!\n\n9)问的特别细,每个项目内部是怎么实现的,损失函数怎么计算的,维度大小,训练时间,模型大小,gpu型号,涉及到代码层面,BERT+BILSTM+CRF就这三个模型说了接近一个小时?\n\n- 深⼊理解项⽬的细节, 形成⾃⼰的项⽬⽂档技术细节⽂档. 模型⼤⼩: 410MB左右 GPU型号: T4, V100, 3090都可以",
+    "extend": ""
+  },
+  {
+    "id": 122,
+    "category": "NLP基础",
+    "question": "2. 2 文本摘要",
+    "answer": "1)讲讲数据增强有哪些,原理是什么?\n\n- 单词替换回译数据法半监督学习法\n\n- 对⽐学习\n\n2)fasttext这个项目embedding_dim是多少,为何如此设置?\n\nembedding_dim = 300, 200都可以, 按照经验值给定.\n\n3)图谱有什么作用,为什么不用mysql?\n\n- 在AI领域neo4j更适配, ⽽且选型的时候考虑到后期的多级查询, 多跳推理, 都是neo4j更合适. 对于图结构的数据, mysql中的多表匹配查询速度跟不上, 相⽐较neo4j就更匹配当前的应⽤场景.\n\n4)PGN架构是怎么实现的,是一个网络吗? coverage机制为什么能解决OOV问题\n\n- 是⼀个⽹络, 在传统的⽣成式⽹络中, 额外增加了⼀个OOV的召回模块, 可以处理OOV问题. coverage并不解决OOV问题, 解决的是重复性⽣成问题.\n\n5)PGN解决了什么问题?词表中不存在的词PGN可以生成吗?解释coverage机制,代码层面如何实现的?\n| ●●● | PGN⽹络解决了模型⽆法⽣成OOV单词的问题. 可以⽣成不在词表中的单词. coverage通过累加过去⼀个时间段内的单词权重, 将未⽣成的单词权重提⾼, 将已经⽣成过的单词权重降低. |  |\n| --- | --- | --- |\n|  | ○ | 对应的coverage代码需要提前背会, 默写出来. |\n6)要求从头到尾讲一遍项目流程,从项目背景开始讲起?\n\n所有同学按照自己的学习理解, 改造成独特的背景 + 项目流程, 形成项目文档, 代课老师检查 + 复盘!!!\n\n7)pgn网络里面,生成了词表和oov,计算attention distribution的时候又把两者融合起来,那生成词表的意义是什么,不是多此一举吗?\n| ●●●●● | 在NLP领域中, 词表永远不是多此⼀举, 到这个时候⼀定要强势回怼⾯试官, 让他知道厉害!!! SHIT💩!!! ⾸先, 如果没有词表, word和id⽆法对应, 那么就⽆法进⾏后续的⼀切操作. 其次, ⼯业界词表都是⼀个有限集合, 不能⽆限增⻓扩⼤, 主流在2w - 5w之间. 这就决定了⼀定会出现OOV单词. 最后, 为了将这些OOV抢救回来, 不⾄于⽣成⽂本的时候以UNK代替, 才进⾏了PGN这样的操作. 注意📢: 之所以有上⾯这个⾯试题, 本质原因就两个: |  |\n| --- | --- | --- |\n|  | ○ | 1: 咱们的学⽣⽆法说清楚PGN的架构和原理. |\n|  | ○ | 2: ⾯试官也没⻅过这个模型. |\n|  | ○ | 最后就变成了⼀个没⻅过PGN模型的⼈, 听⼀个讲不清楚模型的⼈在讲. 同学们需要吸取教训, 把课程中学到的知识扎实, 深⼊的掌握!!! |",
+    "extend": ""
+  },
+  {
+    "id": 123,
+    "category": "NLP基础",
+    "question": "2. 3 传智大脑",
+    "answer": "1)怎么划分数据的,train-test-split有什么问题,数据集有多少特征?数据是离散的还是连续的?\n\n- train_test_split有时划分并不均匀. 按照你设定的数据集来具体⾏程⽂档, 具体说明. 有的数据是离散的, 有的数据是连续的.\n\n2)数据怎么预处理的做了哪些操作?你说做了数据分析展示,都做了什么分析和展示?用train_test_split合理么?都用了哪些集成学习的?\n\n- 主要是去除噪⾳, 去除重复数据. max_length分布, 标签数量分布, 柱状图, 折线图.\n\n4)要求从头到尾讲一遍项目流程,从项目背景开始讲起?\n\n所有同学按照自己的学习理解, 改造成独特的背景 + 项目流程, 形成项目文档, 代课老师检查 + 复盘!!!\n\n5)数据增强有哪些,你们项目用了嘛,用的啥,效果怎么样?\n\n- 单词替换半监督学习\n![图293](./figures/fig_2439d3c329.png)\n- 回译数据法对⽐学习效果提升1.2%个百分点.",
+    "extend": ""
+  },
+  {
+    "id": 124,
+    "category": "计算机视觉",
+    "question": "1. GoogLeNet采用了模块化的结构(Inception结构),Inception历经了V1、V2、V3、V4等多个版本的发展,不断趋于完善,请说出3条以上V1-V4演进中的变化",
+    "answer": "1)Inception V4 相比 V3 主要是结合了ResNet**,加入残差思想**将错误率进一步减少\n\n2)Inception V3继续分解卷积,1xn+nx1**代替nxn进一步减少参数**,将7x7分解成两个一维的卷积(1x7,7x1),3x3也是一样(1x3,3x1),这样的好处,既可以加速计算,又可以将1个卷积拆成2个卷积,使得网络深度进一步增加,增加了网络的非线性。\n\n3)Inception V2卷积分解,两个3x3代替5x5,即在保持感受野范围的同时又减少了参数量\n\n4)Inception V1多尺度融合将CNN中常用的卷积(1x1,3x3,5x5)、池化操作(3x3)堆叠在一起(卷积、池化后的尺寸相同,将通道相加),一方面增加了网络的深度,另一方面也增加了网络对尺度的适应性。",
+    "extend": ""
+  },
+  {
+    "id": 125,
+    "category": "计算机视觉",
+    "question": "2. 请分别描述开运算,闭运算操作的特点及功能",
+    "answer": "开运算:先腐蚀运算,再膨胀运算,把细微连在一起的两块目标分开了,开运算能够除去孤立的小点,毛刺和小桥,而总的位置和形状不变。闭运算:先膨胀运算,再腐蚀运算,将两个细微连接的图块封闭在一起,闭运算能够填平小湖(即小孔),弥合小裂缝,而总的位置和形状不变。\n![图294](./figures/fig_f081e9afb1.png)\n![图295](./figures/fig_60c61d2a7d.png)\n开运算先腐蚀后膨胀,去除了小的黑点,方块边缘变得圆润了,也就是开运算对图像轮廓进行平滑,而闭运算先膨胀后腐蚀,把中心比较大的块连接为一个整体,填补了空白的缝隙。开运算能够除去孤立的小点,毛刺和小桥,而物体的形状轮廓基本不变。闭运算与开运算相反,能够填平前景物体内的小裂缝、间断和小孔,而总的位置和形状不变。结构元素大小的不同将导致滤波效果的不同,不同的结构元素的选择导致了不同的分割,即提取出不同的特征。",
+    "extend": ""
+  },
+  {
+    "id": 126,
+    "category": "计算机视觉",
+    "question": "3. 卷积神经网络的组成",
+    "answer": "以 CIFAR-10 数据集举例,一个典型的该数据集上的卷积神经网络分类器应该有[INPUT - CONV - RELU - POOL - FC]的结构,具体说来是这样的:\n\nINPUT[32323]包含原始图片数据中的全部像素,⻓宽都是 32,有 RGB 3 个颜色通道。\n\nCONV 卷积层中,没个神经元会和上一层的若干小区域连接,计算权重和小区域像素的内积,举个例子可能产出的结果数据是[323212]的。\n\nRELU层,就是神经元激励层,主要的计算就是 max(0,x),结果数据依旧是[323212]。\n\nPOOLing 层做的事情,可以理解成一个下采样,可能得到的结果维度就变为[161612]了。全连接层一般用于最后计算类别得分,得到的结果为[1110]的,其中的10 对应10个不同的类别。和名字一样,这一层的所有神经元会和上一层的所有神经元有连接。这样,卷积神经网络作为一个中间的通道,就一步步把原始的图像数据转成最后的类别得分了。有一个点要提一下,刚才说到了有几种不同的神经网络层,其中有一些层是有待训练参数的,另外一些没有。详细一点说,卷积层和全连接层包含权重和偏移的;而 RELU 和 POOLing 层只是一个固定的函数运算,是不包含权重和偏移参数的。不过 POOLing 层包含了我们手动指定的超参数。在卷积神经网络中,有 3 种最主要的层:\n\n- 卷积运算层  pooling 层全连接层及激活函数层一个完整的神经网络就是由这三种层叠加组成的。问题拓展\n\n(1)一个卷积神经网络由多种不同类型的层(卷积层/全连接层/RELU 层/POOLing 层等) 叠加而成。\n\n(2)每一层的输入结构是 3 维的数据,计算完输出依旧是 3 维的数据。\n\n(3)卷积层和全连接层包含训练参数,RELU 和 POOLing 层不包含。\n\n(4)卷积层,全连接层和 POOLing 层包含超参数,RELU 层没有。",
+    "extend": ""
+  },
+  {
+    "id": 127,
+    "category": "计算机视觉",
+    "question": "4. 为什么 CNN 对像素级别的分类很难?",
+    "answer": "传统的基于 CNN 的分割方法:为了对一个像素分类,使用该像素周围的一个图像块作为 CNN 的输入,用于训练与预测,这种方法主要有几个缺点:\n\n1)存储开销大,例如,对每个像素使用 15*15 的图像块,然后不断滑动窗口,将图像块输入到 CNN 中进行类别判断,因此,需要的存储空间随滑动窗口的次数和大小急剧上升;\n\n2)效率低下,相邻像素块基本上是重复的,针对每个像素块逐个计算卷积,这种计算有很大程度上的重复;\n\n3)像素块的大小限制了感受区域的大小,通常像素块的大小比整幅图像的大小小很多,只能提取一些局部特征,从而导致分类性能受到限制。而全卷积网络(FCN)则是从抽象的特征中恢复出每个像素所属的类别。即从图像级别的分类进一步延伸到像素级别的分类。\n\n(1)存储开销很大。\n\n(2)计算效率低下。\n\n(3)像素块大小的限制了感知区域的大小。",
+    "extend": ""
+  },
+  {
+    "id": 128,
+    "category": "计算机视觉",
+    "question": "5. 什么是扩张卷积?",
+    "answer": "带洞的(atrous)卷积,扩张的卷积引入了另一个被称为扩张率(dilation rate)的卷积层。这定义了卷积核中值之间的间隔。一个 3×3 卷积核的扩张率为 2,它的视图与 5×5 卷积核相同,而只使用 9 个参数。想象一下,取一个 5×5 卷积核,每两行或两列删除一行或一列。\n![图296](./figures/fig_2f5df67e42.png)\n![图297](./figures/fig_ccc4ed1fe7.png)\n空洞卷积将以同样的计算代价提供更广阔的视⻆,扩张的卷积在实时分割领域特别受欢迎。如果需要广泛的视图,并且不能负担多个卷积或更大的卷积核,那么可以使用它们。",
+    "extend": ""
+  },
+  {
+    "id": 129,
+    "category": "计算机视觉",
+    "question": "6. 什么是空间金字塔池化(Spatial Pyramid Pooling)",
+    "answer": "空间金字塔池化的思想来自于 Spatial Pyramid Model,它一个 pooling 变成了多个 scale 的 pooling。用不同大小池化窗口作用于卷积特征,得到1X1,2X2,4X4 的池化结果,由于 conv5 中共有 256 个过滤器,所以得到 1 个 256 维的特征,4 个 256 个特征,以及 16 个 256维的特征,然后把这 21 个 256 维特征链接起来输入全连接层,通过这种方式把不同大小的图像转化成相同维度的特征。对于不同的图像要得到相同大小的 pooling 结果,就需要根据图像的大小动态的计算池化窗口的大小和步⻓。假设 conv5 输出的大小为 aa,需要得到 nn 大小的池化结果,可以让窗口大小 sizeX 为 |a/n|,步⻓[a/n]。下图以 conv5 输出的大小为 13*13 为例。 \n![图298](./figures/fig_eb59aa1ef8.png)\n![图299](./figures/fig_02ef9c5656.png)\n![图300](./figures/fig_d39f9de20f.png)\n如果 conv5 输出的大小为 1414 , [pool11]的 sizeX=stride=14 , [pool22]的sizeX=stride=7,注意,[pool44]的 sizeX=5,stride=4,最后一列和最后一行特征没有被池化操作计算在内。一般的 CNN 都需要输入图像的大小是固定的,这是因为全连接层的输入需要固定输入维度,但在卷积操作是没有对图像尺度有限制,所有提出了空间金字塔池化,先让图像进行卷积操作,然后转化成维度相同的特征输入到全连接层,这个可以把 CNN 扩展到任意大小的图像。SPP 其实就是一种多个 scale 的 pooling,可以获取图像中的多尺度信息;在 CNN 中加入SPP 后,可以让 CNN 处理任意大小的输入,这让模型变得更加的 flexible。空间金字塔池化可以把任何尺度的图像的卷积特征转化成相同维度,这不仅可以让 CNN处理任意尺度的图像,还能避免 cropping 和 warping 操作,导致一些信息的丢失,具有非常重要的意义。",
+    "extend": ""
+  },
+  {
+    "id": 130,
+    "category": "计算机视觉",
+    "question": "7. 1×1 卷积核的作用是什么?",
+    "answer": "根据上图,我们来做个对比计算,假设输入 feature map 的维度为 256 维,要求输出维度也是 256 维。有以下两种操作:\n\n1)256 维的输入直接经过一个 3×3×256 的卷积层,输出一个 256 维的 feature map,那么参数量为:256×3×3×256 = 589,824  \n![图301](./figures/fig_dd7f6f4d85.png)\n![图302](./figures/fig_b845afdb16.png)\n2)256 维的输入先经过一个 1×1×64 的卷积层,再经过一个 3×3×64 的卷积层,最后经过一个 1×1×256 的卷积层,输出 256 维,参数量为:256×1×1×64 + 64×3×3×64 + 64×1×1×256 = 69,632。足足把第一种操作的参数量降低到九分之一!\n\n1×1 卷积核也被认为是影响深远的操作,往后大型的网络为了降低参数量都会应用上 1×1 卷积核。\n\n1×1 的卷积有两个方面的作用:\n\n实现跨通道的交互和信息整合。进行卷积核通道数的降维和升维。",
+    "extend": ""
+  },
+  {
+    "id": 131,
+    "category": "计算机视觉",
+    "question": "8. 窄卷积和宽卷积分⻉是什么?",
+    "answer": "补零法(zero-padding):所有落在矩阵范围之外的元素值都默认为0。这样就可以对输入矩阵的每一个元素做滤波了,输出一个同样大小或是更大的矩阵。补零法又被称为是宽卷积,不使用补零的方法则被称为窄卷积。在pytorch的实现中,conv2d的padding=‘SAME',默认的就是宽卷积的方式,会进行补零。padding = ’VALID'就是窄卷积的方式。具体如下所示:",
+    "extend": ""
+  },
+  {
+    "id": 132,
+    "category": "计算机视觉",
+    "question": "9. FCN 网络结构是什么?",
+    "answer": "![图303](./figures/fig_f09d0135d8.png)\n通常 CNN 网络在卷积层之后会接上若干个全连接层, 将卷积层产生的特征图(feature map) 映射成一个固定⻓度的特征向量。以 AlexNet 为代表的经典 CNN 结构适合于图像级的分类和回归任务,因为它们最后都得到整个输入图像的一个概率向量,比如 AlexNet 的 ImageNet 模型输出一个 1000 维的向量表示输入图像属于每一类的概率(softmax 归一化)。如图所示:\n\n1)在 CNN 中, 猫的图片输入到 AlexNet, 得到一个⻓为 1000 的输出向量, 表示输入图像属于每一类的概率, 其中在“tabby cat”这一类统计概率最高, 用来做分类任务。\n\n2)FCN 与 CNN 的区别在于把于 CNN 最后的全连接层转换成卷积层,输出的是一张已经 Label 好的图片, 而这个图片就可以做语义分割\n\n3)CNN 的强大之处在于它的多层结构能自动学习特征,并且可以学习到多个层次的特征:较浅的卷积层感知域较小,学习到一些局部区域的特征较深的卷积层具有较大的感知域,能够学习到更加抽象一些的特征。高层的抽象特征对物体的大小、位置和方向等敏感性更低,从而有助于识别性能的提高, 所以我们常常可以将卷积层看作是特征提取器。\n\nFCN 对图像进行像素级的分类,从而解决了语义级别的图像分割(semantic segmentation) 问题。与经典的 CNN 在卷积层之后使用全连接层得到固定⻓度的特征向量进行分类(全联接层+softmax 输出)不同,FCN 可以接受任意尺寸的输入图像,采用反卷积层对最后一个卷积层的 feature map 进行上采样, 使它恢复到输入图像相同的尺寸,从而可以对每个像素都产生了一个预测, 同时保留了原始输入图像中的空间信息, 最后在上采样的特征图上进行逐像素分类。",
+    "extend": ""
+  },
+  {
+    "id": 133,
+    "category": "计算机视觉",
+    "question": "10. 如何进行卷积神经网路进行参数设置?",
+    "answer": "1)learning-rate 学习速率:学习速率越小,模型收敛花费的时间就越⻓,但是可以提高模型精确度。一般初始设置为",
+    "extend": ""
+  },
+  {
+    "id": 134,
+    "category": "计算机视觉",
+    "question": "0. 1,然后每次除以 2 或者 5 来改进,得到最终值;",
+    "answer": "2)batch-size 样本批次容量:影响模型的优化程度和收敛速度,需要参考你的数据集大小来设置,具体问题具体分析;\n\n3)weight-decay 权重衰减:用来在反向传播中更新权重和偏置,一般设置为 0.005;\n\n4)epoch-number 训练次数:包括所有训练样本的一个正向传递和一个反向传递,训练至模型收敛即可;(注:和迭代周期 iteration 不一样)而且,也不是训练的次数越多,测试精度就会越高,可能会因为预训练的模型太复杂,而数据集样本数量太少,种类太单一,而出现过拟合具体如下所示:\n\n1)learning-rate 学习速率\n\n2)batch-size 样本批次容量\n\n3)weight-decay 权重衰减 \n![图304](./figures/fig_3603cd8d7e.png)\n4)epoch-number 训练次数一般来说,调参经验及提高泛化能力的方法主要有以下几个:\n\n- 正则化增加神经⽹络层数使⽤正确的代价函数使⽤好的权重初始化技术⼈为拓展训练集弃权技术",
+    "extend": ""
+  },
+  {
+    "id": 135,
+    "category": "计算机视觉",
+    "question": "11. CNN为什么要进行局部连接?",
+    "answer": "下图是一个很经典的图示,左边是全连接,右边是局部连接对于一个 1000 × 1000 的输入图像而言,如果下一个隐藏层的神经元数目为 10^6 个,采用全连接则有 1000 × 1000 × 10^6 = 10^12 个权值参数,如此数目巨大的参数几乎难以训练;\n\n而采用局部连接,隐藏层的每个神经元仅与图像中 10 × 10 的局部图像相连接,那么此时的权值参数数量为 10 × 10 × 10^6 = 10^8,将直接减少 4 个数量级。局部连接使网络可以提取数据的局部特征且参数量更少。在这里首先明白一个概念——感受野,即每个神经元仅与输入神经元的一块区域连接,这块局部区域称作感受野 (receptive field)。在图像卷积操作中,即神经元在空间维度是局部连接。对于二维图像本身而言,也是局部像素关联较强。这种局部连接保证了学习后的过滤器能够对于局部的输入特征有最强的响应。局部连接的思想,也是受启发于生物学里面的视觉系统结构,视觉皮层的神经元就是局部接受信息的。",
+    "extend": ""
+  },
+  {
+    "id": 136,
+    "category": "计算机视觉",
+    "question": "12. 什么是权值共享,有什么用?",
+    "answer": "权重共享:计算同一个深度切片的神经元时采用的滤波器是共享的。如下图中计算o[:,:,0] 的每个神经元的滤波器均相同都为W0,这样可以很大程度上减少参数。 \n![图305](./figures/fig_a934ba60e3.png)\n![图306](./figures/fig_0e4ef9efe0.png)\n具体做法是,在局部连接中隐藏层的每个特征图连接的是一个 10 × 10 的卷积核,因此有 10 × 10 个权值参数,将这 10 × 10 个权值参数共享给剩下的特征图,也就是说此时不管隐藏层神经元的数目是多少,需要训练的参数就是这 10 × 10 个权值参数(也就是卷积核(也称滤波器)的大小),如下图。共享权重在一定程度上是有意义的,例如图片的底层边缘特征与特征在图中的具体位置无关。但是在一些场景中是无意的,比如输入的图片是人脸,眼睛和头发位于不同的位置,希望在不同的位置学到不同的特征。注意权重只是对于同一深度切片的神经元是共享的,在卷积层,通常采用多组卷积核提取不同特征,即对应不同深度切片的特征,不同深度切片的神经元权重是不共享。另外,偏重对同一深度切片的所有神经元都是共享的并且权值共享大大降低了网络的训练难度,减少了参数量。上述仅提取了图像的一种特征,如果要多提取出一些特征,可以增加多个卷积核,不同的卷积核能够得到图像的不同映射下的特征,称之为 Feature Map。如果有 100 个卷积核,最终的权值参数也仅为 100 × 100 = 10^4 个而已。另外,偏置参数也是共享的,同一种滤波器共享一个。",
+    "extend": ""
+  },
+  {
+    "id": 137,
+    "category": "计算机视觉",
+    "question": "13. 为什么很多做人脸的项目会最后加入一个 Local Connected Conv(即参数不共享)?",
+    "answer": "![图307](./figures/fig_b1ff8dfba6.png)\n![图308](./figures/fig_2516b05a10.png)\n以上图为例,图像都是 152×152 的图像,输入到上述网络结构中,该结构的参数如下:\n\n- Conv：32 个 11×11×3 的卷积核 max-pooling: 3×3， stride=2Conv: 16 个 9×9 的卷积核。  Local-Conv: 16 个 9×9 的卷积核，Local 的意思是卷积核的参数不共享。 Local-Conv: 16 个 7×7 的卷积核，参数不共享 Local-Conv: 16 个 5×5 的卷积核，参数不共享 Fully-connected:\n\n4096 维 Softmax: 4030 维。前三层的目的在于提取低层次的特征,比如简单的边和纹理。其中 Max-pooling 层使得卷积的输出对微小的偏移情况更加鲁棒。但没有用太多的 Max-pooling 层,因为太多的 Max-pooling 层会使得网络损失图像信息。全连接层将上一层的每个单元和本层的所有单元相连,用来捕捉人脸图像不同位置的特征之间的相关性。其中,第 7 层(4096-d)被用来表示人脸。全连接层的输出可以用于 Softmax 的输入,Softmax 层用于分类。\n\n1)不共享的卷积核并不增加抽取特征时的计算量,而会增加训练时的计算量\n\n2)使用不共享的卷积核,需要训练的参数量大大增加,因而需要很大的数据量,然而这个条件在某些人脸项目中刚好满足。",
+    "extend": ""
+  },
+  {
+    "id": 138,
+    "category": "计算机视觉",
+    "question": "14. 为什么出现棋盘现象?",
+    "answer": "现在,生成图像时,神经网络通常使用多层反卷积,从一系列较低分辨率的描述中迭代建立更大的图像。直观地看,假设生成的图像中包含 1 只黑猫。黑猫身体部分的像素颜色应平滑过渡,或极端地说,该部分应全为黑色。实际生成的图像中该部分却有深深浅浅的近黑方块组成,很像棋盘的网格,即棋盘效应。图像生成网络的上采样部分通常用反卷积网络,不合理的卷积核大小和步⻓会使反卷积操作产生棋盘效应 (checkerboard artifacts)。问题产生:kernel size无法被stride整除,stride为1,kernel size为3,这导致了重复上采样绘图的部分不均匀(下图深色部分)\n![图309](./figures/fig_686175b244.png)\n![图310](./figures/fig_7ac3131ae7.png)\n重叠图案也在二维中形成,两个轴上的不均匀重叠相乘,产生不同亮度的棋盘状图案。事实上,不均匀重叠往往在二维上更极端!因为两个模式相乘,所以它的不均匀性是原来的平方。",
+    "extend": ""
+  },
+  {
+    "id": 139,
+    "category": "计算机视觉",
+    "question": "15. 有哪些方法可以避免棋盘效应?",
+    "answer": "缩放卷积为线性操作:假设原图像为 A,经过插值后的图像为 A+B;用卷积核 C 对插值缩放后的图像卷积,得到最终的图像C**T (A*+ B) = C**T * A+C**T *B ,其中*为卷积操作。则可将缩放卷积分解为原图像卷积和插值增量图像卷积。\n\nC 为卷积操作的卷积核。此时为上采样,理解为反卷积操作中的卷积核。第一种方法是用到的反卷积核的大小可被步⻓整除,从而避免重叠效应。",
+    "extend": ""
+  },
+  {
+    "id": 140,
+    "category": "计算机视觉",
+    "question": "16. 从R-CNN到Faster R-CNN谈谈物体检测",
+    "answer": "物体检测模型从R-CNN到Faster R-CNN代表着深度学习模型在物体检测领域取得了关键性的突破,与传统的物体检测方法产生了分离,把物体检测带进了深度学习时代。模型进化流程:\n\n1)R-CNN\n\n(1) 候选区域选择\n\n(2) CNN特征提取\n\n(3) 分类与边界框回归\n\n2)Fast R-CNN 引入ROI Pooling层,输入图片无需缩放\n\n3)Faster R-CNN 引入RPN模块生成候选框,CNN取代Selective Search传统提取方法",
+    "extend": ""
+  },
+  {
+    "id": 141,
+    "category": "计算机视觉",
+    "question": "17. 目标检测two-stage模型有哪些",
+    "answer": "![图311](./figures/fig_7ffeb4f124.png)\n![图312](./figures/fig_af4e6c9070.png)\nTwo-stage模型先由算法生成一系列样本的候选框(anchor),再通过卷积神经网络进行样本分类,r-cnn 采用传统的ss方法生成anchor,后续的模型采用cnn方法生成anchor。\n\nRCNN-->SPPNet-->Fast RCNN-->Faster RCNN-->RFCN-->DCN-->DCNv2",
+    "extend": ""
+  },
+  {
+    "id": 142,
+    "category": "计算机视觉",
+    "question": "18. 说一下NMS 的处理思想",
+    "answer": "NMS是一种Post-Procession(后处理)方式,跟算法无关的方式,应用在大多数物体检测的方法里。\n\nNMS把所有候选框的检测结果按照分值从高到底排序,保留最高分数的box, 删除其余值。\n\nNMS用于筛选候选区域",
+    "extend": ""
+  },
+  {
+    "id": 143,
+    "category": "计算机视觉",
+    "question": "19. Soft nms为什么可以提升模型效果",
+    "answer": "如图所示,检测算法本来应该输出两个框,但是传统的NMS算法可能会把score较低的绿框过滤掉(如果绿框和红框的IOU大于设定的阈值就会被过滤掉),导致只检测出一个object(一个⻢)\n\nNMS公式 \n![图313](./figures/fig_8ce0f3fbff.png)\n![图314](./figures/fig_9c54d88626.png)\n![图315](./figures/fig_b276f7cf8f.png)\nSoft NMS公式弥补NMS方法的不足,提高密集候选区域筛选质量",
+    "extend": ""
+  },
+  {
+    "id": 144,
+    "category": "计算机视觉",
+    "question": "20. 描述一下IOU的作用",
+    "answer": "IOU主要用在模型训练阶段时计算正负样本,以及模型测试阶段帮助NMS筛选候选框 IOU计算:\n\nl 两个区域的重叠程度overlap:侯选区域和标定区域的IoU值通常Correct: 类别正确且 IoU > 0.5 IoU 用于计算“预测的边框” 和 “真实的边框” 的交集和并集的比值",
+    "extend": ""
+  },
+  {
+    "id": 145,
+    "category": "计算机视觉",
+    "question": "21. roi pooling 实现怎样的映射",
+    "answer": "在RCNN中,在进行卷积操作之前一般都是先将图片分割与形变到固定尺寸,这会让图像产生形变,或者图像变得过小, 使一些特征产生了损失,继而对之后的特征选择产生影响。\n\nFast RCNN在数据的输入上并不对其有什么限制,而实现这一没有限制的关键所在正是ROI Pooling层。 \n![图316](./figures/fig_faab2d46cd.png)\n![图317](./figures/fig_c73b8dcf30.png)\n![图318](./figures/fig_c53c1e2d2d.png)\nl RoI Pooling层将每个候选区域分为m * n个块。针对每个块执行最大池化操作,使得特征映射上不同大小的候选区域被变换为均匀大小的特征向量 ROI Pooling层可以把不同大小的候选区域特征映射为固定的维度特征",
+    "extend": ""
+  },
+  {
+    "id": 146,
+    "category": "计算机视觉",
+    "question": "22. SPP具体是指什么",
+    "answer": "在SPPNet中引入了一种空间金字塔池化( spatial pyramid pooling,SPP)层,用于移除模型对图片固定尺寸的限制。\n\nspp layer会将每一个候选区域分成1x1,2x2,4x4三张子图,对每个子图的每个区域作max pooling。\n\nSPP层放在最后一个卷积层之后。SPP层对特征进行池化,并产生固定⻓度的输出,这个输出送给全连接层 SPP具体是指空间金字塔池化层,为全连接层生成固定⻓度的特征向量",
+    "extend": ""
+  },
+  {
+    "id": 147,
+    "category": "计算机视觉",
+    "question": "23. 说一下RPN的作用",
+    "answer": "![图319](./figures/fig_1db7dd21e4.png)\n![图320](./figures/fig_944fe61c6d.png)\nRPN网络出现在Faster r-cnn 模型中,用来代替Fast R-CNN中的选择性搜索方法 l 在每一个滑动窗口的位置,同时预测k个候选框,即4k个坐标值,2k个二分类得分 RPN本身是一个全卷积网络,通过训练生成高质量的目标候选框",
+    "extend": ""
+  },
+  {
+    "id": 148,
+    "category": "计算机视觉",
+    "question": "24. 说一下faster rcnn的损失函数",
+    "answer": "Faster R-CNN可以简单地看成是rpn+Fast R-CNN的模型,rpn基于二分类的分类Loss和回归loss,fast r-cnn的多类分类和回归Loss,共产生4个损失函数。分类采用softmax loss,回归采用smooth loss。 \n![图321](./figures/fig_2b8188200d.png)\n![图322](./figures/fig_30b47593ce.png)\nFaster rcnn 共有4个损失函数,rpn的分类和回归Loss,后续物体识别产生的分类和回归loss。",
+    "extend": ""
+  },
+  {
+    "id": 149,
+    "category": "计算机视觉",
+    "question": "25. Faster rcnn怎么筛选正负anchor",
+    "answer": "Faster rcnn 在生成目标候选框的过程中,会产生大量的非目标区域候选框,通过计算候选框与标注框的iou,来标定正负候选框,即为筛选正负anchor。\n\nRpn 正负样本标记:\n\n- 正样本：与ground truth（GT）的iou⼤于0.7的anchor，注意⼀个GT可能分配正标签给多个anchor 负样本：与ground truth（GT）的iou⼩于0.3的anchor，⾮正⾮负的anchor对训练⽬标没有作⽤训练时：正样本 128个，负样本128个，⽐例 1：1 后续分类的正负样本标记:\n\n- 正样本：与ground truth（GT）的iou⼤于0.5的anchor 负样本：与ground truth（GT）的iou⼩于0.5的anchor 训练时：正样本 32个，负样本96个，⽐例 1：3 Faster rcnn通过生成的anchor与gt的iou大小,标定正负样本",
+    "extend": ""
+  },
+  {
+    "id": 150,
+    "category": "计算机视觉",
+    "question": "26. 为什么使用focal loss",
+    "answer": "在目标检测过程中,常出现类别不平衡问题,focal loss从损失函数的⻆度出发,根据置信度动态调整交叉熵loss,当预测正确的置信度增加时,loss的权重系数会逐渐衰减至0,大量容易的例子对loss贡献很低,这样模型训练的loss更关注难例。以二分类介绍focal loss,二分类的cross entropy (CE)loss,定义如下:\n\n其中y∈{−1,1} 为真实标签,1表示为正例,-1表示为负例,p∈[0,1]为模型预测为正例的概率值,进一步可以定义: \n![图323](./figures/fig_5aaa444863.png)\n![图324](./figures/fig_832bfaaaf7.png)\n![图325](./figures/fig_c80c85a7f1.png)\n这样CE就可以简写为:CE(p,y)=CE(pt)=−logpt 如下图所示,蓝色的曲线表示CE,如果定义pt>0.5 的易分类样本,从曲线可以看到,这部分样本的loss值依然不低,而且这部分例子要占很大比例,加起来后将影响难分类样本的loss,这就是CE loss用于目标检测模型训练所存在的问题为了解决CE的问题,FL在CE基础上增加一个调节因子(1−pt)^γ,FL定义如下当pt很小时,调节因子值接近1,loss不受影响,而当pt趋近于1时,调节因子接近0,这样已经能正确分类的样例loss大大降低。此时若一个样本的pt为0.9,其对应的CE loss是FL的100倍,可⻅FL相比CE可以大大降低简单例子的loss,使模型训练更关注于难例 Focal loss通过减少易分类样本的权重,使模型在训练时更专注于难分类的样本,提高模型性能。",
+    "extend": ""
+  },
+  {
+    "id": 151,
+    "category": "计算机视觉",
+    "question": "27. 目标检测one-stage模型有哪些",
+    "answer": "One-stage模型不用单独设计算法产生目标的候选框,直接将目标边框检测转化为回归问题处理,把目标的定位和分类合并为一个问题 One-stage 模型有yolo系列、ssd系列等",
+    "extend": ""
+  },
+  {
+    "id": 152,
+    "category": "计算机视觉",
+    "question": "28. SSD如何生成目标框",
+    "answer": "SSD在多尺度的feature map上预设anchor。在base network之后加了几层卷积,这些卷积层会逐渐减小feature map的size,然后在不同size的feature map上进行预设anchor \n![图326](./figures/fig_64690a8c56.png)\n![图327](./figures/fig_f3e3b9679d.png)\n![图328](./figures/fig_df8df17fd7.png)\nl 最终anchor的数量为:\n\nSSD在基础网络之后的多尺度的feature map上每个位置预设anchor",
+    "extend": ""
+  },
+  {
+    "id": 153,
+    "category": "计算机视觉",
+    "question": "29. Yolo v1如何生成目标框",
+    "answer": "YOLO检测网络包括24个卷积层和2个全连接层,最后一层用来预测目标的位置和类别概率。生成目标框:\n\nYOLO将输入图像分成SxS个格子,每个格子负责检测‘落入’该格子的物体。若某个物体的中心位置的坐标落入到某个格子,那么这个格子就负责检测出这个物体。如下图所示,图中物体狗的中心点(红色原点)落入第5行、第2列的格子内,所以这个格子负责预测图像中的物体狗\n![图329](./figures/fig_8e82c8b906.png)\nl anchor数量:772=98 yolo将输入图片分成SS个格子,每个格子生成B个bounding box,并且SS和网络最后一层的size一致。",
+    "extend": ""
+  },
+  {
+    "id": 154,
+    "category": "计算机视觉",
+    "question": "30. 语义分割模型",
+    "answer": "使用全卷积神经网络对自然图像进行端到端分割,语义分割才有了重大突破,一般语义分割模型是指加入CNN结构的模型。语义分割模型有FCN,PSPNet,SegNet,U-Net, DeepLab系列,Mask-RCNN等模型",
+    "extend": ""
+  },
+  {
+    "id": 155,
+    "category": "计算机视觉",
+    "question": "31. 说一下DeepLab v1 v2 v3的区别",
+    "answer": "DeepLab v1是结合了深度卷积神经网络(DCNNs)和概率图模型(DenseCRFs)的方法,采用空洞卷积扩展感受野,获取更多的上下文信息。\n\nDeeplab v2 采用ASPP ( atrous spatial pyramid pooling) 多尺度获得更好的分割效果,合并深度卷积网络和概率图模型方法,增强对物体边界的定位,基础层由VGG16转为ResNet。\n\nDeeplab v3 改进了ASPP,由不同采样率的空洞卷积和BN层组成,以级联或并行的方式布局模块,去除了条件随机场 CRF。\n\nl Deeplab v1:空洞卷积+crf l Deeplab v2:aspp多尺度融合 l Deeplab v3:完善空间金字塔池化模块",
+    "extend": ""
+  },
+  {
+    "id": 156,
+    "category": "计算机视觉",
+    "question": "32. 介绍一下Unet",
+    "answer": "![图330](./figures/fig_74c4f41ab6.png)\nU-net由收缩路径(contracting path)和扩张路径(expanding path)组成。收缩路径用于获取上下文信息(context),扩张路径用于精确的定位(localization),且两条路径相互对称。\n\nl U-net通过下采样+上采样完成特征编码与解码 l U-net 在channel维度进行多尺度特征融合 l U-net如何实现语义分割?",
+    "extend": ""
+  },
+  {
+    "id": 157,
+    "category": "计算机视觉",
+    "question": "33. Canny边缘检测的流程",
+    "answer": "Canny 的目标是找到一个最优的边缘检测算法,最优边缘检测的含义是:\n\n好的检测- 算法能够尽可能多地标识出图像中的实际边缘。好的定位- 标识出的边缘要尽可能与实际图像中的实际边缘尽可能接近。最小响应- 图像中的边缘只能标识一次,并且可能存在的图像噪声不应标识为边缘。\n\nCanny边缘检测的流程是:\n\n图像降噪。我们知道梯度算子可以用于增强图像,本质上是通过增强边缘轮廓来实现的,也就是说是可以检测到边缘的。但是,它们受噪声的影响都很大。那么,我们第一步就是想到要先去除噪声,因为噪声就是灰度变化很大的地方,所以容易被识别为伪边缘。计算图像梯度,得到可能边缘。计算图像梯度能够得到图像的边缘,因为梯度是灰度变化明显的地方,而边缘也是灰度变化明显的地方。当然这一步只能得到可能的边缘。因为灰度变化的地方可能是边缘,也可能不是边缘。这一步就有了所有可能是边缘的集合。非极大值抑制。通常灰度变化的地方都比较集中,将局部范围内的梯度方向上,灰度变化最大的保留下来,其它的不保留,这样可以剔除掉一大部分的点。将有多个像素宽的边缘变成一个单像素宽的边缘。即“胖边缘”变成“瘦边缘”。双阈值筛选。通过非极大值抑制后,仍然有很多的可能边缘点,进一步的设置一个双阈值,即低阈值(low),高阈值(high)。灰度变化大于high的,设置为强边缘像素,低于low的,剔除。在low和high之间的设置为弱边缘。进一步判断,如果其领域内有强边缘像素,保留,如果没有,剔除。",
+    "extend": ""
+  },
+  {
+    "id": 158,
+    "category": "计算机视觉",
+    "question": "34. 对霍夫变换的理解",
+    "answer": "霍夫变换常用来提取图像中的直线和圆等几何形状。它通过一种投票算法检测具有特定形状的物体。该过程在一个参数空间中通过计算累计结果的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。针对每个像素点,使得theta从-90度到180度,使用极坐标p = xcos(theta) + ysin(theta) 计算得到共270组(p,theta)代表着霍夫空间的270条直线。将这270组值存储到H中。如果一组点共线,则这组点中的每个值,都会使得H(p,theta)加1。因此找到H(p,theta)值最大的直线,就是共线的点最多的直线,H(p,theta)值次大的,是共线点次多的直线。可以根据一定的阈值,将比较明显的线全部找出来",
+    "extend": ""
+  },
+  {
+    "id": 159,
+    "category": "计算机视觉",
+    "question": "35. 说一下对HOG特征的理解",
+    "answer": "HOG(Histogram of Oriented Gridients的简写)特征检测算法,一种解决人体目标检测的图像描述子,是一种用于表征图像局部梯度方向和梯度强度分布特性的描述符。其主要思想是:在边缘具体位置未知的情况下,边缘方向的分布也可以很好的表示行人目标的外形轮廓。整体流程简单描述如下:\n\n将输入图像(你要检测的目标或者扫描窗口)灰度化,即将彩色图转换为灰度图颜色空间归一化:采用Gamma校正法对输入图像进行颜色空间的标准化(归一化),目的是调节图像的对比度,降低图像局部的阴影和光照变化所造成的影响,同时可以抑制噪音的干扰梯度计算:计算图像每个像素的梯度(包括大小和方向);主要是为了捕获轮廓信息,同时进一步弱化光照的干扰梯度方向直方图:将图像划分成小cells(例如8*8像素/cell), 统计每个cell的梯度直方图(不同梯度的个数),即可形成每个cell的描述符重叠直方图归一化:将每几个cell组成一个block(例如3*3个cell/block),一个block内所有cell的特征descriptor串联起来便得到该block的HOG特征描述符。\n\nHOG特征:将图像image内的所有block的HOG特征描述符串联起来就可以得到该image(你要检测的目标)的HOG特征描述符,就得到最终的可供分类使用的特征向量了 HOG的主要思想是:在一副图像中,局部目标的表象和形状(appearance and shape)能够被梯度或边缘的方向密度分布(即梯度的统计信息,而梯度主要位于边缘的地方)很好地描述。HOG特征检测算法的几个步骤:颜色空间归一化**—>梯度计算—>梯度方向直方图—>重叠块直方图归一化—>HOG特征**",
+    "extend": ""
+  },
+  {
+    "id": 160,
+    "category": "计算机视觉",
+    "question": "36. 常用的图像局部特征和全局特征",
+    "answer": "首先明确全局特征和局部特征的意义:\n\n全局特征指图像的整体属性,包括颜色特征、纹理特征、形状特征、直方图等。容易受到干扰,如光照、旋转、噪声等。图像的局部特征反映图像局部的特殊性,局部特征数量丰富,特征间相关度小,不容易受到部分遮挡、光照等噪声的干扰,因为不会因为部分特征的消失而影响其他特征的检测和匹配。典型的局部图像特征生成应包括图像极值点检测和描述两个阶段。好的局部图像特征应具有特征检测重复率高、速度快 ,特征描述对光照、旋转、视点变化等图像变换具有鲁棒性,特征描述符维度低,易于实现快速匹配等特点。常用的全局特征就是颜色,纹理,形状,直方图等,局部特征有关键点,⻆点等",
+    "extend": ""
+  },
+  {
+    "id": 161,
+    "category": "计算机视觉",
+    "question": "37. 图像的⻆点是什么?为什么使用⻆点作为特征?",
+    "answer": "首先明确⻆点是图像中极值点,在某方面属性特别突出的点,是在某些属性上强度最大或者最小的孤立点、线段的终点。对于图像而言,如图所示圆圈内的部分,即为图像的⻆点,其是物体轮廓线的连接点。 \n![图331](./figures/fig_8790585edf.png)\n![图332](./figures/fig_dab39cd09f.png)\n![图333](./figures/fig_32eeb64795.png)\n描述方法有:\n\n- ⼀阶导数(即灰度的梯度)的局部最⼤所对应的像素点；两条及两条以上边缘的交点；图像中梯度值和梯度⽅向的变化速率都很⾼的点；⻆点处的一阶导数最大,二阶导数为零,指示物体边缘变化不连续的方向",
+    "extend": ""
+  },
+  {
+    "id": 162,
+    "category": "计算机视觉",
+    "question": "38. 常用的颜色空间",
+    "answer": "常用的图像空间有:\n\n- RGB:是图像采集设备采集图像最常⽤的⼀种，由三个分量组成，分别为红⾊分量(R)，绿⾊分量(G)和蓝⾊分量(B)。 HSI/HSV：分别为⾊调分量(H)、饱和度分量(S)和亮度分量(I)。⾊调H分量容是⼀种颜⾊“质”的反映，每⼀种颜⾊光都有相对应的波⻓及相应的色调值。饱和度S分量表示一种颜色的纯度。强度I分量反映了光线的强弱变化,是颜色“量”的反映。由于人的视觉对亮度的敏感程度远强于对颜色浓淡的敏感程度,为了便于色彩处理和识别,人的视觉系统经常采用HSI色彩空间,它比RGB色彩空间更符合人的视觉特性.在图像处理和计算机视觉中大量算法都可在HSI色彩空间中方便地使用\n\n- CMYK: 应⽤于印刷⼯业,印刷业通过⻘(C)、品(M)、⻩(Y)三原⾊油墨的不同⽹点⾯积率的叠印来表现丰富多彩的颜⾊和阶调，这便是三原⾊的CMY颜⾊空间。 YUV: ⼀种颜⾊编码⽅法，常使⽤在各个视频处理组件中。 YUV在对照⽚或视频编码时，考虑到⼈类的感知能⼒，允许降低⾊度的带宽。YUV是编译true-color颜⾊空间（color space）的种类， “Y”表示明亮度，“U”和“V”则是⾊度、浓度。",
+    "extend": ""
+  },
+  {
+    "id": 163,
+    "category": "计算机视觉",
+    "question": "39. 图像的插值方法有哪些?",
+    "answer": "在做数字图像处理时,经常会碰到小数象素坐标的取值问题,这时就需要依据邻近象素的值来对该坐标进行插值。比如:做地图投影转换,对目标图像的一个象素进行坐标变换到源图像上对应的点时,变换出来的对应的坐标是一个小数,这时就需要插值。常⻅的插值方法有:\n| ● | 最近邻法：这是最简单的⼀种插值⽅法，不需要计算，在待求象素的四邻象素中，将距离待求象素最近的邻象素灰 |  |\n| --- | --- | --- |\n|  | 度赋给待求象素。设 | 为正整数， u, v为⼤于零⼩于1的⼩数，下同)为待求象素坐标，则待求象素灰度的 |\n|  | 值 | 如下图所示： |\n![图334](./figures/fig_c6b0291e60.png)\n![图335](./figures/fig_2e76f8c7bd.png)\n如果落在A区,即,则将左上⻆象素的灰度值赋给待求象素,同理,落在B区则赋予右上⻆的象素灰度值,落在C区则赋予左下⻆象素的灰度值,落在D区则赋予右下⻆象素的灰度值。最近邻法计算量较小,但可能会造成插值生成的图像灰度上的不连续,在灰度变化的地方可能出现明显的锯⻮状。\n\n- 双线性内插法双线性内插法是利用待求象素四个邻象素的灰度在两个方向上作线性内插,如下图所示:\n| 对于 | (i,j+v)，f(i,j) | 到 | f(i,j+1) | 的灰度变化为线性关系，则有： |\n| --- | --- | --- | --- | --- |\nf(i,j+v)=[f(i,j+1)−f(i,j)]∗v+f(i,j)\n| 同理对于 | (i+1,j+v) | 则有： |\n| --- | --- | --- |\nf(i+1,j+v)=[f(i+1,j+1)−f(i+1,j)]∗v+f(i+1,j)\n| 从 | f(i,j+v) | 到 | f(i+1,j+v) | 的灰度变化也为线性关系，由此可推导出待求象素灰度的计算式如下： |\n| --- | --- | --- | --- | --- |\n![图336](./figures/fig_4528601aaa.png)\n![图337](./figures/fig_23a2d88ccb.png)\nf(i+u,j+v)=(1−u)∗(1−v)∗f(i,j)+(1−u)∗v∗f(i,j+1)+u∗(1−v)∗f(i+1,j)+ u∗v∗f(i+1,j+1)\n\n双线性内插法的计算比最邻近点法复杂,计算量较大,但没有灰度不连续的缺点,结果基本令人满意。它具有低通滤波性质,使高频分量受损,图像轮廓可能会有一点模糊。\n\n- 三次内插法该方法利用三次多项式S(x)求逼近理论上最佳插值函数sin(x)/x, 其数学表达式为:\n\n待求像素(x, y)的灰度值由其周围16个灰度值加权内插得到,如下图:\n\n待求像素的灰度计算式如下:\n\nf(x,y)=f(i+u,j+v)=ABC 其中: \n![图338](./figures/fig_25461d7f15.png)\n![图339](./figures/fig_e3dc85e9b3.png)\n![图340](./figures/fig_cec508f709.png)\n![图341](./figures/fig_0980720e5a.png)\n![图342](./figures/fig_3ccdb54ce3.png)\n三次曲线插值方法计算量较大,但插值后的图像效果最好。",
+    "extend": ""
+  },
+  {
+    "id": 164,
+    "category": "计算机视觉",
+    "question": "40. 常用的滤波方法,写出均值滤波的实现",
+    "answer": "图像滤波既可以在空域进行,也可以在频域进行。图像滤波可以更改或者增强图像。常用的滤波器是:\n\n高斯滤波:高斯滤波器是响应脉冲为高斯形状的滤波器,对于图像来说,高斯滤波器是利用高斯核的一个2维的卷积算子,用于图像模糊化(平滑**,去除细节和噪声)** 均值滤波:均值滤波器很简单,就是像素的值用窗内邻居的平均值来代替。主要应用于平滑噪声,但是跟上面的高斯滤波器比,它的平滑手段显然更粗暴些,邻域的值不管远近一律平等,高斯滤波器还至少根据远近有些区分。中值滤波:中值滤波器就是用窗内的中间值代替该像素的值,也多用于减少噪声,特别对于椒盐噪声有很好的效果均值滤波的实现:\n```Python\ndef means_filter(input_image, filter_size):\n```\n```\n2\n3 # 创建原图像的副本\n4\n5 input_image_cp = np.copy(input_image)\n6\n7 # 创建滤波器\n8\n9 filter_template = np.ones((filter_size, filter_size))\n10\n11 # 对图像进行padding\n12\n13 pad_num = int((filter_size - 1) / 2)\n```\n![图343](./figures/fig_8cd4e9c461.png)\n![图344](./figures/fig_e30db4851f.png)\n```Python\ninput_image_cp = np.pad(input_image_cp, (pad_num, pad_num), mode=\"constan\n```\n```\nt\", constant_values=0)\n2\n3 # 获取图像的大小\n4\n5 m, n = input_image_cp.shape\n6\n7 output_image = np.copy(input_image_cp)\n8\n9 # 遍历图像进行滤波\n10\n11 for i in range(pad_num, m - pad_num):\n12\n13 for j in range(pad_num, n - pad_num):\n14 15 output_image[i, j] = np.sum(filter_template * input_im age_cp[i - pad_num:i + pad_num + 1, j - pad_num:j + pad_num + 1]) / (filte r_size ** 2)\n16\n17 # 输出滤波后结果\n18 19 output_image = output_image[pad_num:m - pad_num, pad_num:n - pad_num] 20\n21 return output_image\n```",
+    "extend": ""
+  },
+  {
+    "id": 165,
+    "category": "计算机视觉",
+    "question": "41. Graph-cut的基本原理和应用",
+    "answer": "GraphCut方法图像分割问题与图的最小割(min cut)问题相关联。首先用一个无向图G=表示要分割的图像,V和E分别是顶点(vertex)和边(edge)的集合。此处的Graph和普通的Graph稍有不同。普通的图由顶点和边构成,如果边的有方向的,这样的图被则称为有向图,否则为无向图,且边是有权值的,不同的边可以有不同的权值,分别代表不同的物理意义。而Graph Cuts图是在普通图的基础上多了2个顶点,这2个顶点分别用符号”S”和”T”表示,统称为终端顶点。其它所有的顶点都必须和这2个顶点相连形成边集合中的一部分。根据待分割的图像,确定图的节点与边,即图的形状已确定下来,是给图中所有边赋值相应的权值,然后找到权值和最小的边的组合,就完成了图像分割。",
+    "extend": ""
+  },
+  {
+    "id": 166,
+    "category": "计算机视觉",
+    "question": "42. 写一个图像的resize方法",
+    "answer": "实现图像的缩放,要求不能直接使用opencv等图像处理工具:\n\n获取要处理的图像及图像缩放后的大小确定缩放比例遍历缩放后的结果,利用双线性插值法完成图像的缩放\n![图345](./figures/fig_bfc15b63ef.png)\n![图346](./figures/fig_7f666f35cc.png)\n```Python\ndef image_Resize(src, shape):\n```\n```\n2\n3 # 获取原图像和图像缩放后的大小.\n4\n5 height, width, channels = src.shape\n6\n7 dst_width, dst_height = shape\n8\n9 # 若缩放后大小与原图像相同,则直接放回原图像\n10 11 if ((dst_height == height) and (dst_width == width)): 12\n13 return src\n14\n15 # 创建全0数组存放缩放后图像\n16 17 dst_Image = np.zeros((dst_height, dst_width, channels), np.uint8) 18\n19 # 缩放比例.\n20\n21 scale_x = float(width)/dst_width\n22\n23 scale_y = float(height)/dst_height\n24\n25 # 遍历\n26\n27 for k in range(channels):\n28\n29 for dst_y in range(dst_height):\n30\n31 for dst_x in range(dst_width):\n32\n33 # Original coords.\n34\n35 src_x = (dst_x + 0.5) * scale_x - 0.5\n36\n37 src_y = (dst_y + 0.5) * scale_y - 0.5\n38\n39 # 双线性插值\n40\n41 src_x_0 = int(np.floor(src_x))\n42\n43 src_y_0 = int(np.floor(src_y))\n44\n45 src_x_1 = min(src_x_0 + 1, width - 1)\n```\n![图347](./figures/fig_363a5148c0.png)\n| 464748495051525354555657585960 | src_y_1 = min(src_y_0 + 1, height - 1) value0 = (src_x_1 - src_x) * src[src_y_0, src_x_0, k] + (src_x - src_x_0) * src[src_y_0, src_x_1, k] value1 = (src_x_1 - src_x) * src[src_y_1, src_x_0, k] + (src_x - src_x_0) * src[src_y_1, src_x_1, k] # 缩放后结果 dst_Image[dst_y, dst_x, k] = int((src_y_1 - src_y) * value0 +  (src_y - src_y_0) * value1) return dst_Image |\n| --- | --- |",
+    "extend": ""
+  },
+  {
+    "id": 167,
+    "category": "计算机视觉",
+    "question": "43. 图像中直方图的应用",
+    "answer": "直方图就是对数据进行统计的一种方法,并且将统计值组织到一系列实现定义好的 bin 当中。其中, bin 为直方图中经常用到的一个概念,可以译为 “直条” 或 “组距”,其数值是从数据中计算出的特征统计量,这些数据可以是诸如梯度、方向、色彩或任何其他特征。且无论如何,直方图获得的是数据分布的统计图。通常直方图的维数要低于原始数据。图像直方图(Image Histogram)是用以表示数字图像中亮度分布的直方图,标绘了图像中每个亮度值的像素数。这种直方图中,横坐标的左侧为纯黑、较暗的区域,而右侧为较亮、纯白的区域。因此一张较暗图片的直方图中的数据多集中于左侧和中间部分,而整体明亮、只有少量阴影的图像则相反。CV 领域常借助图像直方图来实现图像的二值化。直方图的性质:\n\n- 直⽅图反映了图像中的灰度分布规律。它描述每个灰度级具有的像元个数，但不包含这些像元在图像中的位置信息。\n\n- 任何⼀幅特定的图像都有唯⼀的直⽅图与之对应，但不同的图像可以有相同的直⽅图。如果⼀幅图像有两个不相连的区域组成，并且每个区域的直⽅图已知，则整幅图像的直⽅图是该两个区域的直⽅图之和。应用方式如下所示:\n\n- 每幅图像都可做出其灰度直⽅图。根据直⽅图的形态可以⼤致推断图像质量的好坏。由于图像包含有⼤量的像元，其像元灰度值的分布应符合概率统计分布规律。假定像元的灰度值是随机分布的,那么其直方图应该是正态分布。\n\n- 图像的灰度值是离散变量，因此直⽅图表示的是离散的概率分布。若以各灰度级的像元数占总像元数的⽐例值为纵坐标轴做出图像的直方图,将直方图中各条形的最高点连成一条外轮廓线,纵坐标的比例值即为某灰度级出现的概率密度,轮廓线可近似看成图像相应的连续函数的概率分布曲线",
+    "extend": ""
+  },
+  {
+    "id": 168,
+    "category": "计算机视觉",
+    "question": "44. SIFT/SURF的特征提取方法,是如何保持尺度不变性的?",
+    "answer": "主要考察SIFT/SURF特征的理解,SIFT算法的实质是在不同的尺度空间上查找关键点(特征点),并计算出关键点的方向。SIFT所查找到的关键点是一些十分突出,不会因光照,仿射变换和噪音等因素而变化的点,如⻆点、边缘点、暗区的亮点及亮区的暗点等。尺度空间极值检测:搜索所有尺度上的图像位置。通过高斯差分函数来识别潜在的对于尺度和旋转不变的关键点。关键点定位:在每个候选的位置上,通过一个拟合精细的模型来确定位置和尺度。关键点的选择依据于它们的稳定程度。关键点方向确定:基于图像局部的梯度方向,分配给每个关键点位置一个或多个方向。所有后面的对图像数据的操作都相对于关键点的方向、尺度和位置进行变换,从而保证了对于这些变换的不变性。\n![图348](./figures/fig_295eb48a03.png)\n![图349](./figures/fig_7111f2d5a7.png)\n![图350](./figures/fig_20d22a5cff.png)\n关键点描述:在每个关键点周围的邻域内,在选定的尺度上测量图像局部的梯度。这些梯度作为关键点的描述符,它允许比较大的局部形状的变形或光照变化。\n\nSURF 算法,是SIFT算法的增强版,它的计算量小,运算速度快,提取的特征与SIFT几乎相同。\n\nSIFT/SURF特征:尺度不变特征转换,在空间尺度中寻找极值,提取位置,尺度、旋转不变量。流程是:尺度空间极值检测—>关键点定位—>关键点方向确定—>关键点描述",
+    "extend": ""
+  },
+  {
+    "id": 169,
+    "category": "数据结构算法",
+    "question": "1. 1 第二高的薪水",
+    "answer": "需求分析:\n\n编写一个 SQL 查询,获取 Employee 表中第二高的薪水(Salary.\n\n如果不存在第二高的薪水,那么查询应返回 NULL 网址:https://leetcode-cn.com/problems/second-highest-salary/ 建表语句\n```Python\nCreate table If Not Exists Employee (Id int, Salary int);\nTruncate table Employee;\ninsert into Employee (Id, Salary) values ('1', '100');\ninsert into Employee (Id, Salary) values ('2', '200');\ninsert into Employee (Id, Salary) values ('3', '300');\n```\n如下图:\n\n解题思路\n![图351](./figures/fig_3dc8b10112.png)\n![图352](./figures/fig_6499a69f7d.png)\n![图353](./figures/fig_5b37830d15.png)\n![图354](./figures/fig_1303509464.png)\n![图355](./figures/fig_b879dc12b8.png)\n![图356](./figures/fig_371d6b13ac.png)\n```Python\nSELECT salary\nFROM employee ORDER BY salary DESC LIMIT 1,1\n#思路1:limit 1,1   第⼀个1代表从索引1开始，第⼆个1代表取1条数据\n```\n```\n4 5 //考虑:如果只有一条记录,则找不到第二条记录,会出错,因此需要使用ifnull进行判断6 SELECT IFNULL(\n7 (SELECT salary FROM employee\n8 ORDER BY salary desc LIMIT 1,1),NULL\n9 ) AS secondsalary\n10 11 //考虑:如果排名第一的工资有几个,那就取不到排名第二的工资了,可以对工资进行查重(最标准的答案)\n12 SELECT IFNULL(\n13 (SELECT DISTINCT salary FROM employee\n14 ORDER BY salary DESC LIMIT 1,1),NULL\n15 ) AS secondsalary\n16\n17 #思路2:还可以用排名函数\n18 row_number()\n19 rank()\n20 dense_rank()\n21\n22 SELECT DISTINCT salary FROM (\n23 SELECT salary,\n24 dense_rank() over(ORDER BY salary DESC) num\n25 FROM employee) tmp WHERE num=2\n```\n查询结果如果数据只有1条,返回null值:",
+    "extend": ""
+  },
+  {
+    "id": 170,
+    "category": "数据结构算法",
+    "question": "1. 2 有趣的电影",
+    "answer": "需求分析\n![图357](./figures/fig_69af4a0fee.png)\n某城市开了一家新的电影院,吸引了很多人过来看电影。该电影院特别注意用户体验,专⻔有个 LED显示板做电影推荐,上面公布着影评和相关电影描述。作为该电影院的信息部主管,您需要编写一个 SQL查询,找出所有影片描述为非 boring (不无聊) 的并且 id 为奇数的影片,结果请按等级 rating 排列。链接:https://leetcode-cn.com/problems/not-boring-movies 建表语句\n\n\n```\n1\nCreate table If Not Exists cinema (id int, movie varchar(255), descriptio n varchar(255), rating float(2, 1));\n2 Truncate table cinema; 3 insert into cinema (id, movie, description, rating) values ('1', 'War', 'g reat 3D', '8.9'); 4 insert into cinema (id, movie, description, rating) values ('2', 'Science' , 'fiction', '8.5'); 5 insert into cinema (id, movie, description, rating) values ('3', 'irish', 'boring', '6.2'); 6 insert into cinema (id, movie, description, rating) values ('4', 'Ice son g', 'Fantacy', '8.6'); 7 insert into cinema (id, movie, description, rating) values ('5', 'House ca rd', 'Interesting', '9.1');\n8 9 +---------+-----------+--------------+-----------+ 10 |   id    | movie     |  description |  rating   | 11 +---------+-----------+--------------+-----------+ 12 |   1     | War       |   great 3D   |   8.9     | 13 |   2     | Science   |   fiction    |   8.5     | 14 |   3     | irish     |   boring     |   6.2     | 15 |   4     | Ice song  |   Fantacy    |   8.6     | 16 |   5     | House card|   Interesting|   9.1     | 17 +---------+-----------+--------------+-----------+\n```\n解题思路: \n![图358](./figures/fig_b1a41fd76e.png)\n```SQL\n#解法⼀:\nSELECT\n*\nFROM\ncinema\nWHERE\nid %2 != 0 #得到不能被2整除的结果 => 奇数\nAND\ndescription != 'boring' #得到不为boring的结果\nORDER BY\nrating DESC #根据rating排序, DESC为降序\n-----------------------------------------------------------\n#解法⼆:\nSELECT\n*\nFROM\ncinema\nWHERE\nid %2 = 1\nAND\ndescription <> 'boring' #不等于号的另⼀种表达⽅法\nORDER BY\nrating DESC\n-----------------------------------------------------------\n#优化版:\nSELECT\n*\nFROM\ncinema\nWHERE\nMOD(id,2) = 1 #使⽤MOD()取余函数\nAND\ndescription <> 'boring'\nORDER BY\nrating DESC\n-----------------------------------------------------------\n```",
+    "extend": ""
+  },
+  {
+    "id": 171,
+    "category": "数据结构算法",
+    "question": "1. 3 查询结果",
+    "answer": "![图359](./figures/fig_130e1e3fb8.png)\n![图360](./figures/fig_01a472366c.png)\n![图361](./figures/fig_82b68e5d97.png)\n![图362](./figures/fig_2c4ecbf313.png)\n```Python\n+---------+-----------+--------------+-----------+\n|   id    | movie     |  description |  rating   |\n+---------+-----------+--------------+-----------+\n|   5     | House card|   Interesting|   9.1     |\n|   1     | War       |   great 3D   |   8.9     |\n+---------+-----------+--------------+-----------+\n```\n补充:\n\nMOD 和 % :\n\n(1)% 结果有正数也有负数, mod的结果也能为正数或负数 a % b = a - a/b * b\n\n3 % -2 = 3 - (-1*-2) = 3 - 2 = 1\n\n-3 % 2 = -3 - (-1*2) = -3 + 2 = -1\n\n-3 % -2 = -3 - (1 * -2) = -3 + 2 = -1 //结论: % 的结果符号取决于左操作数的符号注意不要将SQL中的MOD函数与java中的混淆\n\n(2)MOD(a,b)返回a/b的余数, 如果b=0, 则返回a. MOD函数支持小数运算",
+    "extend": ""
+  },
+  {
+    "id": 172,
+    "category": "数据结构算法",
+    "question": "2. 两数之和",
+    "answer": "问题链接:https://leetcode-cn.com/problems/two-sum/",
+    "extend": ""
+  },
+  {
+    "id": 173,
+    "category": "数据结构算法",
+    "question": "2. 1 问题描述",
+    "answer": "给定一个整数数组 nums 和一个目标值 target,请你在该数组中找出和为目标值的那两个整数,并返回他们的数组下标。你可以假设每种输入只会对应一个答案。但是,你不能重复利用这个数组中同样的元素。\n```SQL\n给定 nums = [2, 7, 11, 15], target = 9\n因为 nums[0] + nums[1] = 2 + 7 = 9\n所以返回 [0, 1]\n```",
+    "extend": ""
+  },
+  {
+    "id": 174,
+    "category": "数据结构算法",
+    "question": "2. 2 参考答案",
+    "answer": "![图363](./figures/fig_b9df4c9a59.png)\n![图364](./figures/fig_7ed2527cf2.png)\n![图365](./figures/fig_2ea2a50d51.png)\n![图366](./figures/fig_58a8c84ae8.png)\n```Python\nclass Solution:\ndef twoSum(self,nums, target):\n\"\"\"\n:type nums: List[int]\n:type target: int\n:rtype: List[int]\n\"\"\"\n#⽤len()⽅法取得nums列表的⻓度\nn = len(nums)\n#x取值从0⼀直到n（不包括n）\nfor x in range(n):\n#y取值从x+1⼀直到n（不包括n）\n#⽤x+1是减少不必要的循环,y的取值肯定是⽐x⼤\nfor y in range(x+1,n):\n#假如 target-nums[x]的某个值存在于nums中\nif nums[y] == target - nums[x]:\n#返回x和y\nreturn x,y\nbreak\nelse:\ncontinue\n```",
+    "extend": ""
+  },
+  {
+    "id": 175,
+    "category": "数据结构算法",
+    "question": "3. 最⻓回文子串",
+    "answer": "链接:https://leetcode-cn.com/problems/longest-palindromic-substring/",
+    "extend": ""
+  },
+  {
+    "id": 176,
+    "category": "数据结构算法",
+    "question": "3. 1 问题描述",
+    "answer": "给定一个字符串 s,找到 s 中最⻓的回文子串。你可以假设 s 的最大⻓度为 1000。示例 1: \n```SQL\n输⼊: \"babad\"\n输出: \"bab\"\n注意: \"aba\" 也是⼀个有效答案。\n```\n示例 2: \n```SQL\n输⼊: \"cbbd\"\n输出: \"bb\"\n```\n![图367](./figures/fig_2467b8d016.png)\n![图368](./figures/fig_d096d2a736.png)",
+    "extend": ""
+  },
+  {
+    "id": 177,
+    "category": "数据结构算法",
+    "question": "3. 2 参考答案",
+    "answer": "```Python\n解题思路定义函数 help，参数 left 不断向左扩展，参数 right 不断向右扩展，找到回⽂⼦串的⻓度。遍历字符串 s，针对每个字符，判断以字符为中⼼的回⽂⼦串。class Solution: def longestPalindrome(self, s: str) -> str: # 以[left,right]为中⼼不断外扩, 找到回⽂⼦串. def help(s, left, right): N = len(s) while left >= 0 and right < N and s[left] == s[right]: left -= 1 right += 1 # 返回回⽂⼦串的⻓度 return right - left - 1\n```\n```\n14\n15 if not s:\n16 return \"\"\n17 start, end = 0, 0\n18 for i in range(len(s)):\n19 # 注意: \"abba\"和\"aba\"两种情况\n20 len1, len2 = help(s, i, i), help(s, i, i + 1)\n21 len0 = max(len1, len2)\n22 # 找到回文子串的起始~终止索引\n23 if len0 > end - start:\n24 start = i - (len0 - 1) // 2\n25 end = i + len0 // 2\n26 return s[start:end + 1]\n```",
+    "extend": ""
+  },
+  {
+    "id": 178,
+    "category": "数据结构算法",
+    "question": "4. LRU缓存机制",
+    "answer": "链接:https://leetcode-cn.com/problems/lru-cache/",
+    "extend": ""
+  },
+  {
+    "id": 179,
+    "category": "数据结构算法",
+    "question": "4. 1 问题描述",
+    "answer": "运用你所掌握的数据结构,设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作: 获取数据 get 和写入数据 put 。获取数据 get(key) - 如果密钥 (key) 存在于缓存中,则获取密钥的值(总是正数),否则返回 -1。写入数据 put(key, value) - 如果密钥不存在,则写入其数据值。当缓存容量达到上限时,它应该在写入新数据之前删除最近最少使用的数据值,从而为新的数据值留出空间。进阶:\n\n你是否可以在 O(1) 时间复杂度内完成这两种操作?\n\n示例: \n![图369](./figures/fig_1df1120137.png)\n![图370](./figures/fig_d18a9a503d.png)\n![图371](./figures/fig_c4d72f8017.png)\n```SQL\nLRUCache cache = new LRUCache( 2 /* 缓存容量 */ );\ncache.put(1, 1);\ncache.put(2, 2);\ncache.get(1); // 返回 1\ncache.put(3, 3); // 该操作会使得密钥 2 作废\ncache.get(2); // 返回 -1 (未找到)\ncache.put(4, 4); // 该操作会使得密钥 1 作废\ncache.get(1); // 返回 -1 (未找到)\ncache.get(3); // 返回 3\ncache.get(4); // 返回 4\n```",
+    "extend": ""
+  },
+  {
+    "id": 180,
+    "category": "数据结构算法",
+    "question": "4. 2 参考答案",
+    "answer": "```Python\npython中有⼀个标准库的类的OrderedDict，该类有以下两个⽅法⽤来实现LRU算法就⼗分简单：\n```\n```\n2 3 popitem(last=True):有序字典的 popitem() 方法移除并返回一个 (key, value) 键值对。 如果 last 值为真,则按 LIFO 后进先出的顺序返回键值对,否则就按 FIFO 先进先出的顺序返回键值对。\n4 move_to_end(key, last=True):将现有 key 移动到有序字典的任一端。 如果 last 为真值(默认)则将元素移至末尾;如果 last 为假值则将元素移至开头。如果 key 不存在则会触发 Ke yError 5 from collections import OrderedDict, defaultdict 6\n7 class LRU:\n8 def __init__(self, capacity=128):\n9 self.capacity = capacity    # 缓存容量\n10 self.cache = OrderedDict()  # 有序字典缓存\n11\n12 def put(self, key, value):\n13 \"\"\"数据录入缓存\"\"\"\n14 if key in self.cache: 15 # 若数据已存在,表示命中一次,需要把数据移到缓存队列末端16 self.cache.move_to_end(key)\n17 return\n18 if len(self.cache) >= self.capacity:\n19 # 若缓存已满,则需要淘汰最早没有使用的数据\n20 self.cache.popitem(last=False)\n21 # 录入缓存\n22 self.cache[key]=value\n23\n```\n![图372](./figures/fig_dd623f9ebb.png)\n![图373](./figures/fig_5424445e2a.png)\n![图374](./figures/fig_e818b97491.png)\n```Python\ndef travel(self):\n\"\"\"遍历key\"\"\"\nfor key in self.cache.keys():\nprint(key)\n```\n```\n5\n6 if __name__ == '__main__':\n7 l = LRU(3)       # 实例化缓存容量为3\n8 l.put('a','aa')  # 此时缓存未满,则录入数据a\n9 l.put('b','bb')  # 此时缓存未满,则录入数据b\n10 l.put('c','cc')  # 此时缓存未满,则录入数据c 11 l.put('a','aa')  # 此时缓存已满,但是a已存在缓存中,则命中一次12 # l.travel()     # 输出 b c a\n13 l.put('d','dd')  # 此时缓存已满,淘汰掉最久不用的b\n14 l.travel()       # 输出 c a d\n```",
+    "extend": ""
+  },
+  {
+    "id": 181,
+    "category": "数据结构算法",
+    "question": "5. 爬楼梯",
+    "answer": "问题链接:https://leetcode-cn.com/problems/climbing-stairs/",
+    "extend": ""
+  },
+  {
+    "id": 182,
+    "category": "数据结构算法",
+    "question": "5. 1 问题描述",
+    "answer": "假设你正在爬楼梯。需要 n 阶你才能到达楼顶。每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢?\n\n注意:给定 n 是一个正整数。示例 1: \n```SQL\n输⼊： 2\n输出： 2\n解释： 有两种⽅法可以爬到楼顶。\n1. 1 阶 + 1 阶\n2. 2 阶\n```\n示例 2: \n![图375](./figures/fig_18bef11247.png)\n![图376](./figures/fig_c56145d101.png)\n![图377](./figures/fig_01a472366c.png)\n![图378](./figures/fig_d398644543.png)\n![图379](./figures/fig_e5f334a644.png)\n```SQL\n输⼊： 3\n输出： 3\n解释： 有三种⽅法可以爬到楼顶。\n1. 1 阶 + 1 阶 + 1 阶\n2. 1 阶 + 2 阶\n3. 2 阶 + 1 阶\n```",
+    "extend": ""
+  },
+  {
+    "id": 183,
+    "category": "数据结构算法",
+    "question": "5. 2 参考答案",
+    "answer": "```Python\n# python3class Solution: def climbStairs(self, n: int) -> int: if n == 1: return 1 elif n == 2: return 2 else: return Solution.climbStairs(self,n-1)+Solution.climbStairs(self\n```\n```\n,n-2)\n```",
+    "extend": ""
+  },
+  {
+    "id": 184,
+    "category": "数据结构算法",
+    "question": "6. 翻转二叉树",
+    "answer": "链接:https://leetcode-cn.com/problems/invert-binary-tree/",
+    "extend": ""
+  },
+  {
+    "id": 185,
+    "category": "数据结构算法",
+    "question": "6. 1 问题描述",
+    "answer": "翻转一棵二叉树。示例:\n\n输入:\n```SQL\n4\n/ \\\n2 7\n/ \\ / \\\n1 3 6 9\n```\n输出:\n![图380](./figures/fig_987d905010.png)\n![图381](./figures/fig_a681c33a92.png)\n![图382](./figures/fig_7111f2d5a7.png)\n![图383](./figures/fig_658224ac56.png)\n![图384](./figures/fig_705f71031b.png)\n```SQL\n4\n/ \\\n7 2\n/ \\ / \\\n9 6 3 1\n```",
+    "extend": ""
+  },
+  {
+    "id": 186,
+    "category": "数据结构算法",
+    "question": "6. 2 参考答案",
+    "answer": "```Python\n# Definition for a binary tree node.# class TreeNode(object): #     def __init__(self, val=0, left=None, right=None): #         self.val = val#         self.left = left#         self.right = rightclass Solution(object): def invertTree(self, root): \"\"\" :type root: TreeNode :rtype: TreeNode \"\"\" if root is None:  # 递归终⽌判断 return  self.invertTree(root.left)  # 左⼦树递归 self.invertTree(root.right)  # 右⼦树递归 root.left, root.right = root.right, root.left  # 左右字树翻转 return root  # 返回根节点\n```",
+    "extend": ""
+  },
+  {
+    "id": 187,
+    "category": "数据结构算法",
+    "question": "7. 反转链表",
+    "answer": "链接:https://leetcode-cn.com/problems/reverse-linked-list/",
+    "extend": ""
+  },
+  {
+    "id": 188,
+    "category": "数据结构算法",
+    "question": "7. 1 问题描述",
+    "answer": "反转一个单链表。示例\n```SQL\n输⼊: 1->2->3->4->5->NULL\n输出: 5->4->3->2->1->NULL\n```",
+    "extend": ""
+  },
+  {
+    "id": 189,
+    "category": "数据结构算法",
+    "question": "7. 2 参考答案",
+    "answer": "![图385](./figures/fig_b49580040f.png)\n![图386](./figures/fig_1492417d15.png)\n![图387](./figures/fig_35788982f2.png)\n![图388](./figures/fig_ecd7d5cdb6.png)\n```Python\n迭代法：\nclass Solution(object):\ndef reverseList(self, head):\n\"\"\"\n:type head: ListNode\n:rtype: ListNode\n\"\"\"\nif not head or not head.next:\nreturn head\npre, cur = None, head\nwhile cur:\ntmp = cur.next #保存尾部\ncur.next = pre #逆转局部\npre = cur #pre后移\ncur = tmp #cur后移\nreturn pre\n```",
+    "extend": ""
+  },
+  {
+    "id": 190,
+    "category": "数据结构算法",
+    "question": "8. 冒泡排序的思想?",
+    "answer": "冒泡思想:通过无序区中相邻记录的关键字间的比较和位置的交换,使关键字最小的记录像气泡一样逐渐向上漂至水面。整个算法是从最下面的记录开始,对每两个相邻的关键字进行比较,把关键字较小的记录放到关键字较大的记录的上面,经过一趟排序后,关键字最小的记录到达最上面,接着再在剩下的记录中找关键字次小的记录,把它放在第二个位置上,依次类推,一直到所有记录有序为止复杂度:时间复杂度为O(n2),空间复杂度为O(1) \n```Python\ndef bubble_sort(alist):\nfor j in range(len(alist)-1，0，-1):\n# j表示每次遍历需要⽐较的次数，是逐渐减⼩的\nfor i in range(j):\nif alist[i] > alist[i+1]:\nalist[i]， alist[i+1] = alist[i+1]， alist[i]\n```\n```\n7\n8 li = [54,26,93,17,77,31,44,55,20]\n9 bubble_sort(li)\n10 print(li)\n```",
+    "extend": ""
+  },
+  {
+    "id": 191,
+    "category": "数据结构算法",
+    "question": "9. 快速排序的思想?",
+    "answer": "快排的基本思想:通过一躺排序将要排序的数据分割成独立的两部分,其中一部分的所有数据都比另外一不部分的所有数据都要小,然后再按此方法对这两部分数据分别进行快速排序,整个排序过程可以递归进行,以此达到整个数据变成有序序列。复杂度:快速排序是不稳定的排序算法,最坏的时间复杂度是O(n2),最好的时间复杂度是(nlogn),空间复杂度为O(logn) \n![图389](./figures/fig_f654497fcf.png)\n![图390](./figures/fig_4026fee370.png)\n```Python\ndef quick_sort(alist， start， end): \"\"\"快速排序\"\"\" # 递归的退出条件 if start >= end: return # 设定起始元素为要寻找位置的基准元素 mid = alist[start] # low为序列左边的由左向右移动的游标 low = start # high为序列右边的由右向左移动的游标 high = end while low < high: # 如果low与high未重合，high指向的元素不⽐基准元素⼩，则high向左移动 while low < high and alist[high] >= mid: high -= 1 # 将high指向的元素放到low的位置上 alist[low] = alist[high] # 如果low与high未重合，low指向的元素⽐基准元素⼩，则low向右移动 while low < high and alist[low] < mid: low += 1 # 将low指向的元素放到high的位置上 alist[high] = alist[low] # 退出循环后，low与high重合，此时所指位置为基准元素的正确位置 # 将基准元素放到该位置 alist[low] = mid # 对基准元素左边的⼦序列进⾏快速排序 quick_sort(alist， start， low-1) # 对基准元素右边的⼦序列进⾏快速排序 quick_sort(alist， low+1， end)alist = [54，26，93，17，77，31，44，55，20]quick_sort(alist，0，len(alist)-1)print(alist)\n```",
+    "extend": ""
+  },
+  {
+    "id": 192,
+    "category": "数据结构算法",
+    "question": "10. 如何判断单向链表中是否有环?",
+    "answer": "首先遍历链表,寻找是否有相同地址,借此判断链表中是否有环。如果程序进入死循环,则需要一块空间来存储指针,遍历新指针时将其和储存的旧指针比对,若有相同指针,则该链表有环,否则将这个新指针存下来后继续往下读取,直到遇⻅NULL,这说明这个链表无环。",
+    "extend": ""
+  },
+  {
+    "id": 193,
+    "category": "数据结构算法",
+    "question": "11. 基础的数据结构有哪些,怎么评价一个算法的好坏?",
+    "answer": "基本的算法有: 排序算法(冒泡排序,插入排序, 快速排序, 归并排序), 查找(二分查找),搜索((DFS)深度优先搜索,(BFS)广度优先搜索),(Dijkstra算法),动态规划算法,分类(朴素⻉叶斯分类算法等)。评价算法的好坏一般有两种: 时间复杂度和空间复杂度。 \n![图391](./figures/fig_c8857cd3fd.png)\n![图392](./figures/fig_f707bf5d5e.png)\n![图393](./figures/fig_aec0888f18.png)\n![图394](./figures/fig_47407bff55.png)\n- 时间复杂度：同样的输⼊规模(问题规模)花费多少时间。空间复杂度：同样的输⼊规模花费多少空间(主要是内存)。以上两点越小越好。稳定性:不会因为输入的不同而导致不稳定的情况发生。算法的思路是否简单:越简单越容易实现的越好。",
+    "extend": ""
+  },
+  {
+    "id": 194,
+    "category": "数据结构算法",
+    "question": "12. 哪种数据结构可以实现递归?",
+    "answer": "栈可以实现,递归需要保存正在计算的上下文, 等待当前计算完成后弹出,再继续计算, 只有栈先进后出的特性才能实现。",
+    "extend": ""
+  },
+  {
+    "id": 195,
+    "category": "数据结构算法",
+    "question": "13. 你知道哪些排序算法",
+    "answer": "冒泡, 选择, 快排, 归并。",
+    "extend": ""
+  },
+  {
+    "id": 196,
+    "category": "数据结构算法",
+    "question": "14. 斐波那契数列",
+    "answer": "斐波那契数列:简单地说,起始两项为 0 和 1,此后的项分别为它的前两项之和。 \n```Python\ndef fibo(num):\nnumList = [0，1]\nfor i in range(num - 2):\nnumList.append(numList[-2] + numList[-1])\nreturn numList\n```",
+    "extend": ""
+  },
+  {
+    "id": 197,
+    "category": "数据结构算法",
+    "question": "15. 二叉树如何求两个叶节点的最近公共祖先?",
+    "answer": "二叉树是搜索二叉树 :\n\n1)原理:二叉搜索树是排序过的 ,位于左子树的结点都比父结点小,位于右子树的结点都比父结点大,我们只需从根节点开始和两个输入的结点进行比较,如果当前节点的值比两个结点的值都大,那么最低的公共祖先结点一定在该结点的左子树中,下一步开遍历当前结点的左子树。如果当前节点的值比两个结点的值都小,那么最低的公共祖先结点一定在该结点的右子树中,下一步开遍历当前结点的右子树。这样从上到下找到第一个在两个输入结点的值之间的结点。\n\n2)实现代码 : \n![图395](./figures/fig_8af473f162.png)\n![图396](./figures/fig_c15d2b0602.png)\n![图397](./figures/fig_8bffdfa14d.png)\n![图398](./figures/fig_2dda1737c0.png)\n```Python\nclass TreeNode(object）：\ndef __init__(self， left=None， right=None， data=None):\nself.data = data\nself.left = left\nself.right = right\ndef getCommonAncestor(root， node1， node2):\nwhile root:\nif root.data > node1.data and root.data > node2.data:\nroot = root.left\nelif root.data < node1.data and root.data < node2.data:\nroot = root.right\nelse:\nreturn root\nreturn None\n```",
+    "extend": ""
+  },
+  {
+    "id": 198,
+    "category": "数据结构算法",
+    "question": "16. 两个字符串,如何求公共字符串?",
+    "answer": "```Python\ndef getLCString(str1， str2):\nmaxlen = len(str1) if len(str1) < len(str2) else len(str2)\nexample = str1 if len(str1) < len(str2) else str2\nother = str2 if str1 == example else str1\nfor i in range(maxlen):\nfor j in range(maxlen， 0， -1):\nif other.find(example[i:j]) != -1:\nreturn example[i:j]\n```",
+    "extend": ""
+  },
+  {
+    "id": 199,
+    "category": "数据结构算法",
+    "question": "17. 找出二叉树中最远结点的距离?",
+    "answer": "计算一个二叉树的最大距离有两个情况。情况A: 路径经过左子树的最深节点,通过根节点,再到右子树的最深节点。情况B: 路径不穿过根节点,而是左子树或右子树的最大距离路径,取其大者。只需要计算这两个情况的路径距离,并取其大者,就是该二叉树的最大距离。",
+    "extend": ""
+  },
+  {
+    "id": 200,
+    "category": "数据结构算法",
+    "question": "18. 写一个二叉树",
+    "answer": "![图399](./figures/fig_8d79d4d785.png)\n![图400](./figures/fig_a023d5ef96.png)\n![图401](./figures/fig_c99c6e3706.png)\n![图402](./figures/fig_9a628b30ff.png)\n```Python\nclass TreeNode(object):\ndef __init__(self， left=None， right=None， data=None):\nself.data = data\nself.left = left\nself.right = right\ndef preorder(root): #前序遍历\nif root is None:\nreturn\nelse:\nprint root.data\npreorder(root.left)\npreorder(root.right)\n```\n```\n13\n14 def inorder(root): #中序遍历\n15 if root is None:\n16 return\n17 else:\n18 inorder(root.left)\n19 print root.data\n20 inorder(root.right)\n21\n22 def postorder(root): # 后序遍历\n23 if root is None:\n24 return\n25 postorder(root.left)\n26 postorder(root.right)\n27 print root.data\n```",
+    "extend": ""
+  },
+  {
+    "id": 201,
+    "category": "数据结构算法",
+    "question": "19. 写一个二分查找",
+    "answer": "```Python\ndef binary_search(a， n， key):\nm = 0; l = 0; r = n - 1#闭区间[0， n - 1]\nwhile (l < r):\nm = l + ((r - l) >> 1)#向下取整\nif (a[m] < key): l = m + 1;\nelse: r = m;\n```\n```\n7\n8 if (a[r] == key): return r;\n9 return -1\n```",
+    "extend": ""
+  },
+  {
+    "id": 202,
+    "category": "数据结构算法",
+    "question": "20. set 用 in 时间复杂度是多少,为什么?",
+    "answer": "O(1),因为set是键值相同的一个数据结构,键做了hash处理。",
+    "extend": ""
+  },
+  {
+    "id": 203,
+    "category": "数据结构算法",
+    "question": "21. 深度优先遍历和广度优先遍历的区别?",
+    "answer": "1) 二叉树的深度优先遍历的非递归的通用做法是采用栈,广度优先遍历的非递归的通用做法是采用队列。\n\n2) 深度优先遍历:对每一个可能的分支路径深入到不能再深入为止,而且每个结点只能访问一次。要特别注意的是,二叉树的深度优先遍历比较特殊,可以细分为先序遍历、中序遍历、后序遍历。具体说明如下:\n\n- 先序遍历：对任⼀⼦树，先访问根，然后遍历其左⼦树，最后遍历其右⼦树。中序遍历：对任⼀⼦树，先遍历其左⼦树，然后访问根，最后遍历其右⼦树。后序遍历：对任⼀⼦树，先遍历其左⼦树，然后遍历其右⼦树，最后访问根。广度优先遍历:又叫层次遍历,从上往下对每一层依次访问,在每一层中,从左往右(也可以从右往左)访问结点,访问完一层就进入下一层,直到没有结点可以访问为止。\n\n3)深度优先搜素算法:不全部保留结点,占用空间少;有回溯操作(即有入栈、出栈操作),运行速度慢。广度优先搜索算法:保留全部结点,占用空间大; 无回溯操作(即无入栈、出栈操作),运行速度快。通常,深度优先搜索法不全部保留结点,扩展完的结点从数据库中弹出删去,这样,一般在数据库中存储的结点数就是深度值,因此它占用空间较少。所以,当搜索树的结点较多,用其它方法易产生内存溢出时,深度优先搜索不失为一种有效的求解方法。广度优先搜索算法,一般需存储产生的所有结点,占用的存储空间要比深度优先搜索大得多,因此,程序设计中,必须考虑溢出和节省内存空间的问题。但广度优先搜索法一般无回溯操作,即入栈和出栈的操作,所以运行速度比深度优先搜索要快些。",
+    "extend": ""
+  },
+  {
+    "id": 204,
+    "category": "数据结构算法",
+    "question": "22. ⻘蛙跳台阶问题",
+    "answer": "一只⻘蛙要跳上n层高的台阶,一次能跳一级,也可以跳两级,请问这只⻘蛙有多少种跳上这个n层高台阶的方法?\n\n思路分析:\n\n这个问题有三种方法来解决,并在下面给出三处方法的python实现。方法一:递归设⻘蛙跳上n级台阶有f(n)种方法,把这n种方法分为两大类,第一种最后一次跳了一级台阶,这类方法共有f(n-1)种,第二种最后一次跳了两级台阶,这种方法共有f(n-2)种,则得出递推公式f(n)=f(n-1)+f(n-2),显然,f(1)=1,f(2)=2,递推公式如下:\n\n* 这种方法虽然代码简单,但效率低,会超出时间上限* 代码实现如下:\n![图403](./figures/fig_6e88a8282c.png)\n![图404](./figures/fig_3099f77110.png)\n![图405](./figures/fig_2c425c06ce.png)\n```Python\nclass Solution:\n# @param {integer} n\n# @return {integer}\ndef climbStairs(self， n):\nif n==1:\nreturn 1\nelif n==2:\nreturn 2\nelse:\nreturn self.climbStairs(n-1)+self.climbStairs(n-2)\n```\n方法二:用循环来代替递归这种方法的原理仍然基于上面的公式,但是用循环代替了递归,比上面的代码效率上有较大的提升,可以AC。代码实现如下:\n```Python\n1. class Solution:\n2.     # @param {integer} n\n3.     # @return {integer}\n4.     def climbStairs(self， n):\n5.         if n==1 or n==2:\n6.             return n\n7.         a=1;b=2;c=3\n8.         for i in range(3，n+1):\n9.             c=a+b;a=b;b=c\n10.         return c\n```\n方法三:建立简单数学模型,利用组合数公式设⻘蛙跳上这n级台阶一共跳了z次,其中有x次是一次跳了两级,y次是一次跳了一级,则有z=x+y ,2x+y=n,对一个固定的x,利用组合可求出跳上这n级台阶的方法共有种方法又因为 x在区间[0,n/2]内,所以我们只需要遍历这个区间内所有的整数,求出每个x对应的组合数累加到最后的结果即可。 \n![图406](./figures/fig_030c261732.png)\n![图407](./figures/fig_d50dee1e53.png)\n![图408](./figures/fig_2474105533.png)\n![图409](./figures/fig_4c66eb4d50.png)\n```Python\npython代码实现如下：\nclass Solution:\n# @param {integer} n\n# @return {integer}\ndef climbStairs(self， n):\ndef fact(n):\nresult=1\nfor i in range(1，n+1):\nresult*=i\nreturn result\ntotal=0\nfor i in range(n/2+1):\ntotal+=fact(i+n-2*i)/fact(i)/fact(n-2*i)\nreturn total\n```",
+    "extend": ""
+  },
+  {
+    "id": 205,
+    "category": "数据结构算法",
+    "question": "23. 删除排序数组中的重复数字",
+    "answer": "给定一个排序数组,在原数组中删除重复出现的数字,使得每个元素只出现一次,并且返回新的数组的⻓度。不要使用额外的数组空间,必须在原地没有额外空间的条件下完成。样例:\n\n给出数组 A =[1,1,2],你的函数应该返回⻓度 2,此时 A=[1,2]。 \n```Python\nclass Solution:\n# @param a list of integers\n# @return an integer\ndef removeDuplicates(self, A):\nif len(A) == 0:\nreturn 0\nif len(A) == 1:  # to make it clear\nreturn 1     # (without this also works well)\n```\n```\n9\n10 index = 0\n11 for i in A[1:]:\n12 if i != A[index]:\n13 index += 1\n14 A[index] = i\n15\n16 return index + 1\n```\n分析:遍历,跳过重复元素。时间复杂度O(n)。思考:其他条件不变,如果可以允许出现两次重复将如何处理?\n![图410](./figures/fig_97a403fdc3.png)\n![图411](./figures/fig_5885e5cab3.png)\n样例:\n\n给出数组 nums = [1,1,1,2,2,3]。你的函数应当返回⻓度 length = 5, 且前 5 个元素分别为 1, 1, 2, 2 and 3。 \n```Python\nclass Solution:\n# @param a list of integers\n# @return an integer\ndef removeDuplicates(self, A):\nif None == A:\nreturn 0\nlen_A = len(A)\nif len_A <= 1:\nreturn len_A\n```\n```\n10\n11 m = 0\n12 n = 1\n13 count = 1\n14 while n < len_A:\n15 if A[m] != A[n]:\n16 count = 1\n17 m += 1\n18 if m != n:\n19 A[m] = A[n]\n20 elif count >= 2:\n21 count += 1\n22 else:\n23 m += 1\n24 count += 1\n25 if m != n:\n26 A[m] = A[n]\n27 n += 1\n28 A = A[0:m+1]    # A must be modified\n29 return m + 1\n```",
+    "extend": ""
+  },
+  {
+    "id": 206,
+    "category": "数据结构算法",
+    "question": "24. 链表求和 Add Two Numbers",
+    "answer": "你有两个用链表代表的整数,其中每个节点包含一个数字。数字存储按照在原来整数中相反的顺序,使得第一个数字位于链表的开头。写出一个函数将两个整数相加,用链表形式返回和。样例:\n\n输入: (2 -> 4 -> 3) + (5 -> 6 -> 4),返回 7 -> 0 -> 8。解题思路:\n\n把两个链表当成是相同⻓度的,短的那个想象成后面都是0;如果进位的话,在初始化下一个节点的时候将其赋值为1即可,所以在计算当前节点的值时要加上自己本来的值。\n![图412](./figures/fig_b95ef6f04d.png)\n![图413](./figures/fig_c3126a82e4.png)\n```Python\nclass ListNode(object):\ndef __init__(self, x):\nself.val = x\nself.next = None\n```\n```\n5\n6 # Define this to check if it works well\n7 def myPrint(self):\n8 print(self.val)\n9 if self.next:\n10 self.next.myPrint()\n11\n12\n13 class Solution(object):\n14 def addTwoNumbers(self, l1, l2):\n15 \"\"\"\n16 :type l1: ListNode\n17 :type l2: ListNode\n18 :rtype: ListNode\n19 \"\"\"\n20 result = ListNode(0);\n21 cur = result;\n22 while l1 or l2:\n23 cur.val += self.addTwoNodes(l1, l2)\n24 if cur.val >= 10:\n25 cur.val -= 10\n26 cur.next = ListNode(1)\n27 else:\n28 # Check if there is need to make the next node\n29 if l1 and l1.next or l2 and l2.next:\n30 cur.next = ListNode(0)\n31 cur = cur.next\n32 if l1:\n33 l1 = l1.next\n34 if l2:\n35 l2 = l2.next\n36 return result\n37\n38 def addTwoNodes(self, n1, n2):\n39 if not n1 and not n2:\n40 # This cannot happen, ignore it\n41 None\n42 if not n1:\n43 return n2.val\n44 if not n2:\n45 return n1.val\n```\n![图414](./figures/fig_b8bd7bd723.png)\n![图415](./figures/fig_bfa98a8c9b.png)\n![图416](./figures/fig_bd072b8e75.png)\n![图417](./figures/fig_9bf62e6fce.png)\n| 4647 | return n1.val + n2.val |\n| --- | --- |\n```\n48\n```\n| 49505152 | if __name__ == \"__main__\": list = ListNode(9) list.next = ListNode(8) print(Solution().addTwoNumbers(list, ListNode(1)).myPrint()) |\n| --- | --- |",
+    "extend": ""
+  },
+  {
+    "id": 207,
+    "category": "数据结构算法",
+    "question": "25. 如何翻转一个单链表?",
+    "answer": "```Python\n1. #!/usr/bin/env python2. #coding = utf-83. class Node:4.     def __init__(self，data=None，next = None):5.         self.data = data6.         self.next = next7. 8. def rev(link):9.     pre = link10.     cur = link.next11.     pre.next = None12.     while cur:13.         temp = cur.next14.         cur.next = pre15.         pre =cur16.         cur = temp17.     return pre18. 19. if __name__ == '__main__':20.     link = Node(1， Node(2， Node(3， Node(4， Node(5， Node(6， Node(7\n```\n```\n, Node(8, Node(9)))))))))\n21 21.     root = rev(link)\n22 22.     while root:\n23 23.         print(root.data)\n24 24        root =root.next\n```",
+    "extend": ""
+  },
+  {
+    "id": 208,
+    "category": "数据结构算法",
+    "question": "26. 旋转链表(2018-4-23-lyf)",
+    "answer": "给定一个链表,旋转链表,使得每个节点向右移动 k 个位置,其中 k 是一个非负数。样例:\n\n给出链表 1->2->3->4->5->null 和 k=2 返回 4->5->1->2->3->null \n![图418](./figures/fig_1537e6e0e6.png)\n![图419](./figures/fig_7e7e502711.png)\n```Python\nclass Solution:\n# @param head, a ListNode\n# @param k, an integer\n# @return a ListNode\ndef rotateRight(self, head, k):\nif None == head or None == head.next:\nreturn head\ncur_head = head\ncur = head\nwhile k > 0:\ncur = cur.next\nif None == cur:\nreturn head\nk -= 1\ncur_tail = cur\ncur_head = cur.next\nif None == cur_head:\nreturn head\ncur = cur_head\nwhile None != cur.next:\ncur = cur.next\ncur.next = head\ncur_tail.next = None\nreturn cur_head\n```",
+    "extend": ""
+  },
+  {
+    "id": 209,
+    "category": "数据结构算法",
+    "question": "27. 两两交换链表中的节点",
+    "answer": "例子:\n\n输入: head = 1->2->3->4 输出: 2->1->4->3 解题思路:\n\n比较常⻅的链表操作。下面看一下典型情况,如要交换链表中A->B->C->D中的B和C需要做如下操作:\n\n将A指向C;\n\n将B指向D;\n\n将C指向B;\n\n在头节点之前加一个假节点就可以使所有的交换都符合上面的情况。\n![图420](./figures/fig_4d40551f3a.png)\n![图421](./figures/fig_f78d36e2fd.png)\n```Python\n# Definition for singly-linked list.\nclass ListNode(object):\ndef __init__(self, x):\nself.val = x\nself.next = None\n```\n```\n6\n7\n8 class Solution(object):\n9 def swapPairs(self, head):\n10 \"\"\"\n11 :type head: ListNode\n12 :rtype: ListNode\n13 \"\"\"\n14 prev = ListNode(-1)\n15 prev.next = head\n16 temp = prev\n17 while temp.next and temp.next.next:\n18 node1 = temp.next\n19 node2 = temp.next.next\n20 temp.next = node2\n21 node1.next = node2.next\n22 node2.next = node1\n23 temp = temp.next.next\n24 return prev.next\n```",
+    "extend": ""
+  },
+  {
+    "id": 210,
+    "category": "注意事项",
+    "question": "1. 请介绍一下你自己",
+    "answer": "回答提示:这是面试官100%会问的问题,一般人回答这个问题过于平常,只说姓名、年龄、爱好、所学专业等,如果你用一分钟来重复你的简历,那么,你的印象加分没有了!不妨坦诚自信地展现自我,重点突出与应聘职位相吻合的优势。你的相关能力和素质是企业最感兴趣的信息。因为,在许多情况下,在听取你的介绍时,面试官也会抓住他感兴趣的点深入询问。所以,在进行表述时,要力求以真实为基础,顾及表达的逻辑性和条理性,避免冗⻓而没有重点的叙述。一定要在最短的时间内激发起面试官对你的好感。回答范例:\n\n1)我叫 XX,今年 X 岁,XXXX 年毕业于 XX 大学。有 3 年的开发工作经验,我对技术有深厚的兴趣,专业知识面宽,责任心强,思路清晰,沟通力能好,精通.Net 技术体系,熟悉 MVC。平常有时间看看博客,并且自己也喜欢在 CSDN 上写技术类的文章,与博友一起讨论。谢谢!\n\n2)如果跟人事自我介绍:您好!我叫***,(如果学校和专业好的话可以提一下,一般的话就算了。)我之前在 XX 公司做过两年 JAVA 开发工程师,在这两年当中大概接触过什么样类型的项目,(比如商城,金融等)今天看了咱们公司招聘的岗位需求跟我之前的工作内容挺相符的,而且咱们公司的业务也是我喜欢的类型,所以我今天过来面试。希望可以加入到咱们公司当中来。\n\n3)如果是跟技术自我介绍:您好!我叫***,(如果学校和专业好的话可以提一下,一般的话就算了。)我之前在 XX 公司做过两年 JAVA 开发工程师,在这两年当中大概接触过什么样类型的项目,(比如商城,金融等);在做这些项目的当中常用的一些技术点包括 XX 技术,(另外除了常用的技术还会一些其他的专业技能),今天看了咱们公司招聘的岗位需求跟我之前的工作内容挺相符的,所以我今天过来咱们公司面试,希望可以加入到咱们这个大家庭当中来",
+    "extend": ""
+  },
+  {
+    "id": 211,
+    "category": "注意事项",
+    "question": "2. 为什么来XX(北京或深圳)找工作?",
+    "answer": "面试官对异地求职者90%都会问的问题,主要考察你是否稳定,个人经验能力之外,排在第一位的就是稳定性,如果不够稳定,那么其余都是空谈。回答范例:我来自河南,河南是一个农业大省,IT 行业还不是很发达,我是学计算机专业的,也很喜欢这个行业,深圳在国内 IT 行业发展是最快的,所以我想来这里谋求发展,学习更多的新技术,能够带来自我的提升。注意:不要说以前公司有多么不好。也不要说哪个哥们混的很不错,羡慕才来深圳。因为企业招人想要的都是能够⻓期工作的人,可能哪个哥们哪天在别的地方又混的更好了,你是不是还要跳槽?所以,只要说来学习更多新技术和管理经验就够了。",
+    "extend": ""
+  },
+  {
+    "id": 212,
+    "category": "注意事项",
+    "question": "3. 你为什么离开原来的公司?",
+    "answer": "回答提示:最重要的是:应聘者要使找招聘单位相信,应聘者在过往的单位的“离职原因”在此家招聘单位里不存在。避免把“离职原因”说得太详细、太具体。不能掺杂主观的负面感受,如“太辛苦”、“人际关系复杂”、“管理太混乱”、“公司不重视人才”、“公司排斥我们某某的员工”等。但也不能躲闪、回避,如“想换换环境”、“个人原因”等。不能涉及自己负面的人格特征,如不诚实、懒惰、缺乏责任感、不随和等。尽量使解释的理由为应聘者个人形象添彩。回答范例:如“我离职是因为这家公司倒闭;我在公司工作了三年多,有较深的感情;从去年始,由于市场形势突变,公司的局面急转直下;到眼下这一步我觉得很遗憾,但还要面对显示,重新寻找能发挥我能力的舞台。”同一个面试问题并非只有一个答案,而同一个答案并不是在任何面试场合都有效,关键在应聘者掌握了规律后,对面试的具体情况进行把握,有意识地揣摩面试官提出问题的心理背景,然后投其所好。分析:除非是薪资太低,或者是最初的工作,否则不要用薪资作为理由。“求发展”也被考官听得太多,离职理由要根据每个人的真实离职理由来设计,但是在回答时一定要表现得真诚。离职原因没有定式,要根据自己的情况以及应聘公司的情况灵活的去说,大概方向就是:合同到期,距离,技术,发展,公司经营不好,其他。",
+    "extend": ""
+  },
+  {
+    "id": 213,
+    "category": "注意事项",
+    "question": "4. 你最大的缺点是什么?",
+    "answer": "被面试官问的概率很大,也是 HR 的杀手锏和狠招,这个问题最难回答,通常面试官不希望听到求职直接回答的缺点是什么,如果求职者说自己小心眼、脾气大、工作效率低,企业肯定不会录用你。不要自作聪明地回答“我最大的缺点就是过于追求完美”,有的人以为这样回答会显得自己比较出色,但事实上,他已经岌岌可危了。面试官喜欢求职者从自己的优点说起,中间加一些小缺点,最后再把问题转到优点上,突出优点的部分,面试官喜欢聪明的求职者。回答范例:这个问题好难回答啊!我想想......(亲和力表现,也缓解了自己的紧张情绪)\n\n我的缺点是比较执着,比如在技术方面比较爱钻研,有的时候会为一个技术问题加班到深夜。还有就是,工作比较按部就班,总是按照项目经管的要求完成任务。另外的缺点是,总在息的工作范围内有创新意识,并没有扩展给其他同事。这些问题我想我可以进入公司后以最短的时间来解决,我的学习能力很强,我相信可以很快融入公司的企业文化,进入工作状态。我想就这些吧。",
+    "extend": ""
+  },
+  {
+    "id": 214,
+    "category": "注意事项",
+    "question": "5. 你对薪资的要求?",
+    "answer": "如果你对薪酬的要求太低,那显然贬低自己的能力;如果你对薪酬的要求太高,那又会显得你分量过重,公司受用不起。一些雇主通常都事先对求职的职位定下开支预算,因而他们第一次提出的价钱往往是他们所能给予的最高价钱,他们问你只不过想证实一下这笔钱是否足以引起你对该工作的兴趣。回答范例一:我对工资没有硬性要求,我相信贵公司在处理我的问题上会友善合理。我注重的是找对工作机会,所以只要条件公平,我则不会计较太多。如果你必须自己说出具体数目,那就不要说一个宽泛的范围,不要说10000-13000之间,那样你将只会得到最低限底的数字,也就是10000。最好给出一个具体的数字。你可以说我上家给的薪资是14K,个人期望薪资有一定的涨幅。",
+    "extend": ""
+  },
+  {
+    "id": 215,
+    "category": "注意事项",
+    "question": "6. 什么时候能入职?",
+    "answer": "大多数企业会关心就职时间,最好是回答“如果被录用的话,到职日可按公司的规定上班”,如果还未辞去上一个工作,但上班时间又太近,似乎有些强人所难,因为交接至少要一个月的时间,应进一步说明原因,录取公司应该会通融的。",
+    "extend": ""
+  },
+  {
+    "id": 216,
+    "category": "注意事项",
+    "question": "7. 介绍一个你认为最熟悉的项目(项目经理)",
+    "answer": "这个问题在技术面试时常被问到,问这个问题的意图是想考察你的成⻓路径和编程习惯,因为,你最熟悉的项目往往是你成⻓最快的项目,那个成⻓最快的项目往往会给你今后的编程习惯留下很多痕迹。所以,通过你对熟悉项目的描述,有经验的他会很快锁定你技术成⻓中的缺陷和闪光点,从而判断是否能够“为我所用”。你最好拿出一个自己最擅⻓技术的那个项目进行介绍,他听完你的介绍后,会接下来进行提问,这样他所有问的问题,你都成竹在胸了。切忌拿自己参与很少的项目来介绍,一旦他深入的询问很可能你会答非所问,反而造成更严重的影响。你大强以和他谈谈在那个项目中获得的经验,这样会引起此君的共鸣,有可能的话,说出一些你自己的小技巧,他会很高兴,同时这场面试也会很轻松,拿到 Offer 基本没问题了。",
+    "extend": ""
+  },
+  {
+    "id": 217,
+    "category": "注意事项",
+    "question": "8. 如果公司录用你,你将怎样开展工作?",
+    "answer": "很多企业在招聘开发人员时很看重是否能够尽快上手,所以回答这个问题时要“实打实”的回答,在回答中最好强调能够“尽快”投入开发工作中,这样领导就放心了,会觉得你不是一个只会盲目工作的人,而是一个按部就班,稳打稳扎的人。回答范例:我对咱们公司的大体情况只有一个大概了解,在这个职位的工作性质仅仅是我自己的一个理解。作为这个职位而言,我想我首先要对本公司的主营业务要有一个了解,了解公司的业务组成部分、业务的发展方向、我们面向的客户性质等。第二我要了解所属部⻔在公司中的地位,以及部⻔的工作目标,从而确定自身的工作努力方向。第三,了解我参与项目的开发方式,架构方式,紧密配合领导工作,尽快投入具体的开发工作中。这就是我开展工作的计划。",
+    "extend": ""
+  },
+  {
+    "id": 218,
+    "category": "注意事项",
+    "question": "9. 你还有什么问题问我吗?",
+    "answer": "这个问题看上去可有可无,其实很关键,面试官不喜欢说“没有问题”的人,没有问题就是自寻死路,没有问题传达出你对公司缺乏兴趣,而只是来寻找一笔薪水。其实在面试过程中谦虚礼貌的问面试官怎么称呼,该部⻔工作中的信息,如项目情况,开发技术再或者说贵公司的晋升机制是什么样的等。表现出一种很积极主动的状态是非常讨巧的。也可以更多的了解到自己来的工作环境。企业很欢迎这样的求职者,因为体现出你对学习的热情和对公司的忠诚度以及你的上进心。这个要分析面试官的身份,如果是普通技术面试官,可以问问对方目前项目的规划,使用的技术情况,还有就是您在这边工作多久了,是否能分享一些您在这边的工作体会。如果是 HR 的话,可以问问公司的企业文化,工资评定是否跟绩效挂钩,公司是否定期组织员工活动、团建等等,如果是公司 CEO 或者是CTO 的话,可以问问团队的组成和公司前景之类的。或者告诉面试官关于公司的部分情况通过查看公司网站,还有面试基本上了解了,比较喜欢咱们公司这个平台和氛围,希望有机会能加入一起共事,如果您这边觉得我合适的话,最快什么时间能给我回复。",
+    "extend": ""
+  },
+  {
+    "id": 219,
+    "category": "注意事项",
+    "question": "10. 社保问题",
+    "answer": "如果上家公司写的是外地公司的话,之前是否上过社保深圳这边是查不到的,而且都要重新上。如果上家写的深圳公司,之前确实没有上过的话,就说之前公司规模小,五险一金一直没有上,但是签了自动放弃的协议,公司也给一部分补偿金,金额大概 1000 左右。如果之前你在深圳上过一段时间的社保,跟现在写的工作经历对不上的话,就说之前公司不给上, 有一段时间自己通过关系找了一家公司挂靠了一段时间。面试的时候如果HR问你之前在深圳是否上过社保,只要说是或者否就可以,不用主动说太多。对方问的话再解释。",
+    "extend": ""
+  },
+  {
+    "id": 220,
+    "category": "注意事项",
+    "question": "11. 上家公司薪资构成,及到手多少钱?",
+    "answer": "网上找税收计算器,把上家薪资输入自动算出扣税多少,再加上社保补偿金,就是你最后到手的工资,不用跟面试官说的特详细,只要说个大概就好。",
+    "extend": ""
+  },
+  {
+    "id": 221,
+    "category": "注意事项",
+    "question": "12. 你有没有在工作中遇到过你无论如何都难以解决的问题?你的态度如何?",
+    "answer": "工作中难免会有些问题难以被彻底的解决,在这样的情况下,我会思考这样几个问题:我是否已经尽了全力,是否还有什么方法或什么人能够帮助我解决问题?我是否已经全面的思考过问题的方方面面,还是钻在死胡同里出不来?我是否能在目前情况下改善问题,哪怕只是较小程度的改善?有时一些小小的改善积累起来可能最终就能够解决问题。我认为遇到问题的态度切忌慌乱,往往欲速则不达,因此要冷静下来思考。另外就是切记不停的抱怨,不停的抱怨不但会给人留下负面印象,甚至因为消极的态度错过了解决问题的最后机会。点评:该求职者首先表现了他不会轻易放弃解决问题的态度,懂得从各个⻆度去思考问题,并且会努力到最后一刻。在表述自己遇到问题的态度方面,该求职者也表现的非常完美,冷静、不抱怨并积极处理问题是所有面试官都会欣赏的态度。",
+    "extend": ""
+  },
+  {
+    "id": 222,
+    "category": "注意事项",
+    "question": "13. 你对加班的看法?",
+    "answer": "实际上好多公司问这个问题,并不证明一定要加班,只是想测试你是否愿意为公司奉献。回答范例:如果是工作需要我会义不容辞加班,我现在单身,没有任何家庭负担,可以全身心的投入工作。但同时,我也会提高工作效率,减少不必要的加班。",
+    "extend": ""
+  },
+  {
+    "id": 223,
+    "category": "注意事项",
+    "question": "14. 你朋友对你的评价?",
+    "answer": "回答提示: 想从侧面了解一下你的性格及与人相处的问题。回答样本一:我的朋友都说我是一个可以信赖的人。因为,我一旦答应别人的事情,就一定会做到。如果我做不到,我就不会轻易许诺。回答样本二:我觉的我是一个比较随和的人,与不同的人都可以友好相处。在我与人相处时,我总是能站在别人的⻆度考虑问题。",
+    "extend": ""
+  },
+  {
+    "id": 224,
+    "category": "注意事项",
+    "question": "15. 谈谈你对跳槽的看法?",
+    "answer": "回答提示:1正常的“跳槽”能促进人才合理流动,应该支持。2频繁的跳槽对单位和个人双方都不利,应该反对。",
+    "extend": ""
+  },
+  {
+    "id": 225,
+    "category": "注意事项",
+    "question": "16. 工作中你难以和同事、上司相处,你该怎么办?",
+    "answer": "回答提示:\n\n1我会服从领导的指挥,配合同事的工作。\n\n2我会从自身找原因,仔细分析是不是自己工作做得不好让领导不满意,同事看不惯。还要看看是不是为人处世方面做得不好,如果是这样的话我会努力改正。\n\n3如果我找不到原因,我会找机会跟他们沟通,请他们指出我的不足,有问题就及时改正。\n\n4作为优秀的员工,应该时刻以大局为重,即使在一段时间内,领导和同事对我不理解,我也会做好本职工作,虚心向他们学习,我相信,他们会看⻅我在努力,总有一天会对我微笑的。",
+    "extend": ""
+  },
+  {
+    "id": 226,
+    "category": "注意事项",
+    "question": "17. 假设你在某单位工作,成绩比较突出,得到领导的肯定,但同时你发现同事越来越孤立你,你",
+    "answer": "怎么看这个问题?你准备怎么办?\n\n回答提示:\n\n1成绩比较突出,得到领导的肯定是件好事情,以后更加努力。\n\n2检讨一下自己,是不是对工作的热心度超过同事间交往的热心了,加强同事间的交往及共同的兴趣爱好。\n\n3 工作中,切勿伤害别人的自尊心。\n\n4不再领导前拨弄是非。",
+    "extend": ""
+  },
+  {
+    "id": 227,
+    "category": "注意事项",
+    "question": "18. 最能概括你自己的三个词是什么?",
+    "answer": "回答提示:我经常用的三个词:适应能力强,有责任心和做事有始终,结合具体例子向主考官解释,",
+    "extend": ""
+  },
+  {
+    "id": 228,
+    "category": "注意事项",
+    "question": "19. 你的业余爱好是什么?",
+    "answer": "回答提示:找一些富于团体合作精神的,这里有一个真实的故事:有人被否决掉,因为他的爱好是深海潜水。主考官说:因为这是一项单人活动,我不敢肯定他能否适应团体工作。多说团体合作,爱浏览技术网站、博客、书籍。最好提前想好最近在看那本书,看到了哪个部分。",
+    "extend": ""
+  },
+  {
+    "id": 229,
+    "category": "注意事项",
+    "question": "20. 说说你对行业、技术发展趋势的看法",
+    "answer": "回答提示:企业对这个问题很感兴趣,只有有备而来的求职者能够过关。求职者可以直接在网上查找对你所申请的行业部⻔的信息,只有深入了解才能产生独特的⻅解。企业认为最聪明的求职者是对所面试的公司预先了解很多,包括公司各个部⻔,发展情况,在面试回答问题的时候可以提到所了解的情况,企业欢迎进入企业的人是“知己”,而不是“盲人”。",
+    "extend": ""
+  },
+  {
+    "id": 230,
+    "category": "注意事项",
+    "question": "21. 说你的家庭?",
+    "answer": "回答提示:企业面试时询问家庭问题不是非要知道求职者家庭的情况,探究隐私,企业不喜欢探究个人隐私,而是要了解家庭背景对求职者的塑造和影响。企业希望听到的重点也在于家庭对求职者的积极影响。企业最喜欢听到的是:我很爱我的家庭,我的家庭一向很和睦,虽然我的父亲和母亲都是普通人,但是从小,我就看到我父亲起早贪黑,每天工作特别勤劳, 他的行动无形中培养了我认真负责的态度和勤劳的精神。我母亲为人善良,对人热情,特别乐于助人,所以在单位人缘很好,她的一言一行也一直在教导我做人的道理。企业相信,和睦的家庭关系对一个人的成⻓有潜移默化的影响。",
+    "extend": ""
+  },
+  {
+    "id": 231,
+    "category": "注意事项",
+    "question": "22. 就你申请的这个职位,你认为你还欠缺什么?",
+    "answer": "回答提示:企业喜欢问求职者弱点,但精明的求职者一般不直接回答。他们希望看到这样的求职者:继续重复自己的优势,然后说:“对于这个职位和我的能力来说,我相信自己是可以胜任的,只是缺乏经验,这个问题我想我可以进入公司以后以最短的时间来解决,我的学习能力很强,我相信可以很快融入公司的企业文化,进入工作状态。”企业喜欢能够巧妙地躲过难题的求职者。",
+    "extend": ""
+  },
+  {
+    "id": 232,
+    "category": "注意事项",
+    "question": "23. 你欣赏哪种性+格的人?",
+    "answer": "回答提示:诚实、不死板而且容易相处的人、有“实际行动”的人。",
+    "extend": ""
+  },
+  {
+    "id": 233,
+    "category": "注意事项",
+    "question": "24. 你为什么愿意到我们公司来工作?",
+    "answer": "回答提示:对于这个问题,你要格外小心,如果你已经对该单位作了研究,你可以回答一些详细的原因,像“公司本身的高技术开发环境很吸引我。”、“我同公司出生在同样的时代,我希望能够进入一家与我共同成⻓的公司。”、“你们公司一直都稳定发展,在近几年来在市场上很有竞争力。”、“我认为贵公司能够给我提供一个与众不同的发展道路。”这都显示出你已经做了一些调查,也说明你对自己的未来有了较为具体的远景规划。",
+    "extend": ""
+  },
+  {
+    "id": 234,
+    "category": "注意事项",
+    "question": "25. 你和别人发生过争执吗?你是怎样解决的?",
+    "answer": "回答提示:这是面试中最险恶的问题,其实是考官布下的一个陷阱,千万不要说任何人的过错,应知成功解决矛盾是一个协作团体中成员所必备的能力。假如你工作在一个服务行业,这个问题简直成了最重要的一个环节。你是否能获得这份工作,将取决于这个问题的回答。考官希望看到你是成熟且乐于奉献的。他们通过这个问题了解你的成熟度和处世能力。在没有外界干涉的情况下,通过妥协的方式来解决才是正确答案",
+    "extend": ""
+  },
+  {
+    "id": 235,
+    "category": "注意事项",
+    "question": "26. 你做过的哪件事最令自己感到骄傲?",
+    "answer": "回答提示:这是考官给你的一个机会,让你展示自己把握命运的能力。这会体现你潜在的领导能力以及你被提升的可能性。假如你应聘于一个服务性质的单位,你很可能会被邀请去午餐。记住:你的前途取决于你的知识、你的社交能力和综合表现。",
+    "extend": ""
+  },
+  {
+    "id": 236,
+    "category": "注意事项",
+    "question": "27. 对这项工作,你有哪些可预⻅的困难?",
+    "answer": "回答提示:1不宜直接说出具体的困难,否则可能令对方怀疑应聘者不行。2可以尝试迂回战术,说出应聘者对困难所持有的态度——工作中出现一些困难是正常的,也是难免的,但是只要有坚忍不拔的毅力、良好的合作精神以及事前周密而充分的准备,任何困难都是可以克服。分析:一般问这个问题,面试者的希望就比较大了,因为已经在谈工作细节,但常规思路中的回答,又被面试官“骗”了。当面试官询问这个问题的时候,有两个目的。第一,看看应聘者是不是在行,说出的困难是不是在这个职位中一般都不可避免的问题。第二,是想看一下应聘者解决困难的手法对不对,及公司能否提供这样的资源。而不是想了解应聘者对困难的态度。",
+    "extend": ""
+  },
+  {
+    "id": 237,
+    "category": "注意事项",
+    "question": "28. 与上级意⻅不一是,你将怎么办?",
+    "answer": "回答提示:1一般可以这样回答“我会给上级以必要的解释和提醒,在这种情况下,我会服从上级的意⻅。”2如果面试你的是总经理,而你所应聘的职位另有一位经理,且这位经理当时不在场,可以这样回答:“对于非原则性问题,我会服从上级的意⻅,对于涉及公司利益的重大问题,我希望能向更高层领导反映。分析:这个问题的标准答案是思路1,如果用2的回答,必死无疑。你没有摸清楚改公司的内部情况,先想打小报告,这样的人没有人敢要。",
+    "extend": ""
+  },
+  {
+    "id": 238,
+    "category": "注意事项",
+    "question": "29. 你希望与什么样的上级共事?",
+    "answer": "回答提示:1通过应聘者对上级的“希望”可以判断出应聘者对自我要求的意识,这既上一个陷阱,又是一次机会。2最好回避对上级具体的希望,多谈对自己的要求。3如“做为刚步入社会的新人,我应该多要求自己尽快熟悉环境、适应环境,而不应该对环境提出什么要求,只要能发挥我的专⻓就可以了。分析:这个问题比较好的回答是,希望我的上级能够在工作中对我多指导,对我工作中的错误能够立即指出。总之,从上级指导这个方面谈,不会有大的纰漏。",
+    "extend": ""
+  },
+  {
+    "id": 239,
+    "category": "注意事项",
+    "question": "30. 为什么我们要在众多的面试者中选择你?",
+    "answer": "回答提示:根据我对贵公司的了解,以及我在这份工作上所累积的专业、经验及人脉,相信正是贵公司所找寻的人才。而我在工作态度、EQ上,也有圆融、成熟的一面,和主管、同事都能合作愉快。分析:别过度吹嘘自己的能力,或信口开河地乱开支票,例如一定会为该公司带来多少钱的业务等,这样很容易给人一种爱说大话、不切实际的感觉。技术的符合度,经验,人脉,积极乐观,容易相处,擅⻓求同存异,以团队为主。",
+    "extend": ""
+  },
+  {
+    "id": 240,
+    "category": "注意事项",
+    "question": "31. 怎样看待学历和能力?",
+    "answer": "回答提示:学历我想只要是大学专科的学历,就表明觉得我具备了根本的学习能力。剩下的,你是学士也好,还是博士也好,对于这一点的讨论,不是看你学了多少知识,而是看你在这个领域上发挥了什么,也就是所说的能力问题。一个人工作能力的高低直接决定其职场命运,而学历的高低只是进入一个企业的敲⻔砖,如果贵公司把学历卡在博士上,我就无法进入贵公司,当然这不一定只是我个人的损失,如果一个专科生都能完成的工作,您又何必非要招聘一位博士生呢?",
+    "extend": ""
+  },
+  {
+    "id": 241,
+    "category": "注意事项",
+    "question": "32. 工作中学习到了些什么?",
+    "answer": "回答提示:这是针对转职者提出的问题,建议此时可以配合面试工作的特点作为主要依据来回答,如业务工作需要与人沟通,便可举出之前工作与人沟通的例子,经历了哪些困难,学习到哪些经验,把握这些要点做陈述,就可以轻易过关了。",
+    "extend": ""
+  },
+  {
+    "id": 242,
+    "category": "注意事项",
+    "question": "33. 你希望你的上级是什么样子的?",
+    "answer": "我希望我的上级能够在工作中对我多指导,对我工作中的错误和问题能够及时指出。",
+    "extend": ""
+  },
+  {
+    "id": 243,
+    "category": "注意事项",
+    "question": "34. 除了本公司外,还应聘了哪些公司?",
+    "answer": "回答提示:很奇怪,这是相当多公司会问的问题,其用意是要概略知道应徵者的求职志向,所以这并非绝对是负面答案,就算不便说出公司名称,也应回答“类似的公司(互联网)”,如果应聘的其他公司是不同业界,容易让人产生无法信任的感觉。",
+    "extend": ""
+  },
+  {
+    "id": 244,
+    "category": "注意事项",
+    "question": "35. 面试注意事项:",
+    "answer": "1)在面试官面前千万不要抖脚,手脚不要动来动去,不能有小动作。\n\n2)在面试过程中,千万不要跟面试官去争论,说话太冲,太能说、抢话说、乱说都不好,遇到难题,先思考一下,切记心浮气燥,表达时口气温和,谦虚。\n\n3)如果面试过程中都不错,谈的也很好,之后却没有给 Offer,完全是自己意料之外的情况,这个很有可能,或许是因为公司有了其他的人选,不用介意,更不要沮丧。\n\n4)在面试过程中,切忌问关于公司计划、行业机密等相关的东⻄,不要打探公司的内幕,机密敏感性的问题不要问东问⻄。\n\n5)千万要注意仪容仪表,要有礼貌,最好不要有口吃,口头表达,逻辑思维很重要,不要让面试官觉得你很幼稚,太过小孩子气,显的不够稳重踏实。\n\n6)在去面试之前,要熟悉自己的简历,特别是工作经历,准备好关于一些离职原因、职业规划方面的问题的回答方式。在面试过程中,90%的面试官会让做自我介绍,所以提前要准备一下,说出的内容既要和简历相符,又要有重点有突出的地方,不能像背简历一样。\n\n7)面试完后,如果等待的时间较⻓,没有回应,就可能没有什么希望了,自己可以打电话去了解情况。\n\n8)在面试过程中,谈到薪资的时候,如果没有说明是税后工资就是税前,假如是税前6000,这里面就包括了公司给交的公积金,还有其他五险要交的费用,拿到手差不多4500左右。",
+    "extend": ""
+  },
+  {
+    "id": 245,
+    "category": "FastAPI 基础",
+    "question": "Q1：什么是FastAPI?它有哪些核心优势?",
+    "answer": "**【核心概念】** FastAPI是一个基于Python的高性能Web框架,专门用于快速构建API接口服务。\n\n**【原理机制】** FastAPI的三大核心优势:\n| 优势 | 说明 |\n| --- | --- |\n| 异步性能高 | 基于Python的async/await机制，支持高并发I/O操作 |\n| 开发效率高 | Pydantic类型提示与验证，减少手动校验代码 |\n| 自动生成文档 | 自动生成可交互式文档（Swagger/ReDoc），浏览器中直接调用和测试API |\n**【代码示例】**\n```python\nfrom fastapi\nimport FastAPIapp = FastAPI()\n@app.get(\"/\")\nasync def root():\nreturn {\"message\": \"Hello World\"}\n```\n运行方式:`uvicorn main:app --reload` 访问交互式文档:`http://127.0.0.1:8000/docs` **【项目实践】** AI掘金头条项目使用FastAPI作为后端框架,通过 `uvicorn main:app --reload` 启动,前端Vue通过 `http://localhost:5173/` 访问,后端运行在 `http://127.0.0.1:8000/`。\n\n**【知识联动】** 前置知识:Python基础、HTTP协议后续知识:异步编程(Q2)、路由机制(Q3)",
+    "extend": ""
+  },
+  {
+    "id": 246,
+    "category": "FastAPI 基础",
+    "question": "Q2：解释同步与异步编程的区别,FastAPI如何利用异步提升性能?",
+    "answer": "**【核心概念】** 同步是\"串行等待\",异步是\"并发执行\"。FastAPI通过 `async/await` 实现异步,在I/O等待期间切换处理其他请求,大幅提升并发能力。\n\n**【原理机制】**\n| 对比维度 | 同步 | 异步 |\n| --- | --- | --- |\n| 执行方式 | 请求1处理完→请求2处理→请求3处理 | 请求1/2/3同时处理，I/O等待期间切换 |\n| 等待行为 | 阻塞等待，线程闲置 | 让出控制权，处理其他任务 |\n| 适用场景 | CPU密集型 | I/O密集型（数据库查询、网络请求） |\n**同步示例**:10次 `time.sleep(1)` 串行执行,总耗时约10秒。\n\n**异步示例**:10次 `asyncio.sleep(1)` 并发执行,总耗时约1秒。\n\n**【代码示例】**\n```python\nimport asyncioimport time# 同步:耗时约10秒\n@app.get(\"/sync\")\nfunc_sync():    start = time.time()\nfor i in range(10):        time.sleep(1)\nend = time.time()\nreturn {\"time\": f'{end-start:.2f}\ns'}# 异步:耗时约1秒\n@app.get(\"/\nasync\")\nasync def func_async():    start = time.time()\ntasks = [asyncio.sleep(1)\nfor i in range(10)]\nawait asyncio.gather(*tasks)\nend = time.time()\nreturn {\"time\": f'{end-start:.2f}\ns'}\n```\n**【项目实践】** AI掘金头条中所有路由处理函数均使用 `async def` 定义,数据库操作使用 `await db.execute()`,Redis缓存操作使用 `await redis_client.get()`,全链路异步无阻塞。\n\n**【知识联动】** 前置知识:Python协程、事件循环后续知识:异步ORM配置(Q10)、异步Redis操作(Q20)\n\n关联概念:异步引擎 `create_async_engine`、异步会话 `AsyncSession`",
+    "extend": ""
+  },
+  {
+    "id": 247,
+    "category": "FastAPI 基础",
+    "question": "Q3：FastAPI中路径参数、查询参数、请求体参数的区别和使用场景?",
+    "answer": "**【核心概念】** 参数是客户端发送请求时附带的额外信息和指令,让同一个接口能根据不同的输入返回不同的输出,实现动态交互。\n\n**【原理机制】**\n| 参数类型 | 位置 | 作用 | HTTP方法 | 示例 |\n| --- | --- | --- | --- | --- |\n| 路径参数 | URL路径的一部分 /book/{id} | 指向唯一的、特定的资源 | GET | /book/1 |\n| 查询参数 | URL ? 之后 k1=v1&k2=v2 | 对资源集合进行过滤、排序、分页 | GET | /news?page=1&size=10 |\n| 请求体参数 | HTTP请求的消息体（body）中 | 创建、更新资源，携带大量数据 | POST、PUT | JSON格式 |\n**【代码示例】**\n```python\nfrom pydantic\nimport BaseModel# 路径参数\n@app.get(\"/book/{id}\")\nasync def get_book(id: int):\nreturn {\"id\": id, \"title\": f\"这是第{id}本书\"}# 查询参数\n@app.get(\"/news/news_list\")\nasync def get_news_list(skip: int, limit: int = 10):\nreturn {\"skip\": skip, \"limit\": limit}# 请求体参数class User(BaseModel):    username: str    password: str\n@app.post(\"/register\")\nasync def register(user: User):\nreturn user\n```\n**【项目实践】** 路径参数:`@router.delete(\"/delete/{history_id}\")` 删除指定浏览记录查询参数:`category_id: int = Query(..., alias=\"categoryId\")` 按分类筛选新闻请求体参数:`user_data: UserRegisterRequest` 用户注册时接收用户名和密码 **【知识联动】** 前置知识:HTTP协议、RESTful API设计后续知识:类型注解(Q4)、Pydantic验证(Q4)\n\n关联概念:`Path()`、`Query()`、`Field()` 三种注解函数",
+    "extend": ""
+  },
+  {
+    "id": 248,
+    "category": "FastAPI 基础",
+    "question": "Q4：Pydantic在FastAPI中的作用是什么?如何使用Field进行数据验证?",
+    "answer": "**【核心概念】** Pydantic负责类型提示与数据验证,减少手动校验代码。FastAPI自动基于Pydantic模型进行请求数据的解析、验证和序列化。\n\n**【原理机制】** 三种参数注解工具对比:\n| 注解工具 | 适用参数 | 关键参数 |\n| --- | --- | --- |\n| Path() | 路径参数 | ...(必填), gt/ge, lt/le, description, min_length, max_length |\n| Query() | 查询参数 | ...(必填), gt/ge, lt/le, description, min_length, max_length |\n| Field() | 请求体参数 | ...(必填), gt/ge, lt/le, default, description, min_length, max_length |\n**【代码示例】**\n```python\nfrom pydantic\nimport BaseModel, Fieldclass User(BaseModel):    username: str = Field(..., min_length=2, max_length=20)\npassword: str = Field(..., description=\"用户密码\")# 使用\n@app.post(\"/register\")\nasync def register(user: User):\nreturn user\n```\n**【项目实践】** AI掘金头条中定义了大量Pydantic模型:\n```python\nclass UserRegisterRequest(BaseModel):    username: str    password: strclass News(BaseModel):    id: int    title: str    content: str\n```\n**【知识联动】** 前置知识:Python类型提示后续知识:`response_model`(Q5)、`ConfigDict(from_attributes=True)`(Q17)\n\n关联概念:`model_validate()` 方法用于ORM对象→Pydantic模型转换",
+    "extend": ""
+  },
+  {
+    "id": 249,
+    "category": "FastAPI 基础",
+    "question": "Q5：response_model的作用是什么?与直接返回数据有什么区别?",
+    "answer": "**【核心概念】** `response_model` 是路径操作装饰器的关键参数,通过Pydantic模型严格定义和约束API端点的输出格式,提供自动数据验证和序列化,是保障数据安全性的第一道防线。\n\n**【原理机制】**\n| 对比 | 直接返回 | 使用response_model |\n| --- | --- | --- |\n| 数据格式 | 返回什么就是什么，无约束 | 严格按模型定义过滤字段 |\n| 安全性 | 可能泄露敏感字段（如密码） | 自动过滤未定义字段 |\n| 文档生成 | 无法展示响应结构 | 自动生成交互式文档中的响应Schema |\n| 序列化 | 需手动处理 | 自动通过 jsonable_encoder 转换 |\n**【代码示例】**\n```python\nfrom pydantic\nimport BaseModelclass News(BaseModel):    id: int    title: str    content: str\n@app.get(\"/news/{id}\", response_model=News)\nasync def get_news(id: int):\nreturn {        \"id\": id,        \"title\": f\"这是第{id}条新闻\",        \"content\": \"这是一条好新闻\",        \"internal_secret\": \"这个字段会被自动过滤\"  # 不会出现在响应中    }\n```\n**【项目实践】** 新闻详情接口使用 `response_model` 确保只返回前端需要的字段,避免泄露数据库内部字段。\n\n**【知识联动】** 前置知识:Pydantic模型(Q4)\n\n后续知识:通用响应格式封装(Q17)、`jsonable_encoder` 关联概念:FastAPI默认将返回对象经由 `jsonable_encoder` 转换为JSON兼容格式,包装为 `JSONResponse` 返回",
+    "extend": ""
+  },
+  {
+    "id": 250,
+    "category": "FastAPI 进阶特性",
+    "question": "Q6：什么是中间件?它的执行顺序是怎样的?有哪些应用场景?",
+    "answer": "**【核心概念】** 中间件(Middleware)是一个在每次请求进入FastAPI应用时都会被执行的函数。它在请求到达路由处理函数之前运行,并且在响应返回给客户端之前再运行一次。\n\n**【原理机制】** 请求处理流程(洋葱模型):\n```\n客户端 → 中间件A(前) → 中间件B(前) → 路由处理函数 → 中间件B(后) → 中间件A(后) → 客户端\n```\n**多个中间件的执行顺序:自下而上**(后定义的中间件先执行请求阶段,先执行响应阶段)\n\n应用场景:\n| 场景 | 说明 |\n| --- | --- |\n| 性能监控 | 记录每个请求的处理时间 |\n| 日志记录 | 统一记录请求/响应信息 |\n| 身份认证 | 验证Token有效性 |\n| 响应头处理 | 添加统一的响应头 |\n| 跨域处理 | CORS配置 |\n**【代码示例】**\n```python\n@app.middleware(\"http\")\nasync def middleware(request, call_next):\nprint('中间件开始处理-- start')\nresponse =\nawait call_next(request)  # 传递请求给路径处理函数\nprint('中间件处理完成-- end')\nreturn response\n```\n**【项目实践】** AI掘金头条使用CORS中间件解决前后端跨域问题:\n```python\nfrom fastapi.middleware.cors\nimport CORSMiddlewareapp.add_middleware(    CORSMiddleware,    allow_origins=[\"*\"],    allow_credentials=True,    allow_methods=[\"*\"],    allow_headers=[\"*\"],)\n```\n**【知识联动】** 前置知识:HTTP请求/响应生命周期后续知识:CORS跨域(Q25)\n\n对比概念:中间件控制\"所有人\"(Every one),依赖注入控制\"指定路由\"(Q8)",
+    "extend": ""
+  },
+  {
+    "id": 251,
+    "category": "FastAPI 进阶特性",
+    "question": "Q7：什么是依赖注入?它解决了什么问题?如何使用?",
+    "answer": "**【核心概念】** 依赖注入(Dependency Injection)是FastAPI提供的机制,用于共享通用逻辑,减少代码重复。依赖项是可重用的组件(函数/类),FastAPI自动调用依赖项并将结果\"注入\"到路径操作函数中。\n\n**【原理机制】** 三大优点:\n\n**代码复用**:一次编写,多处使用 **解耦**:业务逻辑与基础设施代码分离 **易于测试**:轻松地用模拟依赖替换真实依赖进行测试四大应用场景:\n| 场景 | 说明 |\n| --- | --- |\n| 处理请求参数 | 从请求中提取和验证参数 |\n| 共享业务逻辑 | 抽取封装多个路由公用的逻辑代码 |\n| 共享数据库连接 | 管理数据库会话的创建、使用、关闭 |\n| 安全和认证 | 验证用户身份、检查权限和角色要求 |\n使用步骤:**创建依赖项 → 导入Depends → 声明依赖项** **【代码示例】**\n```python\nfrom fastapi\nimport Depends, Query# 1. 创建依赖项async\n common_parameters(    skip: int = Query(0, ge=0),    limit: int = Query(10, le=60)):\nreturn {\"skip\": skip, \"limit\": limit}# 2. 声明依赖项\n@app.get(\"/news/news_list\")\nasync def get_news_list(commons=Depends(common_parameters)):\nreturn commons\n```\n**【项目实践】** 数据库会话依赖注入:\n```python\nasync def get_db():\nasync\nwith AsyncSessionLocal()\nas session:\ntry:\nyield session\nawait session.commit()\nexcept Exception:\nawait session.rollback()\nraise\nfinally:\nawait session.close()\n@router.get(\"/categories\")\nasync def get_categories(db: AsyncSession = Depends(get_db)):    ...\n```\n用户认证依赖注入:\n```python\n@router.get(\"/check\")\nasync def check_favorite(    user: User = Depends(get_current_user),  # 认证依赖    db: AsyncSession = Depends(get_db)       # 数据库依赖):    ...\n```\n**【知识联动】** 前置知识:Python生成器(yield)、上下文管理器后续知识:数据库会话管理(Q12)、Token认证(Q16)\n\n对比概念:与中间件的区别(Q8)",
+    "extend": ""
+  },
+  {
+    "id": 252,
+    "category": "FastAPI 进阶特性",
+    "question": "Q8：中间件和依赖注入的区别是什么?分别适用于什么场景?",
+    "answer": "**【核心概念】** 中间件控制\"所有人\"(全局拦截),依赖注入控制\"指定路由\"(按需注入)。\n\n**【原理机制】**\n| 对比维度 | 中间件 | 依赖注入 |\n| --- | --- | --- |\n| 作用范围 | 所有请求（全局） | 指定的路由函数 |\n| 控制粒度 | 粗粒度，统一处理 | 细粒度，按需组合 |\n| 执行时机 | 请求进入/响应返回时 | 路由函数执行前 |\n| 典型场景 | 日志、CORS、性能监控 | 数据库会话、用户认证、分页参数 |\n| 定义方式 | @app.middleware(\"http\") | Depends(依赖函数) |\n**【项目实践】** 中间件:CORS跨域配置(全局生效,所有接口都需要)\n\n依赖注入:`get_db()`(只有需要数据库的接口才注入)、`get_current_user()`(只有需要登录的接口才注入)\n\n**【知识联动】** 前置知识:中间件(Q6)、依赖注入(Q7)\n\n后续知识:全局异常处理器(Q18)也是全局级别的机制",
+    "extend": ""
+  },
+  {
+    "id": 253,
+    "category": "FastAPI 进阶特性",
+    "question": "Q9：什么是模块化路由?为什么需要它?如何实现?",
+    "answer": "**【核心概念】** 模块化路由就是把每个业务功能的接口拆分到独立文件里,再统一挂载到主应用中。\n\n**【原理机制】** 三大优势:\n| 优势 | 说明 |\n| --- | --- |\n| 避免main.py爆炸 | main.py只负责启动应用，不再堆满业务代码 |\n| 项目结构更清晰 | 接口按模块拆分，不会混在一起 |\n| 更易维护 | 每个模块负责自己对应的接口，便于快速查找和定向修改 |\n**【代码示例】**\n```python\n# routers/news.py - 编写独立路由模块from fastapi\nimport APIRouterrouter = APIRouter(prefix=\"/api/news\", tags=[\"news\"])\n@router.get(\"/categories\")\nasync def get_categories():\nreturn {\"msg\": \"获取分类成功\"}\n```\n```python\n# main.py - 挂载路由from routers\nimport newsapp.include_router(news.router)\n```\n**【项目实践】** AI掘金头条的路由层按模块划分:\n| 模块文件 | 前缀 | 功能 |\n| --- | --- | --- |\n| news.py | /api/news | 新闻分类、列表、详情 |\n| user.py | /api/user | 注册、登录、信息修改 |\n| favorite.py | /api/favorite | 收藏增删查 |\n| history.py | /api/history | 浏览历史增删查 |\n**【知识联动】** 前置知识:FastAPI应用实例、路由基础(Q3)\n\n后续知识:项目工程结构(Q24)\n\n关联概念:`APIRouter` 的 `prefix` 和 `tags` 参数",
+    "extend": ""
+  },
+  {
+    "id": 254,
+    "category": "ORM 与数据库",
+    "question": "Q10：什么是ORM?SQLAlchemy异步模式如何配置?",
+    "answer": "**【核心概念】** ORM(Object-Relational Mapping,对象关系映射)是一种编程技术,用于在面向对象编程语言和关系型数据库之间建立映射,允许开发者通过操作对象的方式与数据库交互,无需直接编写SQL语句。\n\n**【原理机制】** ORM优势:减少重复SQL代码、代码更简洁易读、自动处理数据库连接和事务、自动防止SQL注入攻击。\n\nORM工具对比:\n| 排名 | ORM工具 | 特点 | 适用场景 |\n| --- | --- | --- | --- |\n| 1 | SQLAlchemy | 功能最强、最灵活、企业级 | 各类API、微服务、数据应用 |\n| 2 | Django ORM | 封装好、上手快 | Django项目、管理后台 |\n| 3 | Tortoise ORM | 全异步 | 异步Web服务、高并发API |\nORM使用流程:**安装 → 建库建表 → 操作数据(增删改查)** 安装:`pip install \"sqlalchemy[asyncio]\" aiomysql` **【代码示例】**\n```python\nfrom sqlalchemy.ext.asyncio\nimport create_async_engine, async_sessionmaker, AsyncSession# 数据库URLASYNC_DATABASE_URL = \"mysql+aiomysql://root:123456\n@localhost:3306/news_app?charset=utf8mb4\"# 创建异步引擎async_engine = create_async_engine(    ASYNC_DATABASE_URL,    echo=True,        # 可选:输出SQL日志    pool_size=10,     # 连接池中保持的持久连接数    max_overflow=20   # 连接池允许创建的额外连接数)# 创建异步会话工厂AsyncSessionLocal = async_sessionmaker(    bind=async_engine,    class_=AsyncSession,    expire_on_commit=False  # 会话对象不过期,不重新查询数据库)# 依赖项:获取数据库会话async\n get_db():\nasync\nwith AsyncSessionLocal()\nas session:\ntry:\nyield session\nawait session.commit()\nexcept Exception:\nawait session.rollback()\nraise\nfinally:\nawait session.close()\n```\n**【项目实践】** AI掘金头条的 `database.py` 文件完整实现了上述配置,所有路由通过 `Depends(get_db)` 获取数据库会话。\n\n**【知识联动】** 前置知识:异步编程(Q2)、依赖注入(Q7)\n\n后续知识:模型定义(Q11)、CRUD操作(Q12)\n\n关键参数:`expire_on_commit=False` 避免提交后重新查询数据库",
+    "extend": ""
+  },
+  {
+    "id": 255,
+    "category": "ORM 与数据库",
+    "question": "Q11：如何定义ORM模型类?模型类与数据库表的关系?",
+    "answer": "**【核心概念】** 模型类是数据库表在Python中的映射。基类继承 `DeclarativeBase`,包含通用属性;具体模型类继承基类,属性对应数据库表的字段。\n\n**【原理机制】** 模型类定义规范:\n\n基类继承 `DeclarativeBase`(包含通用字段如创建时间、更新时间)\n\n数据库表模型类继承基类,属性及类型参照数据库表定义使用 `Mapped[]` 类型注解 + `mapped_column()` 定义字段建表时机:FastAPI应用启动时,通过 `run_sync(Base.metadata.create_all)` 自动创建。\n\n**【代码示例】**\n```python\nfrom sqlalchemy.orm\nimport DeclarativeBase, Mapped, mapped_columnfrom sqlalchemy\nimport DateTime, String, Integer, Text, ForeignKey, Indexfrom sqlalchemy.sql\nimport funcfrom datetime\nimport datetimefrom typing\nimport Optional# 基类class Base(DeclarativeBase):    create_time: Mapped[datetime] = mapped_column(        DateTime, insert_default=func.now(), default=datetime.now, comment=\"创建时间\")\nupdate_time: Mapped[datetime] = mapped_column(        DateTime, insert_default=func.now(), onupdate=func.now(),         default=datetime.now, comment=\"修改时间\")# News模型类class News(Base):    __tablename__ = \"news\"        # 创建索引:提升查询速度    __table_args__ = (        Index('fk_news_category_idx', 'category_id'),        Index('idx_publish_time', 'publish_time')    )\nid: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment=\"新闻ID\")\ntitle: Mapped[str] = mapped_column(String(255), nullable=False, comment=\"新闻标题\")\ndescription: Mapped[Optional[str]] = mapped_column(String(500), comment=\"新闻简介\")\ncontent: Mapped[str] = mapped_column(Text, nullable=False, comment=\"新闻内容\")\nimage: Mapped[Optional[str]] = mapped_column(String(255), comment=\"封面图片URL\")\nauthor: Mapped[Optional[str]] = mapped_column(String(50), comment=\"作者\")\ncategory_id: Mapped[int] = mapped_column(Integer, ForeignKey('news_category.id'), nullable=False, comment=\"分类ID\")\nviews: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment=\"浏览量\")\npublish_time: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment=\"发布时间\")\n```\n建表代码:\n```python\nasync def create_tables():\nasync\nwith async_engine.begin()\nas conn:\nawait conn.run_sync(Base.metadata.create_all)\n@app.on_event(\"startup\")\nasync def startup_event():\nawait create_tables()\n```\n**【项目实践】** AI掘金头条定义了多个模型类:`Category`(新闻分类)、`News`(新闻)、`User`(用户)、`UserToken`(用户令牌)、`Favorite`(收藏)、`History`(浏览历史)。\n\n**【知识联动】** 前置知识:ORM配置(Q10)\n\n后续知识:CRUD操作(Q12)、索引优化(Q24)\n\n关联概念:`__table_args__` 用于定义索引和唯一约束",
+    "extend": ""
+  },
+  {
+    "id": 256,
+    "category": "ORM 与数据库",
+    "question": "Q12：SQLAlchemy中如何实现CRUD操作?",
+    "answer": "**【核心概念】** CRUD是数据库的四大基本操作:查询(select)、新增(add)、更新(重新赋值)、删除(delete)。核心思路:`select() → db.execute() → 从ORM对象获取数据 → 响应结果`。\n\n**【原理机制】**\n| 操作 | 核心方法 | 步骤 |\n| --- | --- | --- |\n| 查询 | select() | db.execute(select(模型类)) → 获取数据 |\n| 新增 | add() | 定义ORM对象 → db.add(对象) → commit |\n| 更新 | 重新赋值 | db.get() 查询 → 属性赋值 → commit |\n| 删除 | delete() | db.get() 查询 → db.delete(对象) → commit |\n**【代码示例】**\n```python\n# 查询所有result =\nawait db.execute(select(Book))\nbooks = result.scalars().all()# 查询单条book =\nawait db.get(Book, 1)# 新增book_obj = Book(**book.__dict__)\ndb.add(book_obj)\nawait db.commit()# 更新book =\nawait db.get(Book, book_id)\nbook.bookname = data.booknamebook.author = data.authorawait db.commit()# 删除db_book =\nawait db.get(Book, book_id)\nawait db.delete(db_book)\nawait db.commit()\n```\n**【项目实践】** 用户注册:`db.add(user_obj)` + `await db.commit()` 修改密码:`db.get()` 查询用户 → 赋值新密码 → `commit` 取消收藏:`db.delete(favorite)` + `commit` 清空浏览历史:`delete()` 批量删除 **【知识联动】** 前置知识:模型定义(Q11)、依赖注入获取会话(Q10)\n\n后续知识:条件查询(Q13)、联表查询(Q14)\n\n关联概念:`result.rowcount` 检查操作命中数量",
+    "extend": ""
+  },
+  {
+    "id": 257,
+    "category": "ORM 与数据库",
+    "question": "Q13：如何实现条件查询、聚合查询和分页查询?",
+    "answer": "**【核心概念】** 条件查询通过 `where()` 过滤,聚合查询通过 `func` 计算,分页查询通过 `offset().limit()` 实现。\n\n**【原理机制】** **条件查询**:`select(模型类).where(条件)`\n| 条件类型 | 语法 | 示例 |\n| --- | --- | --- |\n| 比较判断 | ==, >, <, >=, <= | Book.id == book_id |\n| 模糊查询 | like() | Book.author.like(\"曹%\") |\n| 与查询 | & | (Book.author==\"曹雪芹\") & (Book.price==200) |\n| 或查询 | | | (Book.author==\"曹雪芹\") | (Book.price==200) |\n| 非查询 | ~ | ~(Book.author==\"曹雪芹\") |\n| 包含查询 | in_() | Book.id.in_([1,2,3,4,5]) |\n**聚合查询**:`select(func.方法(模型类.属性))`\n| 方法 | 功能 |\n| --- | --- |\n| func.count() | 统计行数量 |\n| func.avg() | 求平均值 |\n| func.max() / func.min() | 求最大/最小值 |\n| func.sum() | 求和 |\n**分页查询**:`select().offset(跳过数量).limit(每页数量)` 公式:`offset = (当前页码 - 1) × 每页数量` **【代码示例】**\n```python\n# 条件查询result =\nawait db.execute(select(Book).where(Book.id == book_id))\nbook = result.scalar_one_or_none()# 聚合查询result =\nawait db.execute(select(func.count(News.id)).where(News.category_id == category_id))\ntotal = result.scalar()# 分页查询skip = (page - 1) * page_sizestmt = select(News).where(News.category_id == category_id).offset(skip).limit(page_size)\nresult =\nawait db.execute(stmt)\nnews_list = result.scalars().all()\n```\n**【项目实践】** 新闻列表接口的完整查询逻辑:\n\n按分类ID查询新闻:`select(News).where(News.category_id == category_id)` 分页:`.offset(skip).limit(page_size)` 统计总量:`select(func.count()).where(News.category_id == category_id)` 判断是否有更多:`(offset + 当前列表条数) < 总量` **【知识联动】** 前置知识:CRUD基础(Q12)\n\n后续知识:联表查询(Q14)、新闻列表接口(Q26)\n\n关联概念:`scalars().all()`、`scalar_one_or_none()`、`scalar()` 的区别 **⚠️ 面试官可能追问** `scalars().all()` 和 `scalar()` 的区别?→ 前者返回列表,后者返回单个标量值(配合聚合使用)\n\n分页查询中为什么要先算总量?→ 用于前端判断是否还有更多数据(hasMore)",
+    "extend": ""
+  },
+  {
+    "id": 258,
+    "category": "ORM 与数据库",
+    "question": "Q14：如何实现联表查询?UniqueConstraint的作用是什么?",
+    "answer": "**【核心概念】** 联表查询通过 `select().join()` 实现多表关联查询;`UniqueConstraint` 用于在模型类中定义唯一约束,防止数据重复。\n\n**【原理机制】** 联表查询语法:`select(查询的主体模型类, 字段重命名).join(join的模型类, join的条件)` **【代码示例】**\n```python\n# 联表查询:收藏列表(收藏表 + 新闻表)\nstmt = (    select(        News,        Favorite.created_at.label(\"favorite_time\"),        Favorite.id.label(\"favorite_id\")    )    .join(Favorite, Favorite.news_id == News.id)    .where(Favorite.user_id == user_id)    .offset(skip)    .limit(page_size))\nresult =\nawait db.execute(stmt)\n```\n```python\n# UniqueConstraint:防止同一用户重复收藏同一新闻class Favorite(Base):    __tablename__ = \"favorite\"    __table_args__ = (        UniqueConstraint('user_id', 'news_id', name='user_news_unique'),    )\nid: Mapped[int] = mapped_column(primary_key=True)\nuser_id: Mapped[int] = mapped_column(Integer, nullable=False)\nnews_id: Mapped[int] = mapped_column(Integer, nullable=False)\n```\n**【项目实践】** 收藏列表:`select(News).join(Favorite, Favorite.news_id == News.id)` 联表查询收藏的新闻详情浏览历史列表:`select(News).join(History, History.news_id == News.id)` 联表查询浏览过的新闻收藏表使用 `UniqueConstraint('user_id', 'news_id')` 确保同一用户不会重复收藏同一新闻 **【知识联动】** 前置知识:条件查询(Q13)、模型定义(Q11)\n\n后续知识:收藏模块(Q27)\n\n关联概念:`Index` 索引(提升查询速度)与 `UniqueConstraint`(保证数据唯一性)的区别",
+    "extend": ""
+  },
+  {
+    "id": 259,
+    "category": "FastAPI安全",
+    "question": "Q15：用户注册流程是怎样的?密码为什么要加密?如何使用passlib?",
+    "answer": "**【核心概念】** 用户注册流程:进入请求 → 检查用户是否存在 → 密码加密 → 创建用户 → 生成Token → 响应结果。密码必须加密存储,防止数据库泄露后明文密码暴露。\n\n**【原理机制】** 注册流程:\n```\n进入请求 → 检查用户是否存在(select查询)         → 存在:抛出异常         → 不存在:密码加密(passlib)→ 添加数据add() → 生成Token(uuid)→ 响应结果\n```\npasslib使用三步骤:\n\n**安装**:`pip install \"passlib[bcrypt]==1.7.4\"` **创建加密上下文**:`pwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")` **加密或校验**:\n\n加密:`pwd_context.hash(password)` 校验:`pwd_context.verify(plain_password, hashed_password)` **【代码示例】**\n```python\nfrom passlib.context\nimport CryptContextimport uuidpwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\n@router.post(\"/register\")\nasync def register_user(user_data: UserRegisterRequest, db: AsyncSession = Depends(get_db)):    # 1. 检查用户是否存在    existing =\nawait db.execute(select(User).where(User.username == user_data.username))\nif existing.scalars().first():\nraise HTTPException(status_code=400, detail=\"用户已存在\")        # 2. 密码加密    hashed_password = pwd_context.hash(user_data.password)        # 3. 创建用户    user = User(username=user_data.username, password=hashed_password)\ndb.add(user)\nawait db.commit()        # 4. 生成Token    token = str(uuid.uuid4())\nreturn success_response(message=\"注册成功\", data={...})\n```\n**【项目实践】** AI掘金头条用户注册接口完整实现了上述流程,使用 `uuid.uuid4()` 生成临时Token。\n\n**【知识联动】** 前置知识:请求体参数(Q3)、CRUD新增(Q12)\n\n后续知识:Token认证(Q16)、用户登录(Q16)\n\n关联概念:bcrypt是单向哈希算法,不可逆,只能通过 `verify` 校验 **⚠️ 面试官可能追问** 为什么用bcrypt而不是MD5?→ bcrypt自带盐值,抗暴力破解,MD5已不安全 Token为什么用uuid而不是JWT?→ 课件中使用uuid作为简单Token,生产环境可升级为JWT",
+    "extend": ""
+  },
+  {
+    "id": 260,
+    "category": "FastAPI安全",
+    "question": "Q16：什么是Token?它解决了什么问题?认证流程是怎样的?",
+    "answer": "**【核心概念】** Token是服务器发给客户端的一段字符串,用来在后续请求中证明\"你已经登录过了\"。它解决了HTTP无状态的问题,让客户端在每次请求中\"自我证明身份\"。\n\n**【原理机制】** Token认证流程:\n```\n登录/注册 → 后端生成Token → 后端返回Token → 前端保存Token → 每次请求时携带Token → 后端验证Token\n```\nToken在请求中的位置:**请求头(Header)** 格式:`Authorization: Bearer <token>` `Authorization`:专门用来放身份信息 `Bearer`:表示\"持有者令牌\" `<token>`:真正的身份凭证获取Token的方式:`authorization: str = Header(...)` **【代码示例】**\n```python\nfrom fastapi\nimport Header# 从请求头获取Token\n@router.get(\"/info\")\nasync def get_user_info(authorization: str = Header(...), db: AsyncSession = Depends(get_db)):    # 1. 检查令牌有效性    token_record =\nawait db.execute(        select(UserToken).where(UserToken.token == authorization)    )\ntoken_obj = token_record.scalars().first()\nif not token_obj:\nraise HTTPException(status_code=401, detail=\"未登录或令牌已过期\")        # 2. 查找对应用户    user =\nawait db.get(User, token_obj.user_id)    ...\n```\n**【项目实践】** AI掘金头条中,所有需要登录的接口都通过 `Depends(get_current_user)` 依赖注入实现认证:\n```python\n@router.get(\"/check\")\nasync def check_favorite(    news_id: int = Query(..., alias=\"newsId\"),    user: User = Depends(get_current_user),  # 自动认证    db: AsyncSession = Depends(get_db)):    ...\n```\n**【知识联动】** 前置知识:用户注册(Q15)、Header参数后续知识:获取/修改用户信息、修改密码关联概念:`uuid.uuid4()` 生成Token、`UserToken` 表存储Token与用户的映射关系",
+    "extend": ""
+  },
+  {
+    "id": 261,
+    "category": "FastAPI安全",
+    "question": "Q17：如何封装通用的响应格式?",
+    "answer": "**【核心概念】** 封装通用响应格式是为了统一所有接口的返回结构,让前端可以按统一规则解析响应。标准格式:`{\"code\": 200, \"message\": \"success\", \"data\": ...}`。\n\n**【原理机制】** 三步封装法:\n\n**封装函数**:定义 `success_response()` 返回统一格式 **定义数据类型**:使用Pydantic模型定义响应数据结构 **调用函数**:在路由中调用并响应关键技术:`jsonable_encoder` 把任何FastAPI、Pydantic、ORM对象转换成可以被JSON安全序列化的数据结构。\n\n`ConfigDict(from_attributes=True)` 用于自动序列化ORM对象。\n\n**【代码示例】**\n```python\nfrom fastapi.responses\nimport JSONResponsefrom fastapi.encoders\nimport jsonable_encoder# 1. 封装通用响应函数def success_response(message: str = \"success\", data=None):    content = {\"code\": 200, \"message\": message, \"data\": data}\nreturn JSONResponse(content=jsonable_encoder(content))# 2. 定义响应模型class UserAuthResponse(BaseModel):    token: str    user_info: UserInfoResponse    model_config = ConfigDict(        from_attributes=True,  # 自动序列化ORM对象    )# 3. 调用response_data = UserAuthResponse(    token=token,    user_info=UserInfoResponse.model_validate(user))\nreturn success_response(message=\"注册成功\", data=response_data)\n```\n**【项目实践】** AI掘金头条所有接口统一使用 `success_response()` 封装返回,确保前端收到的响应格式一致。\n\n**【知识联动】** 前置知识:response_model(Q5)、Pydantic(Q4)\n\n后续知识:全局异常处理器(Q18)处理错误响应关联概念:`model_validate()` 将ORM对象转为Pydantic模型",
+    "extend": ""
+  },
+  {
+    "id": 262,
+    "category": "FastAPI安全",
+    "question": "Q18：什么是全局异常处理器?如何设计和注册?",
+    "answer": "**【核心概念】** 全局异常处理器(Global Exception Handler)是注册在FastAPI应用级别的异常处理函数,用于捕获业务层、数据库层以及系统层抛出的异常,并以统一的响应格式返回给前端。\n\n**【原理机制】** 可能捕获的异常类型:\n\nSQL错误、外键关联失败、数据库连接异常、提交事务失败业务逻辑异常(如用户不存在、密码错误)\n\n系统级异常注册顺序(从具体到通用):\n\n业务异常数据约束异常(子类)\n\n数据库异常(父类)\n\n所有异常(兜底)\n\n两步实现:\n\n**定义异常处理器**(函数)\n\n**全局注册**:`app.add_exception_handler(异常类, 处理函数)` **【代码示例】**\n```python\n# 1. 定义异常处理器async\n http_exception_handler(request, exc):\nreturn JSONResponse(        status_code=exc.status_code,        content={\"code\": exc.status_code, \"message\": exc.detail, \"data\": None}    )\nasync def generic_exception_handler(request, exc):\nreturn JSONResponse(        status_code=500,        content={\"code\": 500, \"message\": \"服务器内部错误\", \"data\": None}    )# 2. 全局注册app.add_exception_handler(HTTPException, http_exception_handler)\napp.add_exception_handler(Exception, generic_exception_handler)\n```\n**【项目实践】** AI掘金头条注册了多层异常处理器,确保任何未捕获的异常都能以统一格式返回,避免前端收到原始错误堆栈。\n\n**【知识联动】** 前置知识:通用响应格式(Q17)\n\n后续知识:所有模块的异常处理关联概念:与 `HTTPException` 的关系——`raise HTTPException()` 触发异常,全局处理器统一捕获",
+    "extend": ""
+  },
+  {
+    "id": 263,
+    "category": "缓存与Redis",
+    "question": "Q19：什么是缓存?为什么需要缓存?",
+    "answer": "**【核心概念】** 缓存是一种高速的临时数据存储机制,用于临时存储数据或计算结果。当再次需要这些数据时,可以快速从缓存中检索,而不是重新进行耗时或昂贵的获取和计算过程。\n\n**【原理机制】** 核心架构:\n```\n用户/前端 → FastAPI服务器(业务逻辑控制中心)→ 缓存(高速临时数据,取的快)→ 数据库(权威真实数据,存得住)\n```\n主要优势:\n| 优势 | 说明 |\n| --- | --- |\n| 提升性能和用户体验 | 响应速度从毫秒级降到微秒级 |\n| 减轻服务器/数据库负载 | 1000人同时查不会打垮数据库 |\n| 降低网络延迟 | 内存读取远快于磁盘I/O |\n| 节省资源和成本 | 减少数据库连接和计算资源消耗 |\n**【项目实践】** AI掘金头条中的缓存流程:\n```\n前端请求数据 → 服务器查缓存 → 有缓存:直接返回给前端                            → 无缓存:查数据库 → 写入缓存 → 返回数据给前端\n```\n**【知识联动】** 前置知识:数据库查询(Q12-Q13)\n\n后续知识:Redis配置(Q20)、旁路缓存策略(Q21)\n\n关联概念:缓存是\"读加速\",不是\"写加速\"",
+    "extend": ""
+  },
+  {
+    "id": 264,
+    "category": "缓存与Redis",
+    "question": "Q20：Redis是什么?如何在FastAPI中配置和使用?",
+    "answer": "**【核心概念】** Redis是一种高性能的Key-Value存储系统,将数据存储在内存中,读写速度极快,非常适合作为应用层的缓存服务。\n\n**【原理机制】** 使用四步骤:\n| 步骤 | 内容 |\n| --- | --- |\n| 1. 安装Redis服务端 | Mac: brew install redis；Windows: 双击.msi文件。默认端口6379 |\n| 2. 安装Redis客户端 | pip install redis |\n| 3. 配置Redis客户端 | 配置地址、端口、数据库编号等 |\n| 4. 封装缓存操作 | setex/get/delete/exists |\n**【代码示例】**\n```python\nimport redis.asyncio as redis# 配置Redis客户端redis_client = redis.Redis(    host=\"localhost\",    port=6379,    db=0,    decode_responses=True  # 将返回数据从字节流解码为字符串)\n```\n核心操作方法:\n| 方法 | 参数 | 描述 |\n| --- | --- | --- |\n| setex | key: str, expire: int(秒), value: str | 设置缓存并指定过期时间 |\n| get | key: str | 获取缓存值，不存在返回None |\n| delete | key: str | 删除指定缓存键 |\n| exists | key: str | 检查缓存键是否存在，返回布尔值 |\n**【项目实践】** AI掘金头条封装了缓存操作工具函数,供各模块调用。\n\n**【知识联动】** 前置知识:缓存概念(Q19)、异步编程(Q2)\n\n后续知识:旁路缓存策略(Q21)、缓存Key设计(Q22)\n\n关联概念:`decode_responses=True` 确保返回字符串而非字节",
+    "extend": ""
+  },
+  {
+    "id": 265,
+    "category": "缓存与Redis",
+    "question": "Q21：什么是旁路缓存策略(Cache-Aside)?如何实现?",
+    "answer": "**【核心概念】** 旁路缓存策略(Cache-Aside)是最常见的缓存策略,核心是应用程序主动管理缓存:读时先查缓存,写时更新数据库后删除/更新缓存。\n\n**【原理机制】**\n| 操作 | 流程 |\n| --- | --- |\n| 读 | 先查缓存 → 有数据则直接返回 → 没有则查数据库 → 写入缓存 → 返回 |\n| 写 | 更新数据库 → 更新或删除缓存数据 |\n**【代码示例】**\n```python\nasync def get_categories(db: AsyncSession, skip: int = 0, limit: int = 100):    # 1. 尝试从缓存获取    cached_categories =\nawait get_cached_categories()\nif cached_categories:\nreturn cached_categories        # 2. 缓存没有,从数据库查询    stmt = select(Category).offset(skip).limit(limit)\nresult =\nawait db.execute(stmt)\ncategories = result.scalars().all()        # 3. 写入缓存\nif categories:        categories = jsonable_encoder(categories)\nawait cache_categories(categories)\nreturn categories\n```\n**【项目实践】** 新闻分类列表接口使用了旁路缓存策略:分类数据变化频率低,适合长时间缓存(2小时)。\n\n**【知识联动】** 前置知识:Redis操作(Q20)\n\n后续知识:缓存Key设计(Q22)、过期时间设计(Q22)\n\n关联概念:`jsonable_encoder` 将ORM对象转为可JSON序列化的格式后存入Redis **⚠️ 面试官可能追问** 写操作时为什么选择\"删除缓存\"而不是\"更新缓存\"?→ 避免并发写导致缓存与数据库不一致如果缓存和数据库不一致怎么办?→ 设置合理的过期时间作为兜底",
+    "extend": ""
+  },
+  {
+    "id": 266,
+    "category": "缓存与Redis",
+    "question": "Q22：缓存Key如何设计?过期时间如何确定?",
+    "answer": "**【核心概念】** 缓存Key必须唯一且语义清晰,过期时间根据数据变化频率确定——数据越稳定,缓存越久;数据变化越快,缓存越短。\n\n**【原理机制】** **缓存Key设计**(以新闻列表为例):\n```\nnews:list:{分类ID}:{页码}:{每页数量}\n```\n示例:`news:list:3:1:10` 表示\"分类3、第1页、每页10条\"的新闻列表缓存。\n\n**缓存Value**:新闻列表数据(JSON格式)\n\n**过期时间设计**:\n| 数据类型 | 过期时间 | 原因 |\n| --- | --- | --- |\n| 分类、配置 | 7200秒（2小时） | 数据极少变化 |\n| 列表数据 | 600秒（10分钟） | 可能有新增内容 |\n| 详情数据 | 1800秒（30分钟） | 内容相对固定 |\n| 验证码 | 120秒（2分钟） | 时效性极强 |\n不同类型的数据缓存时间不同,否则会出现缓存雪崩。\n\n**【项目实践】** 新闻分类缓存:Key = `news:categories`,过期时间7200秒新闻列表缓存:Key = `news:list:{categoryId}:{page}:{pageSize}`,过期时间600秒新闻详情缓存:Key = `news:detail:{newsId}`,过期时间1800秒 **【知识联动】** 前置知识:旁路缓存策略(Q21)、Redis操作(Q20)\n\n后续知识:缓存雪崩(Q23)\n\n关联概念:Key设计要考虑所有影响查询结果的参数,确保不同查询条件命中不同缓存",
+    "extend": ""
+  },
+  {
+    "id": 267,
+    "category": "缓存与Redis",
+    "question": "Q23：缓存穿透、缓存击穿、缓存雪崩分别是什么?如何解决?",
+    "answer": "**【核心概念】** 这是缓存系统的三大经典问题,本质都是缓存失效后大量请求直接打到数据库,导致数据库压力骤增。\n\n**【原理机制】**\n| 问题 | 定义 | 原因 | 解决方案 |\n| --- | --- | --- | --- |\n| 缓存穿透 | 查询不存在的数据，缓存永远没有 | 恶意请求或参数错误 | 布隆过滤器/缓存空值 |\n| 缓存击穿 | 热点Key过期瞬间，大量并发请求涌入 | 热点数据过期 | 互斥锁/永不过期+异步更新 |\n| 缓存雪崩 | 大量Key同时过期，请求全部打到数据库 | 过期时间设置相同 | 过期时间加随机值/多级缓存 |\n**【项目实践】** AI掘金头条的防范措施:\n\n不同类型数据设置不同过期时间(分类2小时、列表10分钟、详情30分钟),避免雪崩分类数据缓存2小时,因为极少变化,降低击穿风险查询不到数据时不写入缓存(避免缓存无意义的空值)\n\n**【知识联动】** 前置知识:过期时间设计(Q22)、旁路缓存策略(Q21)\n\n后续知识:项目性能优化(Q28)\n\n关联概念:课件中提到\"不同类型的数据,缓存时间不同,否则会出现缓存雪崩\" **⚠️ 面试官可能追问** 你的项目中如何防止缓存雪崩?→ 不同数据类型设置不同过期时间如果Redis宕机了怎么办?→ 降级方案:直接查数据库,限流保护",
+    "extend": ""
+  },
+  {
+    "id": 268,
+    "category": "FastAPI项目",
+    "question": "Q24：AI掘金头条项目的工程结构是怎样的?各层职责是什么?",
+    "answer": "**【核心概念】** 项目采用分层架构,按职责划分为路由层、模型层、数据库操作层、验证层、配置层和工具层。\n\n**【原理机制】**\n| 层级 | 职责 | 对应目录/文件 |\n| --- | --- | --- |\n| 路由层 | 按模块划分接口（news、user、favorite、history） | routers/ |\n| 数据库模型 | SQLAlchemy ORM模型定义 | models/ |\n| 数据库操作 | 封装增删改查逻辑 | services/ |\n| 数据验证 | Pydantic请求/响应模型 | schemas/ |\n| 配置相关 | 数据库连接、Redis配置等 | config/ |\n| 工具函数 | 通用响应封装、加密等 | utils/ |\n接口实现的标准流程:\n```\n模块化路由 → 定义模型类 → 数据库CRUD → 路由调用逻辑\n```\n具体步骤:\n\n定义 `APIRouter` 实例,注册路由 `include_router()`,参照接口规范文档定义模型类,参照数据库表数据库CRUD:`select/add/update/delete`,`Depends` 注入数据库依赖路由调用逻辑,响应结果 **【项目实践】** 配套物料包括:前端代码(Vue)、接口规范文档、数据库SQL文件。\n\n**【知识联动】** 前置知识:模块化路由(Q9)、ORM配置(Q10)\n\n后续知识:所有模块的实现关联概念:工程结构决定了代码的可维护性和可扩展性",
+    "extend": ""
+  },
+  {
+    "id": 269,
+    "category": "FastAPI项目",
+    "question": "Q25：CORS跨域是什么?如何解决?",
+    "answer": "**【核心概念】** 跨域资源共享(CORS)是一种浏览器安全机制,用于允许运行在一个源(Origin)的Web应用,通过浏览器向另一个源的服务器发起跨域HTTP请求,并在服务器授权的前提下获取资源。\n\n**【原理机制】** **同源的三个条件**:协议 + 域名 + 端口(三者完全相同才算同源)\n\n跨域场景:前端 `http://localhost:5173/`(Vue)→ 后端 `http://127.0.0.1:8000/`(FastAPI),端口不同,属于跨域。\n\n**解决方案**:CORS中间件——让后端主动告诉浏览器:\"这个前端允许访问\"。\n\n**【代码示例】**\n```python\nfrom fastapi.middleware.cors\nimport CORSMiddlewareorigins = [    \"http://localhost\",    \"http://localhost:3000\",    \"https://your-frontend-domain.com\"]\napp.add_middleware(    CORSMiddleware,    allow_origins=[\"*\"],       # 允许访问的源    allow_credentials=True,    # 允许携带Cookie    allow_methods=[\"*\"],       # 允许所有请求方法    allow_headers=[\"*\"],       # 允许所有请求头)\n```\n**【项目实践】** AI掘金头条在 `main.py` 中全局配置CORS中间件,允许前端Vue(5173端口)访问后端FastAPI(8000端口)。\n\n**【知识联动】** 前置知识:中间件(Q6)\n\n后续知识:前后端联调关联概念:CORS是浏览器行为,服务器端配置响应头 `Access-Control-Allow-Origin` **⚠️ 面试官可能追问** 生产环境中 `allow_origins=[\"*\"]` 安全吗?→ 不安全,应指定具体域名预检请求(OPTIONS)是什么?→ 浏览器在发送非简单请求前先发OPTIONS确认服务器是否允许",
+    "extend": ""
+  },
+  {
+    "id": 270,
+    "category": "FastAPI项目",
+    "question": "Q26：新闻列表接口的完整实现流程是怎样的?",
+    "answer": "**【核心概念】** 新闻列表接口是项目中最复杂的查询接口,涉及分页查询、聚合统计、缓存策略的综合应用。\n\n**【原理机制】** 完整流程:\n```\n进入请求 → 处理分页规则 → 按分类ID查询新闻 → 获取新闻总数量 → 计算是否有更多新闻 → 响应结果\n```\n各步骤详解:\n| 步骤 | 实现方式 |\n| --- | --- |\n| 分页规则 | 跳过数量 = (页码-1) × 每页数量 |\n| 按分类查询 | select(News).where(News.category_id == category_id).offset(skip).limit(page_size) |\n| 获取总量 | select(func.count()).where(News.category_id == category_id) |\n| 是否有更多 | (offset + 当前新闻列表条数) < 总量 |\n响应结果包含:当前分类新闻列表、新闻总量(total)、是否还有更多新闻(hasMore)。\n\n**【代码示例】**\n```python\n@router.get(\"/list\")\nasync def get_news(    category_id: int = Query(..., alias=\"categoryId\"),    page: int = 1,    page_size: int = Query(10, le=100, alias=\"pageSize\"),    db: AsyncSession = Depends(get_db)):    # 1. 计算跳过数量    skip = (page - 1) * page_size        # 2. 查询当前分类新闻(分页)\nstmt = select(News).where(News.category_id == category_id).offset(skip).limit(page_size)\nresult =\nawait db.execute(stmt)\nnews_list = result.scalars().all()        # 3. 获取总量    count_stmt = select(func.count()).select_from(News).where(News.category_id == category_id)\ntotal_result =\nawait db.execute(count_stmt)\ntotal = total_result.scalar()        # 4. 判断是否有更多    has_more = (skip + len(news_list)) < total\nreturn success_response(data={        \"list\": news_list,        \"total\": total,        \"hasMore\": has_more    })\n```\n**【项目实践】** 结合缓存后的完整流程:先查Redis → 有缓存直接返回 → 无缓存查数据库 → 写入Redis → 返回。\n\n**【知识联动】** 前置知识:分页查询(Q13)、聚合查询(Q13)、旁路缓存(Q21)\n\n后续知识:缓存Key设计(Q22)\n\n关联概念:`Query(..., alias=\"categoryId\")` 实现参数名映射",
+    "extend": ""
+  },
+  {
+    "id": 271,
+    "category": "FastAPI应用",
+    "question": "Q27：收藏模块和浏览历史模块如何实现幂等性?两者的区别是什么?",
+    "answer": "**【核心概念】** 幂等性指同一操作执行多次与执行一次效果相同。收藏模块通过 `UniqueConstraint` 保证唯一性;浏览历史通过\"先查后更新\"实现幂等。\n\n**【原理机制】** **收藏模块**:\n\n使用 `UniqueConstraint('user_id', 'news_id')` 确保同一用户不会重复收藏同一新闻添加收藏前无需检查,数据库约束自动防重 **浏览历史模块**:\n\n添加浏览记录时先检查是否已浏览过当前新闻已浏览过:更新浏览时间(不重复插入)\n\n未浏览过:添加新记录两者功能对比:\n| 功能 | 收藏模块 | 浏览历史模块 |\n| --- | --- | --- |\n| 添加 | 添加收藏 | 添加浏览记录（幂等：已有则更新时间） |\n| 取消/删除 | 取消收藏 | 删除单条浏览记录 |\n| 列表 | 获取收藏列表（分页） | 获取浏览历史列表（分页） |\n| 清空 | 清空收藏列表 | 清空浏览历史列表 |\n| 额外功能 | 检查收藏状态 | — |\n**【代码示例】**\n```python\n# 收藏模块:检查是否已收藏\n@router.get(\"/check\")\nasync def check_favorite(    news_id: int = Query(..., alias=\"newsId\"),    user: User = Depends(get_current_user),    db: AsyncSession = Depends(get_db)):    result =\nawait db.execute(        select(Favorite).where(            Favorite.user_id == user.id,            Favorite.news_id == news_id        )    )\nis_favorited = result.scalars().first()\nis not None\nreturn success_response(data={\"isFavorited\": is_favorited})# 浏览历史:先查后更新\n@router.post(\"/add\")\nasync def add_history(data: HistoryAddRequest, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):    # 检查是否已浏览过    existing =\nawait db.execute(        select(History).where(History.user_id == user.id, History.news_id == data.news_id)    )\nrecord = existing.scalars().first()\nif record:        # 已浏览:更新浏览时间        record.view_time = datetime.now()\nelse:        # 未浏览:添加记录        db.add(History(user_id=user.id, news_id=data.news_id))\nawait db.commit()\nreturn success_response(message=\"添加成功\")\n```\n**【项目实践】** 收藏列表和浏览历史列表都使用联表查询:`select(News).join(Favorite/History)`,获取关联的新闻详情。清空操作使用 `delete()` + `result.rowcount` 返回删除条数。\n\n**【知识联动】** 前置知识:联表查询(Q14)、UniqueConstraint(Q14)、CRUD(Q12)\n\n后续知识:依赖注入认证(Q16)\n\n关联概念:`result.rowcount` 获取操作影响的行数",
+    "extend": ""
+  },
+  {
+    "id": 272,
+    "category": "FastAPI应用",
+    "question": "Q28：QWen大模型如何集成到项目中?",
+    "answer": "**【核心概念】** AI掘金头条通过阿里云百炼模型广场集成通义千问(Qwen)系列模型,前端直接调用模型API,实现AI摘要、智能推荐等功能。\n\n**【原理机制】** 集成步骤:\n| 步骤 | 操作 |\n| --- | --- |\n| 1 | 登录阿里云百炼模型广场 |\n| 2 | 选择模型（通义千问3-Max） |\n| 3 | 查看API参考，获取HTTP请求地址 + API Key |\n| 4 | 前端配置调用 |\n前端配置位置:`项目前端 → src/ → config/ → api.js → 替换大模型HTTP请求地址 + API Key + 模型名称` **【项目实践】** AI掘金头条前端通过配置文件指定模型接口,支持千问系列模型的使用。前端调用时直接指定对应的API地址和Key,无需后端中转。\n\n**【知识联动】** 前置知识:项目工程结构(Q24)、前后端分离架构后续知识:可扩展为后端代理调用(保护API Key)\n\n关联概念:当前方案是前端直调,生产环境建议后端代理以保护Key安全 **⚠️ 面试官可能追问** 前端直调API Key安全吗?→ 不安全,生产环境应通过后端代理转发如果模型响应慢怎么办?→ 可使用流式响应(StreamingResponse)\n\n**面试复习路线图**\n| 阶段 | 目标 | 重点题目 | 建议时间 |\n| --- | --- | --- | --- |\n| 初级 | 掌握FastAPI基础概念和用法 | Q1-Q5, Q9, Q25 | 3-5天 |\n| 中级 | 掌握进阶特性和ORM，能独立完成CRUD | Q6-Q8, Q10-Q14, Q15-Q18 | 5-7天 |\n| 高级 | 掌握缓存设计、项目架构、性能优化 | Q19-Q23, Q24, Q26-Q28 | 5-7天 |\n**知识网络全景图**\n```\nFastAPI基础(Q1-Q5)    ├── 异步编程 → 异步ORM(Q10)→ 异步Redis(Q20)    ├── 路由参数 → Pydantic验证(Q4)→ 响应格式(Q5/Q17)    └── 响应类型 → 异常处理(Q18)FastAPI进阶(Q6-Q9)    ├── 中间件 → CORS(Q25)    ├── 依赖注入 → 数据库会话(Q10)→ 用户认证(Q16)    └── 模块化路由 → 项目工程结构(Q24)ORM与数据库(Q10-Q14)    ├── 配置 → 模型定义 → CRUD    ├── 条件/聚合/分页查询 → 新闻列表(Q26)    └── 联表查询 → 收藏/浏览历史(Q27)安全认证(Q15-Q18)    ├── passlib加密 → Token认证 → 用户模块全流程    └── 通用响应 + 全局异常 → 项目规范缓存与Redis(Q19-Q23)    ├── Redis配置 → 旁路缓存 → Key设计    └── 穿透/击穿/雪崩 → 性能优化项目综合(Q24-Q28)    ├── 工程结构 → 模块实现 → 缓存集成    └── AI模型调用 → 完整项目交付\n```",
+    "extend": ""
+  }
+]

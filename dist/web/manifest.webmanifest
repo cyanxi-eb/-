@@ -1,0 +1,12 @@
+{
+  "name": "面试背记学习卡 v2.5",
+  "short_name": "记忆卡",
+  "description": "AI 大模型面试背记闪卡",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f7fa",
+  "theme_color": "#4299e1",
+  "icons": []
+}

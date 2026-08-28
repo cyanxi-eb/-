@@ -1,0 +1,69 @@
+/* ============================================================
+   guide.css — 面试前指导（突击模式）：左模块 + 右软技能卡片
+   ============================================================ */
+#guideView { max-width: 1100px; margin: 0 auto 40px; padding: 0 20px; }
+.guide-banner { margin: 16px 0 14px; padding: 18px 20px; border-radius: 14px; background: linear-gradient(120deg, rgba(66, 153, 225, 0.14), rgba(72, 187, 120, 0.10), rgba(237, 137, 54, 0.10)); border: 1px solid var(--border); position: relative; overflow: hidden; }
+.guide-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent), var(--success), #ed8936); }
+.guide-banner h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+.guide-banner p { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.9; }
+.guide-tag { display: inline-block; font-size: 0.72rem; padding: 2px 8px; border-radius: 10px; background: rgba(66, 153, 225, 0.15); color: var(--accent); margin-right: 6px; margin-top: 6px; font-weight: 600; }
+
+/* 双栏布局 */
+.guide-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .guide-layout { grid-template-columns: 1fr; } }
+
+.guide-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 14px 0; }
+.guide-stat { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; text-align: center; }
+.guide-stat .num { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+.guide-stat .num.mastered { color: var(--success); }
+.guide-stat .num.weak { color: var(--danger); }
+.guide-stat .lbl { font-size: 0.74rem; color: var(--text-muted); }
+.guide-drill { margin: 0 0 16px; padding: 14px 16px; border: 1px dashed var(--accent); border-radius: 12px; background: rgba(66, 153, 225, 0.06); }
+.guide-drill .txt { font-size: 0.88rem; color: var(--text-secondary); }
+.guide-drill .txt strong { color: var(--accent); }
+.guide-drill .top-label { display: block; margin-top: 4px; font-size: 0.8rem; color: var(--text-muted); }
+.guide-drill .muted { color: var(--text-muted); }
+.guide-btn { padding: 8px 16px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-right: 8px; margin-top: 8px; transition: var(--transition); }
+.guide-btn:hover { background: var(--accent-hover); }
+.guide-btn.ghost { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+.guide-btn.ghost:hover { background: var(--accent); color: #fff; }
+
+.guide-module { margin-bottom: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+.guide-module-header { display: flex; align-items: center; gap: 10px; padding: 13px 18px; cursor: pointer; user-select: none; }
+.guide-module-header .gi { font-size: 1.3rem; }
+.guide-module-header .gt { font-size: 1.0rem; font-weight: 700; flex: 1; }
+.guide-module-header .gn { font-size: 0.74rem; color: var(--text-muted); background: var(--bg-primary); padding: 2px 9px; border-radius: 10px; }
+.guide-module-header .arrow { color: var(--text-muted); transition: transform 0.25s; font-size: 0.85rem; }
+.guide-module.open .guide-module-header .arrow { transform: rotate(90deg); }
+.guide-module-body { display: none; padding: 4px 18px 16px; border-top: 1px dashed var(--border); }
+.guide-module.open .guide-module-body { display: block; }
+
+.guide-goal { margin: 10px 0 4px; padding: 10px 14px; border: 1px solid rgba(66, 153, 225, 0.35); border-left: 4px solid var(--accent); border-radius: 0 10px 10px 0; background: rgba(66, 153, 225, 0.08); font-size: 0.88rem; line-height: 1.9; }
+.guide-goal strong { color: var(--accent); }
+.guide-steps { margin: 10px 0 4px; }
+.guide-step { display: flex; gap: 10px; margin-bottom: 9px; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.85; }
+.guide-step .gsn { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.guide-checklist { margin: 10px 0 4px; list-style: none; padding-left: 2px; }
+.guide-checklist li { font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 6px; padding-left: 26px; position: relative; line-height: 1.8; }
+.guide-checklist li::before { content: '☐'; position: absolute; left: 4px; color: var(--accent); }
+.guide-script { margin: 10px 0 4px; padding: 11px 14px; border: 1px dashed rgba(237, 137, 54, 0.5); border-radius: 10px; background: rgba(237, 137, 54, 0.07); font-size: 0.87rem; color: var(--text-secondary); line-height: 1.9; }
+.guide-script .gs-tag { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 1px 9px; border-radius: 9px; background: rgba(237, 137, 54, 0.18); color: #ed8936; margin-bottom: 6px; }
+.guide-point { margin: 10px 0; padding: 9px 12px; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; background: linear-gradient(90deg, rgba(66, 153, 225, 0.06), transparent 80%); }
+.guide-point .gp-title { font-weight: 700; display: block; margin-bottom: 3px; }
+.guide-point ul { list-style: none; margin: 6px 0 2px; padding-left: 2px; }
+.guide-point li { font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 5px; padding-left: 20px; position: relative; line-height: 1.8; }
+.guide-point li::before { content: '▸'; position: absolute; left: 4px; color: var(--accent); }
+.guide-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+.guide-links-label { font-size: 0.78rem; color: var(--text-muted); }
+.guide-catlink { padding: 5px 12px; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-primary); color: var(--text-secondary); font-size: 0.76rem; cursor: pointer; transition: var(--transition); }
+.guide-catlink:hover { border-color: var(--accent); color: var(--accent); }
+
+/* 右栏：软技能卡片 */
+.guide-right { position: sticky; top: 64px; }
+.guide-right-title { font-size: 0.95rem; font-weight: 700; margin: 14px 0 10px; }
+.skill-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+.skill-q { padding: 12px 14px; font-weight: 600; font-size: 0.92rem; cursor: pointer; line-height: 1.7; }
+.skill-q::before { content: '▸ '; color: var(--accent); }
+.skill-card.open .skill-q::before { content: '▾ '; }
+.skill-a { display: none; padding: 4px 14px 12px; border-top: 1px dashed var(--border); font-size: 0.86rem; }
+.skill-card.open .skill-a { display: block; }

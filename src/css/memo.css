@@ -1,0 +1,35 @@
+/* ============================================================
+   memo.css — 记背知识（学习模式）
+   ============================================================ */
+#memoView { max-width: 800px; width: min(800px, 92vw); margin: 0 auto 40px; padding: 0 16px; box-sizing: border-box; }
+.memo-toolbar { display: flex; align-items: center; gap: 10px; margin: 14px 0 12px; flex-wrap: wrap; }
+.memo-toolbar h2 { font-size: 1.05rem; font-weight: 650; }
+#memoTotal { font-size: 0.8rem; color: var(--text-muted); }
+.memo-actions { margin-left: auto; display: flex; gap: 8px; }
+.memo-group { margin-bottom: 16px; }
+.memo-group-header {
+  display: flex; align-items: center; gap: 10px; padding: 9px 14px;
+  background-color: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 0; cursor: pointer; user-select: none;
+}
+.memo-group-header::before { content: '▸'; color: var(--accent); transition: transform 0.2s; font-size: 0.85em; }
+.memo-group.open .memo-group-header::before { transform: rotate(90deg); }
+.memo-group-name { font-weight: 650; color: var(--accent); font-size: 0.95rem; }
+.memo-group-count { font-size: 0.8rem; color: var(--text-muted); }
+/* 分组默认收起：未展开时不显示题目列表 */
+.memo-group:not(.open) .memo-item { display: none; }
+.memo-group.open .memo-group-header { border-radius: 10px 10px 0 0; border-bottom: 1px dashed var(--border); }
+.memo-item { background-color: var(--bg-secondary); border: 1px solid var(--border); border-top: none; overflow: hidden; transition: var(--transition); }
+.memo-group.open .memo-item:last-child { border-radius: 0 0 12px 12px; }
+/* 题目条目：块级布局，▸ 绝对定位，避免 flex 拉伸到屏幕两边 */
+.memo-item-question {
+  padding: 12px 16px 12px 34px; font-size: 1.0rem; font-weight: 600; color: var(--text-primary);
+  cursor: pointer; line-height: 1.9; position: relative; word-break: break-word;
+}
+.memo-item-question::before { content: '▸'; position: absolute; left: 14px; top: 12px; color: var(--accent); transition: transform 0.2s; font-size: 0.9em; }
+.memo-item.open .memo-item-question::before { transform: rotate(90deg); }
+.memo-item-code { display: inline-block; margin-right: 6px; font-size: 0.72rem; color: var(--text-muted); background: var(--bg-primary); padding: 0 8px; border-radius: 9px; font-family: monospace; vertical-align: 1px; }
+.memo-item-answer { display: none; padding: 4px 16px 14px; border-top: 1px dashed var(--border); }
+.memo-item.open .memo-item-answer { display: block; }
+.memo-item-extend { margin-top: 14px; padding: 12px 14px; background: linear-gradient(135deg, rgba(72, 187, 120, 0.08), rgba(66, 153, 225, 0.05)); border: 1px dashed var(--border); border-radius: 10px; }
+.memo-extend-title { font-size: 0.85rem; font-weight: 650; color: var(--success); margin-bottom: 8px; }

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>面试背记学习卡 v2.5</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/flashcard.css">
+<link rel="stylesheet" href="css/memo.css">
+<link rel="stylesheet" href="css/guide.css">
+<link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+
+<!-- 加载遮罩 -->
+<div id="dataLoading">
+  <div class="spinner"></div>
+  <div class="msg" id="loadingMsg">题库加载中…</div>
+</div>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="topbar-content">
+    <span class="topbar-title">📚 面试背记学习卡 <b>v2.5</b></span>
+    <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜索题目或答案..."></div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="shuffleBtn" title="重新打乱顺序">🔀</button>
+      <button class="icon-btn" id="themeBtn" title="夜间模式">🌙</button>
+    </div>
+  </div>
+</header>
+
+<!-- 模式切换 -->
+<div class="mode-tabs">
+  <button class="mode-tab active" id="modeFlashBtn">🎴 抽背卡(测试)</button>
+  <button class="mode-tab" id="modeMemoBtn">📖 记背知识(学习)</button>
+  <button class="mode-tab" id="modeGuideBtn">🎯 面试前指导(突击)</button>
+  <button class="mode-tab" id="modeEditorBtn">✏️ 编辑</button>
+  <button class="mode-tab filter-trigger" id="filterTriggerBtn">🏷 分类 <span id="filterCount"></span></button>
+</div>
+
+<!-- 分类筛选弹层（默认收起，点 🏷 展开） -->
+<div class="category-pop" id="categoryPop">
+  <div class="category-pop-header">
+    <span>🏷 分类筛选</span>
+    <button class="category-pop-close" id="categoryPopClose" title="收起">✕</button>
+  </div>
+  <div class="category-bar" id="categoryBar"></div>
+</div>
+
+<!-- 抽背卡 -->
+<div class="view active" id="flashView">
+  <div class="progress-section">
+    <div class="progress-stats">
+      <span id="progressText">第 0 / 0 题</span>
+      <div class="stats-badges">
+        <span class="stat-badge" id="totalCount">总计: 0</span>
+        <span class="stat-badge mastered" id="masteredCount">已掌握: 0</span>
+        <span class="stat-badge weak" id="weakCount">薄弱: 0</span>
+        <span class="stat-badge" id="unlearnedCount">未学: 0</span>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="controls-bar">
+    <span>
+      <label class="toggle-switch"><input type="checkbox" id="weakOnlyToggle"><span class="toggle-slider"></span><span>只复习薄弱题</span></label>
+      <label class="toggle-switch" style="margin-left:10px"><input type="checkbox" id="randomToggle" checked><span class="toggle-slider"></span><span>随机顺序</span></label>
+    </span>
+    <div class="font-control">
+      <button class="font-btn" id="fontDownBtn" title="减小字体">Ａ−</button>
+      <span id="fontSizeLabel">100%</span>
+      <button class="font-btn" id="fontUpBtn" title="增大字体">Ａ＋</button>
+    </div>
+  </div>
+
+  <div class="card-wrapper">
+    <div class="card-container">
+      <div class="flashcard" id="flashcard">
+        <div class="card-face card-front" id="cardFront">
+          <div class="card-question" id="cardQuestion">点击卡片开始复习</div>
+          <div class="card-front-footer">
+            <span class="card-category-badge" id="frontCategory">准备开始</span>
+            <span id="frontIndex"></span>
+          </div>
+          <div class="flip-hint">点击卡片或按空格键查看答案 →</div>
+        </div>
+        <div class="card-face card-back" id="cardBack">
+          <div class="card-answer-wrapper"><div class="card-answer" id="cardAnswer"></div></div>
+          <div class="card-back-actions">
+            <button class="review-btn btn-know" id="knowBtn">✓ 记得 (G)</button>
+            <button class="review-btn btn-unknown" id="unknownBtn">✗ 没记住 (B)</button>
+          </div>
+          <div class="card-back-footer"><span id="backCategory">分类</span><span id="backIndex"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" id="prevBtn">← 上一题</button>
+    <button class="nav-btn" id="nextBtn">下一题 →</button>
+  </div>
+
+  <div class="footer">
+    <button class="btn" id="exportJsonBtn">导出薄弱题 (JSON)</button>
+    <button class="btn" id="exportTxtBtn">导出薄弱题 (TXT)</button>
+    <button class="btn" id="resetBtn">重置学习进度</button>
+  </div>
+
+  <div class="shortcuts-hint">
+    <kbd>空格</kbd> 翻转 <kbd>←</kbd>/<kbd>→</kbd> 翻页 <kbd>G</kbd> 记得 <kbd>B</kbd> 没记住 <kbd>M</kbd> 切换模式 <kbd>⇠⇢</kbd> 滑动翻卡
+  </div>
+</div>
+
+<!-- 记背知识 -->
+<div class="view" id="memoView">
+  <div class="memo-toolbar">
+    <h2>📖 记背知识</h2><span id="memoTotal"></span>
+    <div class="memo-actions">
+      <button class="btn" id="memoExpandAllBtn">全部展开</button>
+      <button class="btn" id="memoCollapseAllBtn">全部收起</button>
+    </div>
+  </div>
+  <div id="memorizeList"></div>
+</div>
+
+<!-- 面试前指导 -->
+<div class="view" id="guideView"></div>
+
+<!-- 编辑模式 -->
+<div class="view" id="editorView"></div>
+
+<script src="js/markdown.js"></script>
+<script src="js/data-loader.js"></script>
+<script src="js/store.js"></script>
+<script src="js/flashcard.js"></script>
+<script src="js/memo.js"></script>
+<script src="js/guide.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/app.js"></script>
+<!-- __FC_DATA_PLACEHOLDER__ -->
+<script>App.init();</script>
+</body>
+</html>
