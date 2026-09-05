@@ -25,7 +25,8 @@
         const g = groups[cat];
         html += '<div class="memo-group' + (autoOpen ? ' open' : '') + '"><div class="memo-group-header"><span class="memo-group-name">' + cat + '</span><span class="memo-group-count">' + g.length + ' 题</span></div>';
         g.forEach(function (c) {
-          const code = c.code ? '<span class="memo-item-code">' + c.code + '</span>' : '';
+          const star = c.star ? '<span class="stars">' + '★'.repeat(c.star) + '</span> ' : '';
+          const code = c.code ? '<span class="memo-item-code">' + c.code + '</span>' + star : '';
           const ext = c.extend ? '<div class="memo-item-extend"><div class="memo-extend-title">📚 知识扩展</div>' + MD.renderMarkdown(c.extend) + '</div>' : '';
           html += '<div class="memo-item">'
             + '<div class="memo-item-question">' + code + MD.renderQuestion(c.question) + '</div>'

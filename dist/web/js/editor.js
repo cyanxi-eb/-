@@ -14,8 +14,8 @@
     step: 0,
 
     init: function () {
-      this.history = Store.get(Store.key.opLog, []);
-      this.archives = Store.get(Store.key.archives, []);
+      this.history = Store.get(Store.oplogKey(), []);
+      this.archives = Store.get(Store.archivesKey(), []);
       this.redoStack = [];
     },
 
@@ -24,7 +24,7 @@
       this.history.push({ type, code: code || (after ? after.code : before.code), before: before ? JSON.parse(JSON.stringify(before)) : null, after: after ? JSON.parse(JSON.stringify(after)) : null, time: Date.now() });
       if (this.history.length > 200) this.history.shift();
       this.redoStack = [];
-      Store.set(Store.key.opLog, this.history);
+      Store.set(Store.oplogKey(), this.history);
       this.step++;
       // 自动存档：每 10 步
       if (this.step % 10 === 0) this.archive('自动存档（第 ' + this.step + ' 步）');
@@ -33,14 +33,14 @@
 
     /* 保存题库到 localStorage */
     saveBank: function () {
-      Store.set(Store.key.bank, App.data);
+      Store.set(Store.bankKey(), App.data);
     },
 
     /* 存档点 */
     archive: function (note) {
       this.archives.push({ time: Date.now(), note: note || '手动存档', data: JSON.parse(JSON.stringify(App.data)) });
       if (this.archives.length > 30) this.archives.shift();
-      Store.set(Store.key.archives, this.archives);
+      Store.set(Store.archivesKey(), this.archives);
     },
     restore: function (idx) {
       const a = this.archives[idx];
@@ -62,7 +62,7 @@
       else if (op.type === 'delete') App.data.push(op.before);
       else if (op.type === 'edit') this._replace(op.after, op.before);
       else if (op.type === 'restore') { /* 忽略 */ }
-      Store.set(Store.key.opLog, this.history);
+      Store.set(Store.oplogKey(), this.history);
       this.saveBank();
       this._renumber();
       this.render();
@@ -74,7 +74,7 @@
       if (op.type === 'add') App.data.push(op.after);
       else if (op.type === 'delete') this._removeByCode(op.before.code);
       else if (op.type === 'edit') this._replace(op.before, op.after);
-      Store.set(Store.key.opLog, this.history);
+      Store.set(Store.oplogKey(), this.history);
       this.saveBank();
       this._renumber();
       this.render();
@@ -109,6 +109,7 @@
 
       box.innerHTML = '<div class="ed-toolbar">'
         + '<button class="btn primary" id="edAdd">➕ 新增题目</button>'
+        + '<button class="btn" id="edBankSwitch">📚 切换题库</button>'
         + '<button class="btn" id="edUndo">↩️ 撤销</button>'
         + '<button class="btn" id="edRedo">↪️ 重做</button>'
         + '<button class="btn" id="edArchive">💾 手动存档</button>'
@@ -149,12 +150,14 @@
       });
       const add = document.getElementById('edAdd');
       if (add) add.addEventListener('click', () => { this.editing = { _isNew: true, code: '', category: '', question: '', answer: '', extend: '' }; this.render(); });
+      const bankSwitch = document.getElementById('edBankSwitch');
+      if (bankSwitch) bankSwitch.addEventListener('click', () => App.openBankPicker());
       const undo = document.getElementById('edUndo'); if (undo) undo.addEventListener('click', () => this.undo());
       const redo = document.getElementById('edRedo'); if (redo) redo.addEventListener('click', () => this.redo());
       const archive = document.getElementById('edArchive'); if (archive) archive.addEventListener('click', () => { const n = prompt('存档备注（可选）：', '手动存档'); this.archive(n || '手动存档'); this.render(); });
       const exp = document.getElementById('edExport'); if (exp) exp.addEventListener('click', () => App.download(JSON.stringify(App.data, null, 2), 'questions-edit.json', 'application/json'));
       const imp = document.getElementById('edImport'); if (imp) imp.addEventListener('click', () => this._import());
-      const reset = document.getElementById('edReset'); if (reset) reset.addEventListener('click', () => { if (confirm('恢复内置题库？所有编辑将丢失。')) { Store.set(Store.key.bank, []); App.data = JSON.parse(JSON.stringify(App.builtin)); this.saveBank(); App.reload(); this.render(); } });
+      const reset = document.getElementById('edReset'); if (reset) reset.addEventListener('click', () => { if (confirm('恢复内置题库？所有编辑将丢失。')) { Store.set(Store.bankKey(), []); App.data = JSON.parse(JSON.stringify(App.builtin)); this.saveBank(); App.reload(); this.render(); } });
       box.querySelectorAll('[data-arch]').forEach(b => b.addEventListener('click', () => this.restore(parseInt(b.dataset.arch, 10))));
       const save = document.getElementById('f-save'); if (save) save.addEventListener('click', () => this.save());
       const cancel = document.getElementById('f-cancel'); if (cancel) cancel.addEventListener('click', () => { this.editing = null; this.render(); });

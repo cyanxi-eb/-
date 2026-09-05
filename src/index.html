@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>面试背记学习卡 v2.5</title>
+<title>面试背记学习卡 v2.7</title>
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/flashcard.css">
 <link rel="stylesheet" href="css/memo.css">
@@ -18,10 +18,24 @@
   <div class="msg" id="loadingMsg">题库加载中…</div>
 </div>
 
+<!-- 题库选择弹窗（首次打开 / 编辑模式切换） -->
+<div class="bank-picker-mask" id="bankPicker" style="display:none">
+  <div class="bank-picker">
+    <h3>📚 选择题库</h3>
+    <p class="bank-picker-desc">选择要加载的题库档位，题量越少越精简（可稍后在「编辑」中切换）</p>
+    <div class="bank-options" id="bankOptions"></div>
+    <div class="bank-picker-actions">
+      <button class="btn" id="bankPickerCancel">取消</button>
+      <button class="btn primary" id="bankPickerConfirm">确定</button>
+    </div>
+  </div>
+</div>
+<div class="bank-toast" id="bankToast"></div>
+
 <!-- 顶部导航 -->
 <header class="topbar">
   <div class="topbar-content">
-    <span class="topbar-title">📚 面试背记学习卡 <b>v2.5</b></span>
+    <span class="topbar-title">📚 面试背记学习卡 <b>v2.7</b></span>
     <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜索题目或答案..."></div>
     <div class="topbar-actions">
       <button class="icon-btn" id="shuffleBtn" title="重新打乱顺序">🔀</button>
@@ -64,9 +78,11 @@
   </div>
 
   <div class="controls-bar">
-    <span>
+    <span class="controls-toggles">
       <label class="toggle-switch"><input type="checkbox" id="weakOnlyToggle"><span class="toggle-slider"></span><span>只复习薄弱题</span></label>
-      <label class="toggle-switch" style="margin-left:10px"><input type="checkbox" id="randomToggle" checked><span class="toggle-slider"></span><span>随机顺序</span></label>
+      <label class="toggle-switch"><input type="checkbox" id="randomToggle" checked><span class="toggle-slider"></span><span>随机顺序</span></label>
+      <label class="toggle-switch"><input type="checkbox" id="coreToggle" checked><span class="toggle-slider"></span><span>必刷题</span></label>
+      <label class="toggle-switch"><input type="checkbox" id="extraToggle"><span class="toggle-slider"></span><span>拓展题</span></label>
     </span>
     <div class="font-control">
       <button class="font-btn" id="fontDownBtn" title="减小字体">Ａ−</button>

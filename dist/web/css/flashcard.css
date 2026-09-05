@@ -13,8 +13,9 @@
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 3px; transition: width 0.4s ease; }
 
 /* 控制栏 */
-.controls-bar { max-width: 700px; margin: 0 auto 14px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-.toggle-switch { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none; }
+.controls-bar { max-width: 700px; margin: 0 auto 14px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: nowrap; }
+.controls-toggles { display: flex; align-items: center; gap: 14px; flex-wrap: nowrap; white-space: nowrap; }
+.toggle-switch { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none; white-space: nowrap; }
 .toggle-switch input { display: none; }
 .toggle-slider { width: 38px; height: 20px; background-color: var(--border); border-radius: 10px; position: relative; transition: var(--transition); flex-shrink: 0; }
 .toggle-slider::after { content: ''; position: absolute; width: 16px; height: 16px; background-color: #fff; border-radius: 50%; top: 2px; left: 2px; transition: var(--transition); }
@@ -38,6 +39,8 @@
 .card-question code { background-color: rgba(66, 153, 225, 0.13); padding: 2px 7px; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85em; color: var(--accent); }
 .card-front-footer { margin-top: 24px; display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--text-muted); }
 .card-category-badge { background-color: var(--accent); color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 0.74rem; font-weight: 500; }
+.stars { color: #f6ad55; font-size: 0.78rem; letter-spacing: 1px; }
+.stars .stars-empty { color: var(--border); }
 .flip-hint { margin-top: 16px; font-size: 0.8rem; color: var(--text-muted); opacity: 0.7; }
 .card-back { background-color: var(--bg-card-back); transform: rotateY(180deg); }
 .card-answer-wrapper { flex: 1 1 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 24px 28px 16px; -webkit-overflow-scrolling: touch; scrollbar-gutter: stable; }
@@ -98,4 +101,6 @@
   .card-answer-wrapper { padding: 18px 18px 12px; }
   .card-answer { font-size: 0.9rem; }
   .category-bar, .controls-bar { justify-content: center; }
+  /* 窄屏允许控制栏开关换行，避免横向溢出 */
+  .controls-bar, .controls-toggles { flex-wrap: wrap; }
 }

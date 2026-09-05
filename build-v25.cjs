@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * build-v25.cjs — 构建脚本
+ * build-v25.cjs — 构建脚本（v2.7：多题库档位）
  * 读取 questions.json + src/ 源码 → 生成：
- *   ① dist/面试背记学习卡v2.5.html   单文件版（CSS/JS/数据全内联，双击可用）
- *   ② dist/web/                       分片 PWA 版（css/js 分文件 + 数据分片 + manifest + sw.js）
+ *   ① dist/面试背记学习卡v2.7.html   单文件版（CSS/JS/4档题库全内联，双击可用）
+ *   ② dist/web/                       分片 PWA 版（css/js 分文件 + 4档 banks/*.json + manifest + sw.js）
+ * 题库档位：bank 字段 1-4，值越大越核心；主题库 N = 所有 bank>=N 的题。
  * 用法: node build-v25.cjs
  */
 const fs = require('fs');
@@ -14,7 +15,7 @@ const DATA_FILE = path.join(ROOT, 'questions.json');
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
 const WEB = path.join(DIST, 'web');
-const PER_PART = 60;
+const VERSION = '2.7';
 
 const CSS_FILES = ['base.css', 'flashcard.css', 'memo.css', 'guide.css', 'editor.css'];
 const JS_FILES = ['markdown.js', 'data-loader.js', 'store.js', 'flashcard.js', 'memo.js', 'guide.js', 'editor.js', 'app.js'];
@@ -29,14 +30,32 @@ function loadData() {
     if (ids.has(c.id)) errors.push(`id 重复: ${c.id}`);
     else ids.add(c.id);
     if (!c.question || !c.answer) errors.push(`${c.code}: 缺 question/answer`);
+    if (!(c.bank >= 1 && c.bank <= 4)) errors.push(`${c.code}: bank 字段缺失或越界(${c.bank})`);
   });
   if (errors.length) { console.error('校验失败：'); errors.forEach(e => console.error('  ✗ ' + e)); process.exit(1); }
   console.log(`✓ 数据校验通过：${data.length} 题`);
   return data;
 }
 
-// ---------- 2. 生成单文件版 ----------
-function buildSingle(data) {
+// ---------- 2. 按 bank 分组（单档，无重叠）----------
+function groupByBank(data) {
+  const banks = { 1: [], 2: [], 3: [], 4: [] };
+  data.forEach(c => { banks[c.bank].push(c); });
+  return banks;
+}
+
+// 库 N 累计题量 = bank>=N 的题
+function calcCounts(banks, total) {
+  return {
+    1: total,
+    2: banks[2].length + banks[3].length + banks[4].length,
+    3: banks[3].length + banks[4].length,
+    4: banks[4].length,
+  };
+}
+
+// ---------- 3. 生成单文件版 ----------
+function buildSingle(data, banks, counts) {
   let html = fs.readFileSync(path.join(SRC, 'index.html'), 'utf8');
 
   // 内联 CSS
@@ -45,26 +64,28 @@ function buildSingle(data) {
     return '<style>\n' + css + '\n</style>';
   });
 
-  // 内联 JS（保留 __FC_DATA_PLACEHOLDER__ 与 App.init）
+  // 内联 JS
   html = html.replace(/<script src="js\/([^"]+)"><\/script>/g, (m, file) => {
     const js = fs.readFileSync(path.join(SRC, 'js', file), 'utf8');
     return '<script>\n' + js + '\n</script>';
   });
 
-  // 内联数据（用 callback 替换，避免 String.replace 的 $ 特殊序列污染数据）
-  const dataScript = '<script>window.__FC_DATA = ' + JSON.stringify(data) + ';</script>';
-  html = html.replace('<!-- __FC_DATA_PLACEHOLDER__ -->', () => dataScript);
+  // 内联 4 档题库（用 callback 替换，避免 $ 特殊序列污染数据）
+  const banksScript = '<script>window.__FC_BANKS = ' + JSON.stringify(banks) + ';</script>';
+  const metaScript = '<script>window.__FC_BANK_META = ' + JSON.stringify({ total: data.length, counts: counts }) + ';</script>';
+  html = html.replace('<!-- __FC_DATA_PLACEHOLDER__ -->', () => banksScript + metaScript);
 
-  const out = path.join(DIST, '面试背记学习卡v2.5.html');
+  const out = path.join(DIST, '面试背记学习卡v2.7.html');
   fs.writeFileSync(out, html, 'utf8');
   const kb = (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0);
   console.log(`✓ 单文件版：${out}（${kb} KB）`);
 }
 
-// ---------- 3. 生成分片 PWA 版 ----------
-function buildWeb(data) {
+// ---------- 4. 生成分片 PWA 版 ----------
+function buildWeb(data, banks, counts) {
   fs.mkdirSync(path.join(WEB, 'css'), { recursive: true });
   fs.mkdirSync(path.join(WEB, 'js'), { recursive: true });
+  fs.mkdirSync(path.join(WEB, 'banks'), { recursive: true });
 
   // 复制 index.html（去掉占位，靠 Loader 加载分片）
   let html = fs.readFileSync(path.join(SRC, 'index.html'), 'utf8');
@@ -75,31 +96,29 @@ function buildWeb(data) {
   CSS_FILES.forEach(f => fs.copyFileSync(path.join(SRC, 'css', f), path.join(WEB, 'css', f)));
   JS_FILES.forEach(f => fs.copyFileSync(path.join(SRC, 'js', f), path.join(WEB, 'js', f)));
 
-  // 生成数据分片 + manifest
-  const parts = [];
-  for (let i = 0; i < data.length; i += PER_PART) {
-    const chunk = data.slice(i, i + PER_PART);
-    const file = `flashcard-data-${parts.length}.js`;
-    const js = 'window.__fcParts = window.__fcParts || [];\nwindow.__fcParts.push(' + JSON.stringify(chunk) + ');\n';
-    fs.writeFileSync(path.join(WEB, file), js, 'utf8');
-    parts.push({ file, bytes: Buffer.byteLength(js, 'utf8') });
-  }
-  fs.writeFileSync(path.join(WEB, 'flashcard-data.manifest.json'), JSON.stringify({ parts, total: data.length, source: 'v2.5', version: '2.5' }), 'utf8');
+  // 生成 4 档 banks/*.json
+  [1, 2, 3, 4].forEach(b => {
+    fs.writeFileSync(path.join(WEB, 'banks', `bank-${b}.json`), JSON.stringify(banks[b]), 'utf8');
+  });
+  // banks.manifest.json
+  fs.writeFileSync(path.join(WEB, 'banks.manifest.json'), JSON.stringify({
+    banks: [1, 2, 3, 4], counts: counts, version: VERSION, source: 'v' + VERSION,
+  }), 'utf8');
 
   // PWA：manifest + sw.js
   fs.writeFileSync(path.join(WEB, 'manifest.webmanifest'), JSON.stringify({
-    name: '面试背记学习卡 v2.5', short_name: '记忆卡', description: 'AI 大模型面试背记闪卡',
+    name: '面试背记学习卡 v' + VERSION, short_name: '记忆卡', description: 'AI 大模型面试背记闪卡',
     start_url: './index.html', scope: './', display: 'standalone', orientation: 'portrait',
     background_color: '#f5f7fa', theme_color: '#4299e1', icons: [],
   }, null, 2), 'utf8');
 
-  const sw = `const CACHE = 'fc-v25';
+  const sw = `const CACHE = 'fc-v27';
 const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', e => {
   const req = e.request; if (req.method !== 'GET') return;
-  const isData = /flashcard-data(-\\d+)?\\.js|flashcard-data\\.manifest\\.json/.test(req.url);
+  const isData = /banks\\/bank-\\d+\\.json|banks\\.manifest\\.json/.test(req.url);
   if (isData) {
     e.respondWith(fetch(req).then(res => { const c = res.clone(); caches.open(CACHE).then(x => x.put(req, c)).catch(()=>{}); return res; }).catch(() => caches.match(req)));
     return;
@@ -115,16 +134,28 @@ self.addEventListener('fetch', e => {
     '<script>if(\'serviceWorker\' in navigator){navigator.serviceWorker.register(\'./sw.js\').catch(()=>{});}</script>\n<script>App.init();</script>');
   fs.writeFileSync(path.join(WEB, 'index.html'), webHtml, 'utf8');
 
-  console.log(`✓ 分片 PWA 版：dist/web/（${parts.length} 片 + manifest + sw.js）`);
+  console.log(`✓ 分片 PWA 版：dist/web/（4 档 banks/*.json + manifest + sw.js）`);
 }
 
 // ---------- 主流程 ----------
 function main() {
-  console.log('=== 构建 面试背记学习卡 v2.5 ===');
+  console.log('=== 构建 面试背记学习卡 v' + VERSION + ' ===');
   const data = loadData();
+  const banks = groupByBank(data);
+  const counts = calcCounts(banks, data.length);
+  console.log('✓ 题库档位：bank1=' + banks[1].length + ' bank2=' + banks[2].length + ' bank3=' + banks[3].length + ' bank4=' + banks[4].length);
+  console.log('✓ 主题库：库1=' + counts[1] + ' 库2=' + counts[2] + ' 库3=' + counts[3] + ' 库4=' + counts[4]);
+
+  // 自检断言
+  const ok4 = counts[4] < 100;
+  const ok3 = counts[3] < 200;
+  if (!ok4) { console.error('✗ 自检失败：库4 = ' + counts[4] + ' 超过 100'); process.exit(1); }
+  if (!ok3) { console.error('✗ 自检失败：库3 = ' + counts[3] + ' 超过 200'); process.exit(1); }
+  console.log('✓ 自检通过：库3(' + counts[3] + ') < 200，库4(' + counts[4] + ') < 100');
+
   fs.mkdirSync(DIST, { recursive: true });
-  buildSingle(data);
-  buildWeb(data);
+  buildSingle(data, banks, counts);
+  buildWeb(data, banks, counts);
   console.log('=== 构建完成 ===');
 }
 main();

@@ -6,21 +6,36 @@
 
   const App = {
     data: [],             // 全量题库（当前生效）
-    builtin: [],          // 内置题库（questions.json 内联/分片）
+    builtin: [],          // 内置题库（合并后的 bank>=activeBank 题集）
+    banks: null,          // 分档题集 {1:[],2:[],3:[],4:[]}（单档，无重叠）
+    bankMeta: {},         // { total, counts:{1:244,2:209,3:174,4:95} }
+    activeBank: 1,        // 当前题库档位 1-4（1=完整 4=极简）
     mode: 'flash',        // flash | memo | guide | editor
     selectedCategories: [],
     keyword: '',
     weakOnly: false,
     random: true,
+    includeCore: true,     // 必刷题(4-5星)，默认开
+    includeExtra: false,   // 拓展题(1-3星)，默认关
     progress: {},
     fontScale: 1,
 
+    /* 星级匹配：必刷=4-5星，拓展=1-3星；两开关组合决定范围 */
+    starMatch: function (c) {
+      const core = (c.star || 4) >= 4;
+      const extra = (c.star || 4) <= 3;
+      if (this.includeCore && this.includeExtra) return true; // 都选 = 完整题库
+      if (this.includeCore) return core;   // 只选必刷
+      if (this.includeExtra) return extra; // 只选拓展
+      return false;                        // 都不选 = 空
+    },
+
     /* ---------- 进度 ---------- */
     loadProgress: function () {
-      this.progress = Store.get(Store.key.progress, {});
+      this.progress = Store.get(Store.progressKey(), {});
     },
     saveProgress: function () {
-      Store.set(Store.key.progress, this.progress);
+      Store.set(Store.progressKey(), this.progress);
     },
     getStatus: function (id) { return this.progress[id] || { status: 'new', count: 0 }; },
     mark: function (id, status) {
@@ -87,7 +102,7 @@
 
     /* ---------- 筛选 ---------- */
     cond: function () {
-      return { categories: this.selectedCategories, keyword: this.keyword, weakOnly: this.weakOnly, random: this.random };
+      return { categories: this.selectedCategories, keyword: this.keyword, weakOnly: this.weakOnly, random: this.random, includeCore: this.includeCore, includeExtra: this.includeExtra };
     },
 
     /* ---------- 模式切换 ---------- */
@@ -121,7 +136,7 @@
     },
 
     filteredCards: function () {
-      let cards = [].concat(this.data);
+      let cards = [].concat(this.data).filter(c => this.starMatch(c));
       if (this.selectedCategories.length) cards = cards.filter(c => this.selectedCategories.indexOf(c.category) >= 0);
       if (this.weakOnly) cards = cards.filter(c => this.getStatus(c.id).status === 'weak');
       if (this.keyword) {
@@ -204,33 +219,106 @@
       URL.revokeObjectURL(url);
     },
 
+    /* ---------- 题库档位 ---------- */
+    /* 合并 bank>=n 的单档题，按 id 升序 */
+    mergeBanks: function (n) {
+      const out = [];
+      for (let b = 4; b >= n; b--) {
+        const arr = (this.banks && this.banks[b]) || [];
+        for (let i = 0; i < arr.length; i++) out.push(arr[i]);
+      }
+      out.sort((a, b) => (a.id || 0) - (b.id || 0));
+      return out;
+    },
+
+    /* 应用当前档位：合并题集 + 覆盖编辑存档判断 + 重载进度 */
+    applyActiveBank: function (saved) {
+      const n = this.activeBank || 1;
+      this.builtin = this.banks ? this.mergeBanks(n) : [];
+      this.data = (saved && saved.length) ? saved : this.builtin;
+      this.loadProgress();
+    },
+
+    /* 打开选择题库弹窗（首次 or 编辑模式手动触发） */
+    openBankPicker: function () {
+      const mask = document.getElementById('bankPicker');
+      if (!mask) return;
+      const counts = (this.bankMeta && this.bankMeta.counts) || { 1: 244, 2: 209, 3: 174, 4: 95 };
+      const names = { 1: '库1 完整版', 2: '库2 标准版', 3: '库3 精简版', 4: '库4 极简版' };
+      const desc = { 1: '必刷+拓展全量，无删减', 2: '去冷门与细微分枝', 3: '只留主干高频', 4: '面试冲刺最核心' };
+      const cur = this.activeBank || 1;
+      const box = document.getElementById('bankOptions');
+      box.innerHTML = [1, 2, 3, 4].map(function (b) {
+        return '<label class="bank-option' + (b === cur ? ' active' : '') + '">'
+          + '<input type="radio" name="bankChoice" value="' + b + '"' + (b === cur ? ' checked' : '') + '>'
+          + '<span class="bank-option-title">' + names[b] + '</span>'
+          + '<span class="bank-option-count">' + (counts[b] != null ? counts[b] : '?') + ' 题</span>'
+          + '<span class="bank-option-desc">' + desc[b] + '</span>'
+          + '</label>';
+      }).join('');
+      mask.style.display = 'flex';
+      box.querySelectorAll('input[name="bankChoice"]').forEach(function (r) {
+        r.addEventListener('change', function () {
+          box.querySelectorAll('.bank-option').forEach(function (o) { o.classList.remove('active'); });
+          const opt = r.closest('.bank-option'); if (opt) opt.classList.add('active');
+        });
+      });
+    },
+
+    confirmBankPicker: function () {
+      const r = document.querySelector('input[name="bankChoice"]:checked');
+      const n = r ? parseInt(r.value, 10) : 1;
+      const changed = n !== this.activeBank;
+      this.activeBank = n;
+      Store.set(Store.key.activeBank, n);
+      const saved = Store.get(Store.bankKey(), null);
+      this.applyActiveBank(saved);
+      const mask = document.getElementById('bankPicker');
+      if (mask) mask.style.display = 'none';
+      this.reload();
+      if (changed) {
+        const names = { 1: '库1 完整版', 2: '库2 标准版', 3: '库3 精简版', 4: '库4 极简版' };
+        const hint = document.getElementById('bankToast');
+        if (hint) { hint.textContent = '已切换至 ' + names[n] + '（' + this.data.length + ' 题）'; hint.classList.add('show'); setTimeout(function () { hint.classList.remove('show'); }, 2500); }
+      }
+    },
+
+    cancelBankPicker: function () {
+      const mask = document.getElementById('bankPicker');
+      if (mask) mask.style.display = 'none';
+    },
+
     /* ---------- 初始化 ---------- */
     init: function () {
       // 主题字体
       this.fontScale = Store.get(Store.key.font, 1);
       this.applyTheme();
       this.applyFont();
-      this.loadProgress();
 
-      // 读取编辑存档（若存在则覆盖内置题库）
-      const saved = Store.get(Store.key.bank, null);
-      const builtin = global.__FC_DATA || [];
-      this.builtin = builtin;
-      this.data = saved && saved.length ? saved : builtin;
+      // 读取档位（null=首次，未选过）
+      const bankVal = Store.get(Store.key.activeBank, null);
+      this.activeBank = (bankVal == null) ? 1 : bankVal;
+      const isFirst = bankVal == null;
 
-      // 内联数据（单文件版）直接进入；否则走分片加载
-      if (builtin.length) {
-        this.afterDataReady();
+      const saved = Store.get(Store.bankKey(), null);
+
+      // 内联 banks（单文件版）直接进入；否则走分片加载
+      if (global.__FC_BANKS) {
+        this.banks = global.__FC_BANKS;
+        this.bankMeta = global.__FC_BANK_META || {};
+        this.applyActiveBank(saved);
+        this.afterDataReady(isFirst);
       } else {
         Loader.load({
           onProgress: function (loaded, total, msg) {
             const m = document.getElementById('loadingMsg');
             if (m) m.textContent = msg + ' (' + loaded + '/' + total + ')';
           },
-          onDone: function (data) {
-            App.builtin = data;
-            if (!saved || !saved.length) App.data = data;
-            App.afterDataReady();
+          onDone: function (banks, meta) {
+            App.banks = banks;
+            App.bankMeta = meta || {};
+            App.applyActiveBank(saved);
+            App.afterDataReady(isFirst);
           },
           onFail: function (err) {
             const m = document.getElementById('loadingMsg');
@@ -240,7 +328,7 @@
       }
     },
 
-    afterDataReady: function () {
+    afterDataReady: function (isFirst) {
       if (this._ready) return; // 防止重复初始化
       this._ready = true;
       FC.init(this.data);
@@ -252,6 +340,8 @@
       if (dl) dl.style.display = 'none';
       // 编辑模式入口 ?edit=1
       if (/[?&]edit=1/.test(location.search)) this.switchMode('editor');
+      // 首次打开：弹题库选择（数据就绪后再弹，确保 meta 可用）
+      if (isFirst) this.openBankPicker();
     },
 
     /* 数据变化后刷新（编辑模式增删改/回滚后调用，不重复绑事件） */
@@ -315,11 +405,21 @@
       });
       document.getElementById('weakOnlyToggle').addEventListener('change', e => { App.weakOnly = e.target.checked; App.refresh(); });
       document.getElementById('randomToggle').addEventListener('change', e => { App.random = e.target.checked; App.refresh(); });
+      const coreToggle = document.getElementById('coreToggle');
+      if (coreToggle) coreToggle.addEventListener('change', e => { App.includeCore = e.target.checked; App.refresh(); });
+      const extraToggle = document.getElementById('extraToggle');
+      if (extraToggle) extraToggle.addEventListener('change', e => { App.includeExtra = e.target.checked; App.refresh(); });
 
       // 导出
       document.getElementById('exportJsonBtn').addEventListener('click', () => App.exportJson());
       document.getElementById('exportTxtBtn').addEventListener('click', () => App.exportTxt());
       document.getElementById('resetBtn').addEventListener('click', () => { if (confirm('确定重置所有学习进度吗？此操作不可撤销。')) App.resetAll(); });
+
+      // 题库选择弹窗
+      const bpc = document.getElementById('bankPickerConfirm');
+      if (bpc) bpc.addEventListener('click', () => App.confirmBankPicker());
+      const bpx = document.getElementById('bankPickerCancel');
+      if (bpx) bpx.addEventListener('click', () => App.cancelBankPicker());
 
       // 键盘
       document.addEventListener('keydown', e => {

@@ -1,98 +1,59 @@
 /* ============================================================
-   data-loader.js — 数据加载器
-   策略：内联数据(单文件版) → 分片加载(dist版) → 整包回退
-   兼容 file:// 与 http(s)；含进度条 + 超时重试
+   data-loader.js — 数据加载器（v2.7：多题库档位）
+   策略：内联 banks(单文件版) → 分片 banks/*.json(dist版) → 整包回退
+   兼容 file:// 与 http(s)。
+   banks 结构：{ 1:[bank==1 的题], 2:[...], 3:[...], 4:[...] }（单档，无重叠）
+   meta 结构：{ total, counts:{1:244,2:209,3:174,4:95} }
    ============================================================ */
 (function (global) {
   'use strict';
 
   const Loader = {
-    /* 加载题库，回调 onProgress(loaded, total, msg) */
+    /* 加载题库，回调 onProgress(loaded,total,msg) / onDone(banks, meta) / onFail(err) */
     load: function (opts) {
       opts = opts || {};
       const onProgress = opts.onProgress || function () {};
       const onDone = opts.onDone || function () {};
       const onFail = opts.onFail || function () {};
 
-      // 1. 内联数据（单文件版）
-      if (global.__FC_DATA && global.__FC_DATA.length) {
-        onDone(global.__FC_DATA);
+      // 1. 内联 banks（单文件版）
+      if (global.__FC_BANKS) {
+        onDone(global.__FC_BANKS, global.__FC_BANK_META || {});
         return;
       }
 
-      // 2. 分片加载（dist 版）
-      global.__fcParts = global.__fcParts || [];
+      // 2. 分片 banks（dist 版）：读 banks.manifest.json 后 fetch bank-N.json
       const base = './';
-
-      function collect() {
-        return [].concat.apply([], global.__fcParts || []);
-      }
-
-      function loadScript(src, timeout) {
-        return new Promise(function (resolve, reject) {
-          const s = document.createElement('script');
-          s.src = src;
-          s.async = false;
-          const timer = setTimeout(function () { s.remove(); reject(new Error('timeout')); }, timeout || 15000);
-          s.onload = function () { clearTimeout(timer); resolve(); };
-          s.onerror = function () { clearTimeout(timer); s.remove(); reject(new Error('load fail')); };
-          document.head.appendChild(s);
-        });
-      }
-
-      function tryLoadParts() {
-        // 先读 manifest
-        return fetch(base + 'flashcard-data.manifest.json', { cache: 'no-cache' })
-          .then(r => r.json())
-          .then(function (manifest) {
-            const files = (manifest.parts || []).map(p => p.file);
-            return loadSequential(files, manifest.total || files.length * 60);
-          })
-          .catch(function () {
-            // manifest 读不到（file:// 或旧版），回退：顺序试加载分片
-            onProgress(0, 0, '分片加载中…');
-            return loadSequentialFallback();
-          });
-      }
-
-      function loadSequential(files, total) {
-        let i = 0;
-        function next() {
-          if (i >= files.length) {
-            const data = collect();
-            if (data.length) { onDone(data); } else { onFail('题库为空'); }
-            return;
+      fetch(base + 'banks.manifest.json', { cache: 'no-cache' })
+        .then(r => r.json())
+        .then(function (manifest) {
+          const banks = (manifest.banks || [1, 2, 3, 4]);
+          let i = 0;
+          const result = {};
+          function next() {
+            if (i >= banks.length) {
+              const total = Object.keys(result).reduce((s, k) => s + result[k].length, 0);
+              onDone(result, { total: total, counts: manifest.counts || {} });
+              return;
+            }
+            const b = banks[i++];
+            onProgress(i, banks.length, '加载题库 ' + b + '…');
+            fetch(base + 'banks/bank-' + b + '.json', { cache: 'no-cache' })
+              .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+              .then(function (arr) { result[b] = arr || []; next(); })
+              .catch(function () {
+                // 单档失败重试一次
+                fetch(base + 'banks/bank-' + b + '.json', { cache: 'no-cache' })
+                  .then(r => r.json())
+                  .then(function (arr) { result[b] = arr || []; next(); })
+                  .catch(function () { onFail('题库分片加载失败: bank-' + b + '，请检查网络或重新部署'); });
+              });
           }
-          const f = files[i++];
-          onProgress(i, files.length, '加载分片 ' + f + '…');
-          loadScript(base + f, 20000).then(next).catch(function () {
-            // 单分片失败重试一次
-            loadScript(base + f, 20000).then(next).catch(function () {
-              onFail('分片加载失败: ' + f + '，请检查网络或重新部署');
-            });
-          });
-        }
-        next();
-      }
-
-      function loadSequentialFallback() {
-        // 无 manifest，尝试 flashcard-data-0.js、-1.js … 直到连续失败
-        let i = 0;
-        function next() {
-          const f = 'flashcard-data-' + i + '.js';
-          onProgress(i + 1, i + 2, '尝试加载 ' + f + '…');
-          loadScript(base + f, 12000).then(function () {
-            i++;
-            next();
-          }).catch(function () {
-            const data = collect();
-            if (data.length) { onDone(data); } else { onFail('未找到题库数据'); }
-          });
-        }
-        next();
-      }
-
-      tryLoadParts();
+          next();
+        })
+        .catch(function () {
+          onFail('未找到题库数据（banks.manifest.json）');
+        });
     }
   };
 

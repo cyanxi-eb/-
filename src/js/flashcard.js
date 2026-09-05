@@ -10,6 +10,13 @@
     flipped: false,
     completed: false,
 
+    /* 生成星级 HTML（★实星 + ☆空星） */
+    starHtml: function (card) {
+      const n = card.star || 0;
+      if (!n) return '';
+      return ' <span class="stars" title="' + n + '星">' + '★'.repeat(n) + '<span class="stars-empty">' + '☆'.repeat(5 - n) + '</span></span>';
+    },
+
     init: function (data) {
       this.cards = [];
       this.index = 0;
@@ -22,6 +29,7 @@
     filter: function (cond) {
       const data = this._data || [];
       let cards = [].concat(data);
+      cards = cards.filter(c => App.starMatch(c)); // 必刷/拓展组合过滤
       if (cond.categories && cond.categories.length) {
         cards = cards.filter(c => cond.categories.indexOf(c.category) >= 0);
       }
@@ -64,10 +72,10 @@
       }
       document.getElementById('cardQuestion').innerHTML = '<span class="q-inner">' + MD.renderQuestion(card.question) + '</span>';
       document.getElementById('frontCategory').textContent = card.category;
-      document.getElementById('frontIndex').textContent = card.code || ('第 ' + (this.index + 1) + ' 题');
+      document.getElementById('frontIndex').innerHTML = (card.code || '') + FC.starHtml(card);
       document.getElementById('cardAnswer').innerHTML = MD.renderMarkdown(card.answer);
       document.getElementById('backCategory').textContent = card.category;
-      document.getElementById('backIndex').textContent = card.code || '';
+      document.getElementById('backIndex').innerHTML = (card.code || '') + FC.starHtml(card);
       el.classList.toggle('flipped', this.flipped);
 
       const backWrapper = document.querySelector('.card-answer-wrapper');
