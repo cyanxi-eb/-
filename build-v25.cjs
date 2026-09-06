@@ -15,10 +15,10 @@ const DATA_FILE = path.join(ROOT, 'questions.json');
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
 const WEB = path.join(DIST, 'web');
-const VERSION = '2.7';
+const VERSION = '2.8';
 
 const CSS_FILES = ['base.css', 'flashcard.css', 'memo.css', 'guide.css', 'editor.css'];
-const JS_FILES = ['markdown.js', 'data-loader.js', 'store.js', 'flashcard.js', 'memo.js', 'guide.js', 'editor.js', 'app.js'];
+const JS_FILES = ['markdown.js', 'data-loader.js', 'cloud.js', 'store.js', 'flashcard.js', 'memo.js', 'guide.js', 'editor.js', 'app.js'];
 
 // ---------- 1. 读取 + 校验 ----------
 function loadData() {
@@ -75,7 +75,7 @@ function buildSingle(data, banks, counts) {
   const metaScript = '<script>window.__FC_BANK_META = ' + JSON.stringify({ total: data.length, counts: counts }) + ';</script>';
   html = html.replace('<!-- __FC_DATA_PLACEHOLDER__ -->', () => banksScript + metaScript);
 
-  const out = path.join(DIST, '面试背记学习卡v2.7.html');
+  const out = path.join(DIST, '面试背记学习卡v2.8.html');
   fs.writeFileSync(out, html, 'utf8');
   const kb = (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0);
   console.log(`✓ 单文件版：${out}（${kb} KB）`);
@@ -99,11 +99,13 @@ function buildWeb(data, banks, counts) {
   // 生成 4 档 banks/*.json
   [1, 2, 3, 4].forEach(b => {
     fs.writeFileSync(path.join(WEB, 'banks', `bank-${b}.json`), JSON.stringify(banks[b]), 'utf8');
-  });
-  // banks.manifest.json
+  });  // banks.manifest.json
   fs.writeFileSync(path.join(WEB, 'banks.manifest.json'), JSON.stringify({
     banks: [1, 2, 3, 4], counts: counts, version: VERSION, source: 'v' + VERSION,
   }), 'utf8');
+
+  // .nojekyll（避免 GitHub Pages 用 Jekyll 处理，保留原样）
+  fs.writeFileSync(path.join(WEB, '.nojekyll'), '', 'utf8');
 
   // PWA：manifest + sw.js
   fs.writeFileSync(path.join(WEB, 'manifest.webmanifest'), JSON.stringify({
@@ -112,8 +114,8 @@ function buildWeb(data, banks, counts) {
     background_color: '#f5f7fa', theme_color: '#4299e1', icons: [],
   }, null, 2), 'utf8');
 
-  const sw = `const CACHE = 'fc-v27';
-const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js'];
+  const sw = `const CACHE = 'fc-v28';
+const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/cloud.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', e => {

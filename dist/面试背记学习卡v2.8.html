@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>面试背记学习卡 v2.7</title>
+<title>面试背记学习卡 v2.8</title>
 <style>
 /* ============================================================
    base.css — CSS 变量 · 主题 · 重置 · 顶部导航 · 通用组件
@@ -67,6 +67,14 @@ body {
   transition: var(--transition); flex-shrink: 0;
 }
 .icon-btn:hover { background-color: var(--accent); color: #fff; border-color: var(--accent); }
+.login-btn {
+  height: 34px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background-color: var(--bg-primary);
+  color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; transition: var(--transition); flex-shrink: 0; white-space: nowrap;
+}
+.login-btn:hover { background-color: var(--accent); color: #fff; border-color: var(--accent); }
+.login-btn.logged-in { color: var(--accent); border-color: var(--accent); font-weight: 600; }
+.login-btn.logged-in:hover { color: #fff; }
 
 /* ===== 模式切换标签 ===== */
 .mode-tabs { max-width: 900px; margin: 12px auto 0; padding: 0 20px; display: flex; gap: 8px; flex-wrap: wrap; }
@@ -162,7 +170,17 @@ body {
 .bank-option-count { color: var(--accent); font-weight: 700; font-size: 0.86rem; margin-left: auto; }
 .bank-option-desc { color: var(--text-muted); font-size: 0.76rem; }
 .bank-picker-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+.bank-picker-actions .btn:first-child { margin-right: auto; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== 登录弹窗（v2.8） ===== */
+.login-picker { max-width: 400px; }
+.login-field input {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background-color: var(--bg-primary); color: var(--text-primary); font-size: 0.95rem; transition: var(--transition);
+}
+.login-field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(66,153,225,0.15); }
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ===== 切换题库 toast（v2.7） ===== */
 .bank-toast {
@@ -451,13 +469,30 @@ body {
 </div>
 <div class="bank-toast" id="bankToast"></div>
 
+<!-- 登录弹窗（云端同步） -->
+<div class="bank-picker-mask" id="loginPicker" style="display:none">
+  <div class="bank-picker login-picker">
+    <h3>🔑 云端登录</h3>
+    <p class="bank-picker-desc">输入昵称即可登录。登录后「学习进度 / 设置 / 编辑的题库」自动保存到云端，换设备、换浏览器都能恢复。</p>
+    <div class="login-field">
+      <input type="text" id="loginNick" placeholder="输入昵称（最长 30 字）" maxlength="30" autocomplete="off">
+    </div>
+    <div class="bank-picker-actions">
+      <button class="btn" id="loginLogout" style="display:none">退出登录</button>
+      <button class="btn" id="loginCancel">取消</button>
+      <button class="btn primary" id="loginConfirm">登录</button>
+    </div>
+  </div>
+</div>
+
 <!-- 顶部导航 -->
 <header class="topbar">
   <div class="topbar-content">
-    <span class="topbar-title">📚 面试背记学习卡 <b>v2.7</b></span>
+    <span class="topbar-title">📚 面试背记学习卡 <b>v2.8</b></span>
     <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜索题目或答案..."></div>
     <div class="topbar-actions">
       <button class="icon-btn" id="shuffleBtn" title="重新打乱顺序">🔀</button>
+      <button class="login-btn" id="loginBtn" title="登录后学习进度可云端同步">🔑 登录</button>
       <button class="icon-btn" id="themeBtn" title="夜间模式">🌙</button>
     </div>
   </div>
@@ -746,6 +781,161 @@ body {
 </script>
 <script>
 /* ============================================================
+   cloud.js — 云端同步层（v2.8：Supabase + 简单昵称登录）
+   原理：直接调用 Supabase PostgREST（REST API），无需引入 SDK。
+   数据模型：profiles 表一行一个用户，data(jsonb) 存该用户全部状态。
+   同步范围：学习进度 + 设置(档位/主题/字体) + 编辑后的题库。
+             （存档点 archives / 操作日志 oplog 属编辑本地辅助，不同步）
+   未配置 key 时 enabled=false，自动回退为纯本地（localStorage），
+   离线或请求失败时静默降级，不影响本地使用。
+   ============================================================ */
+(function (global) {
+  'use strict';
+
+  /* ★★★ 在这里填入你的 Supabase 项目配置（开通步骤见 docs/supabase-setup.md）★★★ */
+  const SUPABASE_URL = '';        // 例如 'https://abcdefghijkl.supabase.co'
+  const SUPABASE_ANON_KEY = '';   // 例如 'eyJhbGciOiJIUzI1NiIsInR5cCI6...'（anon public key）
+
+  const NICK_KEY = 'v27_nickname';   // 本地记住「当前登录昵称」（不同步上云）
+  const PUSH_DELAY = 500;            // 停止操作后多久自动推送（毫秒）
+
+  const Cloud = {
+    enabled: false,
+    nickname: null,
+    userId: null,
+    _data: null,     // 云上该用户的数据快照 { key: value }
+    _timer: null,
+
+    /* ---------- 初始化 ---------- */
+    init: function () {
+      this.enabled = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+      if (!this.enabled) return;
+      try { this.nickname = localStorage.getItem(NICK_KEY) || null; } catch (e) { this.nickname = null; }
+    },
+
+    isLoggedIn: function () { return this.enabled && !!this.nickname; },
+    getNickname: function () { return this.nickname; },
+
+    /* ---------- 底层请求 ---------- */
+    _headers: function () {
+      return {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation',
+      };
+    },
+    _req: function (method, path, body) {
+      return fetch(SUPABASE_URL + '/rest/v1/' + path, {
+        method: method,
+        headers: this._headers(),
+        body: body == null ? undefined : JSON.stringify(body),
+      }).then(function (r) {
+        if (!r.ok) throw new Error('云端请求失败 HTTP ' + r.status);
+        const ct = r.headers.get('content-type') || '';
+        return ct.indexOf('json') >= 0 ? r.json() : null;
+      });
+    },
+
+    /* ---------- 登录：查昵称，不存在则创建 ---------- */
+    login: function (nickname) {
+      if (!this.enabled) return Promise.reject(new Error('云端未配置（见 docs/supabase-setup.md）'));
+      nickname = String(nickname == null ? '' : nickname).trim();
+      if (!nickname) return Promise.reject(new Error('昵称不能为空'));
+      if (nickname.length > 30) return Promise.reject(new Error('昵称最长 30 个字符'));
+      const self = this;
+      const enc = encodeURIComponent(nickname);
+      return this._req('GET', 'profiles?nickname=eq.' + enc + '&select=id,nickname,data')
+        .then(function (rows) {
+          if (rows && rows.length) return { userId: rows[0].id, data: rows[0].data || {} };
+          return self._req('POST', 'profiles', { nickname: nickname, data: {} })
+            .then(function (created) {
+              const row = Array.isArray(created) ? created[0] : created;
+              return { userId: row.id, data: row.data || {} };
+            });
+        })
+        .then(function (res) {
+          self.nickname = nickname;
+          self.userId = res.userId;
+          self._data = res.data || {};
+          try { localStorage.setItem(NICK_KEY, nickname); } catch (e) {}
+          return res;
+        });
+    },
+
+    logout: function () {
+      this.nickname = null;
+      this.userId = null;
+      this._data = null;
+      try { localStorage.removeItem(NICK_KEY); } catch (e) {}
+    },
+
+    /* ---------- 数据收集 / 落盘 ---------- */
+    /* 判断某个 localStorage key 是否要同步上云 */
+    _shouldSync: function (key) {
+      if (key === NICK_KEY) return false;
+      if (/archives|oplog/.test(key)) return false;   // 编辑辅助数据不同步
+      return key.indexOf('v25_') === 0 || key.indexOf('v27_') === 0;
+    },
+    /* 收集本地所有可同步 key → { key: value } */
+    collect: function () {
+      const map = {};
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (!k || !this._shouldSync(k)) continue;
+          map[k] = JSON.parse(localStorage.getItem(k));
+        }
+      } catch (e) {}
+      return map;
+    },
+    /* 把云数据 map 写回本地 localStorage */
+    applyToLocal: function (data) {
+      const map = data || {};
+      Object.keys(map).forEach(function (k) {
+        try { localStorage.setItem(k, JSON.stringify(map[k])); } catch (e) {}
+      });
+    },
+
+    /* ---------- 推送（debounce，停止操作后自动） ---------- */
+    markDirty: function () {
+      if (!this.isLoggedIn()) return;
+      clearTimeout(this._timer);
+      this._timer = setTimeout(function () { Cloud.push(); }, PUSH_DELAY);
+    },
+    push: function () {
+      if (!this.isLoggedIn()) return Promise.resolve();
+      clearTimeout(this._timer);
+      const data = this.collect();
+      this._data = data;
+      return this._req('PATCH', 'profiles?id=eq.' + this.userId, {
+        data: data,
+        updated_at: new Date().toISOString(),
+      }).catch(function (err) {
+        console.warn('[cloud] 推送失败，稍后重试：', err && err.message);
+      });
+    },
+
+    /* 拉取云数据并写回本地（登录态） */
+    pullAndApply: function () {
+      if (!this.isLoggedIn()) return Promise.reject(new Error('未登录'));
+      const self = this;
+      return this._req('GET', 'profiles?id=eq.' + this.userId + '&select=id,nickname,data')
+        .then(function (rows) {
+          if (!rows || !rows.length) throw new Error('用户不存在');
+          self._data = rows[0].data || {};
+          self.applyToLocal(self._data);
+          return self._data;
+        });
+    },
+  };
+
+  global.Cloud = Cloud;
+})(window);
+
+</script>
+<script>
+/* ============================================================
    store.js — 本地持久化（进度 / 主题 / 字体 / 题库档位 / 编辑存档）
    v2.7：新增「题库档位」概念，进度与编辑存档按当前档位分 key 存储，
         库1（完整版）沿用 v2.6 的 v25_ 老 key，保证老用户进度无缝迁移。
@@ -766,6 +956,8 @@ body {
     },
     set: function (k, v) {
       try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
+      // 登录态下标记云端脏数据，稍后自动推送（见 cloud.js）
+      if (global.Cloud) global.Cloud.markDirty();
     },
     getRaw: function (k) {
       try { return localStorage.getItem(k); } catch (e) { return null; }
@@ -1668,43 +1860,111 @@ body {
       if (mask) mask.style.display = 'none';
     },
 
+    /* ---------- 云端登录（Supabase，简单昵称） ---------- */
+    updateLoginUI: function () {
+      const btn = document.getElementById('loginBtn');
+      if (!btn) return;
+      if (Cloud.isLoggedIn()) {
+        btn.textContent = '👤 ' + Cloud.getNickname();
+        btn.title = '已登录（云端同步中），点击切换账号或退出';
+        btn.classList.add('logged-in');
+      } else {
+        btn.textContent = '🔑 登录';
+        btn.title = '登录后学习进度可云端同步、跨设备恢复';
+        btn.classList.remove('logged-in');
+      }
+    },
+
+    openLogin: function () {
+      const mask = document.getElementById('loginPicker');
+      if (!mask) return;
+      const input = document.getElementById('loginNick');
+      if (input) input.value = Cloud.getNickname() || '';
+      const logoutBtn = document.getElementById('loginLogout');
+      if (logoutBtn) logoutBtn.style.display = Cloud.isLoggedIn() ? '' : 'none';
+      mask.style.display = 'flex';
+      if (input) setTimeout(function () { input.focus(); }, 50);
+    },
+    closeLogin: function () {
+      const mask = document.getElementById('loginPicker');
+      if (mask) mask.style.display = 'none';
+    },
+    confirmLogin: function () {
+      const input = document.getElementById('loginNick');
+      const nick = input ? input.value.trim() : '';
+      if (!nick) { alert('请输入昵称'); return; }
+      const btn = document.getElementById('loginConfirm');
+      const originText = btn ? btn.textContent : '';
+      if (btn) { btn.disabled = true; btn.textContent = '登录中…'; }
+      Cloud.login(nick)
+        .then(function (res) {
+          // 云有数据 → 覆盖本地；云空（新用户）→ 用本地数据初始化云
+          if (res.data && Object.keys(res.data).length) {
+            Cloud.applyToLocal(res.data);
+          } else {
+            Cloud.markDirty();
+          }
+          location.reload();
+        })
+        .catch(function (err) {
+          alert('登录失败：' + (err && err.message ? err.message : err));
+          if (btn) { btn.disabled = false; btn.textContent = originText; }
+        });
+    },
+    doLogout: function () {
+      if (!confirm('退出登录？\n\n· 你的数据仍保存在本地与云端，不会删除\n· 退出后本页面将以「本地数据」继续使用')) return;
+      Cloud.logout();
+      location.reload();
+    },
+
     /* ---------- 初始化 ---------- */
     init: function () {
-      // 主题字体
+      Cloud.init();
+
+      // 主题字体（本地，立即应用）
       this.fontScale = Store.get(Store.key.font, 1);
       this.applyTheme();
       this.applyFont();
 
-      // 读取档位（null=首次，未选过）
-      const bankVal = Store.get(Store.key.activeBank, null);
-      this.activeBank = (bankVal == null) ? 1 : bankVal;
-      const isFirst = bankVal == null;
+      const boot = () => {
+        // 读取档位（null=首次，未选过）
+        const bankVal = Store.get(Store.key.activeBank, null);
+        App.activeBank = (bankVal == null) ? 1 : bankVal;
+        const isFirst = bankVal == null;
 
-      const saved = Store.get(Store.bankKey(), null);
+        const saved = Store.get(Store.bankKey(), null);
 
-      // 内联 banks（单文件版）直接进入；否则走分片加载
-      if (global.__FC_BANKS) {
-        this.banks = global.__FC_BANKS;
-        this.bankMeta = global.__FC_BANK_META || {};
-        this.applyActiveBank(saved);
-        this.afterDataReady(isFirst);
+        // 内联 banks（单文件版）直接进入；否则走分片加载
+        if (global.__FC_BANKS) {
+          App.banks = global.__FC_BANKS;
+          App.bankMeta = global.__FC_BANK_META || {};
+          App.applyActiveBank(saved);
+          App.afterDataReady(isFirst);
+        } else {
+          Loader.load({
+            onProgress: function (loaded, total, msg) {
+              const m = document.getElementById('loadingMsg');
+              if (m) m.textContent = msg + ' (' + loaded + '/' + total + ')';
+            },
+            onDone: function (banks, meta) {
+              App.banks = banks;
+              App.bankMeta = meta || {};
+              App.applyActiveBank(saved);
+              App.afterDataReady(isFirst);
+            },
+            onFail: function (err) {
+              const m = document.getElementById('loadingMsg');
+              if (m) m.textContent = err;
+            },
+          });
+        }
+      };
+
+      // 已登录：先从云拉最新数据覆盖本地再启动；失败/未登录则直接用本地
+      if (Cloud.isLoggedIn()) {
+        Cloud.pullAndApply().then(boot, boot);
       } else {
-        Loader.load({
-          onProgress: function (loaded, total, msg) {
-            const m = document.getElementById('loadingMsg');
-            if (m) m.textContent = msg + ' (' + loaded + '/' + total + ')';
-          },
-          onDone: function (banks, meta) {
-            App.banks = banks;
-            App.bankMeta = meta || {};
-            App.applyActiveBank(saved);
-            App.afterDataReady(isFirst);
-          },
-          onFail: function (err) {
-            const m = document.getElementById('loadingMsg');
-            if (m) m.textContent = err;
-          },
-        });
+        boot();
       }
     },
 
@@ -1715,6 +1975,7 @@ body {
       this.renderCategories();
       this.bindEvents();
       this.updateStats();
+      this.updateLoginUI();
       this.refresh();
       const dl = document.getElementById('dataLoading');
       if (dl) dl.style.display = 'none';
@@ -1800,6 +2061,25 @@ body {
       if (bpc) bpc.addEventListener('click', () => App.confirmBankPicker());
       const bpx = document.getElementById('bankPickerCancel');
       if (bpx) bpx.addEventListener('click', () => App.cancelBankPicker());
+
+      // 登录按钮 / 登录弹窗
+      const loginBtn = document.getElementById('loginBtn');
+      if (loginBtn) loginBtn.addEventListener('click', () => {
+        if (Cloud.isLoggedIn()) {
+          if (confirm('当前已登录「' + Cloud.getNickname() + '」。\n\n确定 = 退出登录\n取消 = 切换账号')) App.doLogout();
+          else App.openLogin();
+        } else {
+          App.openLogin();
+        }
+      });
+      const lc = document.getElementById('loginConfirm');
+      if (lc) lc.addEventListener('click', () => App.confirmLogin());
+      const lx = document.getElementById('loginCancel');
+      if (lx) lx.addEventListener('click', () => App.closeLogin());
+      const lo = document.getElementById('loginLogout');
+      if (lo) lo.addEventListener('click', () => App.doLogout());
+      const li = document.getElementById('loginNick');
+      if (li) li.addEventListener('keydown', e => { if (e.key === 'Enter') App.confirmLogin(); });
 
       // 键盘
       document.addEventListener('keydown', e => {

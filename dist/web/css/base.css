@@ -60,6 +60,14 @@ body {
   transition: var(--transition); flex-shrink: 0;
 }
 .icon-btn:hover { background-color: var(--accent); color: #fff; border-color: var(--accent); }
+.login-btn {
+  height: 34px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background-color: var(--bg-primary);
+  color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; transition: var(--transition); flex-shrink: 0; white-space: nowrap;
+}
+.login-btn:hover { background-color: var(--accent); color: #fff; border-color: var(--accent); }
+.login-btn.logged-in { color: var(--accent); border-color: var(--accent); font-weight: 600; }
+.login-btn.logged-in:hover { color: #fff; }
 
 /* ===== 模式切换标签 ===== */
 .mode-tabs { max-width: 900px; margin: 12px auto 0; padding: 0 20px; display: flex; gap: 8px; flex-wrap: wrap; }
@@ -155,7 +163,17 @@ body {
 .bank-option-count { color: var(--accent); font-weight: 700; font-size: 0.86rem; margin-left: auto; }
 .bank-option-desc { color: var(--text-muted); font-size: 0.76rem; }
 .bank-picker-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+.bank-picker-actions .btn:first-child { margin-right: auto; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== 登录弹窗（v2.8） ===== */
+.login-picker { max-width: 400px; }
+.login-field input {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background-color: var(--bg-primary); color: var(--text-primary); font-size: 0.95rem; transition: var(--transition);
+}
+.login-field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(66,153,225,0.15); }
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ===== 切换题库 toast（v2.7） ===== */
 .bank-toast {

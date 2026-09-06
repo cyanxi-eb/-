@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>面试背记学习卡 v2.7</title>
+<title>面试背记学习卡 v2.8</title>
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/flashcard.css">
 <link rel="stylesheet" href="css/memo.css">
@@ -32,13 +32,30 @@
 </div>
 <div class="bank-toast" id="bankToast"></div>
 
+<!-- 登录弹窗（云端同步） -->
+<div class="bank-picker-mask" id="loginPicker" style="display:none">
+  <div class="bank-picker login-picker">
+    <h3>🔑 云端登录</h3>
+    <p class="bank-picker-desc">输入昵称即可登录。登录后「学习进度 / 设置 / 编辑的题库」自动保存到云端，换设备、换浏览器都能恢复。</p>
+    <div class="login-field">
+      <input type="text" id="loginNick" placeholder="输入昵称（最长 30 字）" maxlength="30" autocomplete="off">
+    </div>
+    <div class="bank-picker-actions">
+      <button class="btn" id="loginLogout" style="display:none">退出登录</button>
+      <button class="btn" id="loginCancel">取消</button>
+      <button class="btn primary" id="loginConfirm">登录</button>
+    </div>
+  </div>
+</div>
+
 <!-- 顶部导航 -->
 <header class="topbar">
   <div class="topbar-content">
-    <span class="topbar-title">📚 面试背记学习卡 <b>v2.7</b></span>
+    <span class="topbar-title">📚 面试背记学习卡 <b>v2.8</b></span>
     <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜索题目或答案..."></div>
     <div class="topbar-actions">
       <button class="icon-btn" id="shuffleBtn" title="重新打乱顺序">🔀</button>
+      <button class="login-btn" id="loginBtn" title="登录后学习进度可云端同步">🔑 登录</button>
       <button class="icon-btn" id="themeBtn" title="夜间模式">🌙</button>
     </div>
   </div>
@@ -150,6 +167,7 @@
 
 <script src="js/markdown.js"></script>
 <script src="js/data-loader.js"></script>
+<script src="js/cloud.js"></script>
 <script src="js/store.js"></script>
 <script src="js/flashcard.js"></script>
 <script src="js/memo.js"></script>

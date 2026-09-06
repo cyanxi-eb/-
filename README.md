@@ -1,10 +1,11 @@
-# 面试背记学习卡 v2.7
+# 面试背记学习卡 v2.8
 
 融合 `面试背记学习卡v2.4.html`（题库质量 + 轻量）与 `bh-mindmaps-main`（UI 架构 + 远程访问 + 代码/图片呈现）的新版本。
 
 - **题库**：244 题，按 1-5 星重要性分级，支持「必刷/拓展」双开关筛选；新增 **4 个主题库（4 级压缩）**——库1 完整(244) / 库2 标准(209) / 库3 精简(174) / 库4 极简(95)，首次打开可选，编辑模式可切换
 - **四模式**：🎴 抽背卡(测试) + 📖 记背知识(学习) + 🎯 面试前指导(突击) + ✏️ 编辑(CRUD+存档回滚+切换题库)
-- **双形态**：单文件 `面试背记学习卡v2.7.html`（双击即用）+ `dist/`（PWA 分片可部署）
+- **双形态**：单文件 `面试背记学习卡v2.8.html`（双击即用）+ `dist/`（PWA 分片可部署）
+- **云端同步**（v2.8 新增）：可选接入 Supabase，昵称登录后学习进度/设置/编辑题库自动上云，换设备不丢
 - **数据真源**：`questions.json`（唯一，禁止手改内联 HTML）
 
 ---
@@ -13,7 +14,7 @@
 
 ### 本地访问（单文件版）
 
-直接双击打开 `dist/面试背记学习卡v2.7.html` 即可，无需联网、无需服务器。数据已内联，`file://` 协议下功能完整可用。
+直接双击打开 `dist/面试背记学习卡v2.8.html` 即可，无需联网、无需服务器。数据已内联，`file://` 协议下功能完整可用。
 
 > 移动端：把该 HTML 文件发到手机，用浏览器打开即可。
 
@@ -27,6 +28,14 @@
 | 任意静态托管 | 上传 `dist/web/` 下所有文件（含 `sw.js`、`manifest.webmanifest`） |
 
 部署后访问 `index.html`，浏览器会提示"添加到主屏幕"；`sw.js` 会在首次加载后缓存题库分片，之后离线也能用。
+
+### 云端同步（Supabase，可选）
+
+> 想让用户「在线登录 + 云端记录数据」？接入 Supabase 即可，无需自建服务器。
+
+- 顶部栏出现「🔑 登录」，输入**昵称**即可登录，学习进度 / 设置 / 编辑题库自动保存云端，换设备不丢
+- 未接入时自动回退为本地 `localStorage` 存储，功能完全不受影响
+- **开通步骤见 [`docs/supabase-setup.md`](docs/supabase-setup.md)**（注册 → 建项目 → 执行 SQL → 填 `src/js/cloud.js` 两个常量 → 重新构建）
 
 ### 编辑模式入口
 
@@ -50,6 +59,8 @@ node build-v25.cjs
 ├── CHANGELOG.md              # 更新文档（变更记录 + 修改规范）
 ├── questions.json            # ★ 数据真源（唯一，所有题目都在这里）
 ├── build-v25.cjs             # 构建脚本（生成单文件版 + dist 分片版）
+├── docs/
+│   └── supabase-setup.md     # 云端同步（Supabase）开通指南
 ├── src/                      # 模块化源码
 │   ├── index.html            # 记忆卡主页面（框架）
 │   ├── css/                  # 样式模块
@@ -62,7 +73,7 @@ node build-v25.cjs
 ├── mindmaps/                 # markmap 思维导图页
 ├── vendor/                   # 第三方库（highlight.js）
 └── dist/                     # 构建产物（自动生成，勿手改）
-    ├── 面试背记学习卡v2.7.html   # 单文件版
+    ├── 面试背记学习卡v2.8.html   # 单文件版
     └── web/                  # 分片 PWA 版
 ```
 
@@ -218,7 +229,7 @@ node build-v25.cjs
 
 ### 3.6 加/改功能逻辑
 
-1. 逻辑代码在 `src/js/` 分模块：`data-loader.js`(加载) `markdown.js`(渲染) `flashcard.js`(抽背) `memo.js`(记背) `guide.js`(指导) `editor.js`(编辑) `store.js`(持久化) `app.js`(入口/模式切换)
+1. 逻辑代码在 `src/js/` 分模块：`data-loader.js`(加载) `cloud.js`(云端同步) `markdown.js`(渲染) `flashcard.js`(抽背) `memo.js`(记背) `guide.js`(指导) `editor.js`(编辑) `store.js`(持久化) `app.js`(入口/模式切换)
 2. 改完重新构建（构建脚本会把模块合并进最终 HTML）
 
 ### 3.7 重建产物（每次改动后必做）
@@ -228,8 +239,8 @@ node build-v25.cjs
 ```
 
 产出：
-- `dist/面试背记学习卡v2.6.html` —— 单文件版（数据内联）
-- `dist/web/` —— 分片 PWA 版（数据分片 + manifest + sw.js）
+- `dist/面试背记学习卡v2.8.html` —— 单文件版（数据内联）
+- `dist/web/` —— 分片 PWA 版（4 档 banks + manifest + sw.js）
 
 ---
 

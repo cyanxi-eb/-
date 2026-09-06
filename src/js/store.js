@@ -19,6 +19,8 @@
     },
     set: function (k, v) {
       try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
+      // 登录态下标记云端脏数据，稍后自动推送（见 cloud.js）
+      if (global.Cloud) global.Cloud.markDirty();
     },
     getRaw: function (k) {
       try { return localStorage.getItem(k); } catch (e) { return null; }

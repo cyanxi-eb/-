@@ -288,43 +288,111 @@
       if (mask) mask.style.display = 'none';
     },
 
+    /* ---------- 云端登录（Supabase，简单昵称） ---------- */
+    updateLoginUI: function () {
+      const btn = document.getElementById('loginBtn');
+      if (!btn) return;
+      if (Cloud.isLoggedIn()) {
+        btn.textContent = '👤 ' + Cloud.getNickname();
+        btn.title = '已登录（云端同步中），点击切换账号或退出';
+        btn.classList.add('logged-in');
+      } else {
+        btn.textContent = '🔑 登录';
+        btn.title = '登录后学习进度可云端同步、跨设备恢复';
+        btn.classList.remove('logged-in');
+      }
+    },
+
+    openLogin: function () {
+      const mask = document.getElementById('loginPicker');
+      if (!mask) return;
+      const input = document.getElementById('loginNick');
+      if (input) input.value = Cloud.getNickname() || '';
+      const logoutBtn = document.getElementById('loginLogout');
+      if (logoutBtn) logoutBtn.style.display = Cloud.isLoggedIn() ? '' : 'none';
+      mask.style.display = 'flex';
+      if (input) setTimeout(function () { input.focus(); }, 50);
+    },
+    closeLogin: function () {
+      const mask = document.getElementById('loginPicker');
+      if (mask) mask.style.display = 'none';
+    },
+    confirmLogin: function () {
+      const input = document.getElementById('loginNick');
+      const nick = input ? input.value.trim() : '';
+      if (!nick) { alert('请输入昵称'); return; }
+      const btn = document.getElementById('loginConfirm');
+      const originText = btn ? btn.textContent : '';
+      if (btn) { btn.disabled = true; btn.textContent = '登录中…'; }
+      Cloud.login(nick)
+        .then(function (res) {
+          // 云有数据 → 覆盖本地；云空（新用户）→ 用本地数据初始化云
+          if (res.data && Object.keys(res.data).length) {
+            Cloud.applyToLocal(res.data);
+          } else {
+            Cloud.markDirty();
+          }
+          location.reload();
+        })
+        .catch(function (err) {
+          alert('登录失败：' + (err && err.message ? err.message : err));
+          if (btn) { btn.disabled = false; btn.textContent = originText; }
+        });
+    },
+    doLogout: function () {
+      if (!confirm('退出登录？\n\n· 你的数据仍保存在本地与云端，不会删除\n· 退出后本页面将以「本地数据」继续使用')) return;
+      Cloud.logout();
+      location.reload();
+    },
+
     /* ---------- 初始化 ---------- */
     init: function () {
-      // 主题字体
+      Cloud.init();
+
+      // 主题字体（本地，立即应用）
       this.fontScale = Store.get(Store.key.font, 1);
       this.applyTheme();
       this.applyFont();
 
-      // 读取档位（null=首次，未选过）
-      const bankVal = Store.get(Store.key.activeBank, null);
-      this.activeBank = (bankVal == null) ? 1 : bankVal;
-      const isFirst = bankVal == null;
+      const boot = () => {
+        // 读取档位（null=首次，未选过）
+        const bankVal = Store.get(Store.key.activeBank, null);
+        App.activeBank = (bankVal == null) ? 1 : bankVal;
+        const isFirst = bankVal == null;
 
-      const saved = Store.get(Store.bankKey(), null);
+        const saved = Store.get(Store.bankKey(), null);
 
-      // 内联 banks（单文件版）直接进入；否则走分片加载
-      if (global.__FC_BANKS) {
-        this.banks = global.__FC_BANKS;
-        this.bankMeta = global.__FC_BANK_META || {};
-        this.applyActiveBank(saved);
-        this.afterDataReady(isFirst);
+        // 内联 banks（单文件版）直接进入；否则走分片加载
+        if (global.__FC_BANKS) {
+          App.banks = global.__FC_BANKS;
+          App.bankMeta = global.__FC_BANK_META || {};
+          App.applyActiveBank(saved);
+          App.afterDataReady(isFirst);
+        } else {
+          Loader.load({
+            onProgress: function (loaded, total, msg) {
+              const m = document.getElementById('loadingMsg');
+              if (m) m.textContent = msg + ' (' + loaded + '/' + total + ')';
+            },
+            onDone: function (banks, meta) {
+              App.banks = banks;
+              App.bankMeta = meta || {};
+              App.applyActiveBank(saved);
+              App.afterDataReady(isFirst);
+            },
+            onFail: function (err) {
+              const m = document.getElementById('loadingMsg');
+              if (m) m.textContent = err;
+            },
+          });
+        }
+      };
+
+      // 已登录：先从云拉最新数据覆盖本地再启动；失败/未登录则直接用本地
+      if (Cloud.isLoggedIn()) {
+        Cloud.pullAndApply().then(boot, boot);
       } else {
-        Loader.load({
-          onProgress: function (loaded, total, msg) {
-            const m = document.getElementById('loadingMsg');
-            if (m) m.textContent = msg + ' (' + loaded + '/' + total + ')';
-          },
-          onDone: function (banks, meta) {
-            App.banks = banks;
-            App.bankMeta = meta || {};
-            App.applyActiveBank(saved);
-            App.afterDataReady(isFirst);
-          },
-          onFail: function (err) {
-            const m = document.getElementById('loadingMsg');
-            if (m) m.textContent = err;
-          },
-        });
+        boot();
       }
     },
 
@@ -335,6 +403,7 @@
       this.renderCategories();
       this.bindEvents();
       this.updateStats();
+      this.updateLoginUI();
       this.refresh();
       const dl = document.getElementById('dataLoading');
       if (dl) dl.style.display = 'none';
@@ -420,6 +489,25 @@
       if (bpc) bpc.addEventListener('click', () => App.confirmBankPicker());
       const bpx = document.getElementById('bankPickerCancel');
       if (bpx) bpx.addEventListener('click', () => App.cancelBankPicker());
+
+      // 登录按钮 / 登录弹窗
+      const loginBtn = document.getElementById('loginBtn');
+      if (loginBtn) loginBtn.addEventListener('click', () => {
+        if (Cloud.isLoggedIn()) {
+          if (confirm('当前已登录「' + Cloud.getNickname() + '」。\n\n确定 = 退出登录\n取消 = 切换账号')) App.doLogout();
+          else App.openLogin();
+        } else {
+          App.openLogin();
+        }
+      });
+      const lc = document.getElementById('loginConfirm');
+      if (lc) lc.addEventListener('click', () => App.confirmLogin());
+      const lx = document.getElementById('loginCancel');
+      if (lx) lx.addEventListener('click', () => App.closeLogin());
+      const lo = document.getElementById('loginLogout');
+      if (lo) lo.addEventListener('click', () => App.doLogout());
+      const li = document.getElementById('loginNick');
+      if (li) li.addEventListener('keydown', e => { if (e.key === 'Enter') App.confirmLogin(); });
 
       // 键盘
       document.addEventListener('keydown', e => {
