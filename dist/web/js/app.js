@@ -326,10 +326,13 @@
       if (btn) { btn.disabled = true; btn.textContent = '登录中…'; }
       Cloud.login(nick)
         .then(function (res) {
-          // 云有数据 → 覆盖本地；云空（新用户）→ 用本地数据初始化云
+          // ★ 切用户前：清空本地所有「带用户前缀」的旧 key，避免新用户继承旧用户的进度/编辑题库
+          Store.clearAllUsersLocal();
+          // 云有数据 → 覆盖本地（applyToLocal 会按当前 userId 加前缀写入）；云空 → 本地为空
           if (res.data && Object.keys(res.data).length) {
             Cloud.applyToLocal(res.data);
           } else {
+            // 新用户：把当前干净的 localStorage 状态推上云（其实为空）
             Cloud.markDirty();
           }
           location.reload();

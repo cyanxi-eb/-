@@ -871,29 +871,35 @@ body {
     },
 
     /* ---------- 数据收集 / 落盘 ---------- */
-    /* 判断某个 localStorage key 是否要同步上云 */
-    _shouldSync: function (key) {
-      if (key === NICK_KEY) return false;
-      if (/archives|oplog/.test(key)) return false;   // 编辑辅助数据不同步
-      return key.indexOf('v25_') === 0 || key.indexOf('v27_') === 0;
+    /* 剥掉用户前缀（u_<userId>_xxx → xxx），便于按"业务 key 名"判断 */
+    _stripPrefix: function (k) {
+      return k.replace(/^u_[^_]+_/, '');
     },
-    /* 收集本地所有可同步 key → { key: value } */
+    /* 判断某个 localStorage key 是否要同步上云（按剥前缀后的业务 key 判断） */
+    _shouldSync: function (key) {
+      const k = this._stripPrefix(key);
+      if (k === NICK_KEY) return false;
+      if (/archives|oplog/.test(k)) return false;   // 编辑辅助数据不同步
+      return k.indexOf('v25_') === 0 || k.indexOf('v27_') === 0;
+    },
+    /* 收集本地所有可同步 key → { 业务key: value }（已剥前缀，云端按业务 key 存） */
     collect: function () {
       const map = {};
       try {
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
           if (!k || !this._shouldSync(k)) continue;
-          map[k] = JSON.parse(localStorage.getItem(k));
+          map[this._stripPrefix(k)] = JSON.parse(localStorage.getItem(k));
         }
       } catch (e) {}
       return map;
     },
-    /* 把云数据 map 写回本地 localStorage */
+    /* 把云数据 map 写回本地 localStorage（按当前用户加前缀，userId 在登录后已设置） */
     applyToLocal: function (data) {
       const map = data || {};
+      const prefix = 'u_' + (this.userId || 'unknown') + '_';
       Object.keys(map).forEach(function (k) {
-        try { localStorage.setItem(k, JSON.stringify(map[k])); } catch (e) {}
+        try { localStorage.setItem(prefix + k, JSON.stringify(map[k])); } catch (e) {}
       });
     },
 
@@ -939,6 +945,8 @@ body {
    store.js — 本地持久化（进度 / 主题 / 字体 / 题库档位 / 编辑存档）
    v2.7：新增「题库档位」概念，进度与编辑存档按当前档位分 key 存储，
         库1（完整版）沿用 v2.6 的 v25_ 老 key，保证老用户进度无缝迁移。
+   v2.8：所有用户维度数据（v25_*/v27_*）按当前登录用户自动加前缀 u_<userId>_，
+        实现多用户数据隔离。未登录用户保持原 key 命名（纯本地模式兼容）。
    ============================================================ */
 (function (global) {
   'use strict';
@@ -949,25 +957,50 @@ body {
     font: 'v25_font',
   };
 
+  // 唯一不分用户的本地 key（跨用户保留"上次登录的昵称"提示）
+  const NICK_KEY = 'v27_nickname';
+
+  // 判定某个 key 是否属于「用户维度数据」（需要按用户隔离）
+  const isUserKey = (k) => k !== NICK_KEY && (/^v25_/.test(k) || /^v27_/.test(k));
+
+  // 当前登录用户的 key 前缀（未登录返回空）
+  const userPrefix = () => {
+    if (global.Cloud && Cloud.isLoggedIn() && Cloud.userId) return 'u_' + Cloud.userId + '_';
+    return '';
+  };
+
   const Store = {
     get: function (k, def) {
-      try { const v = localStorage.getItem(k); return v === null ? def : JSON.parse(v); }
-      catch (e) { return def; }
+      try {
+        const final = isUserKey(k) ? userPrefix() + k : k;
+        const v = localStorage.getItem(final);
+        return v === null ? def : JSON.parse(v);
+      } catch (e) { return def; }
     },
     set: function (k, v) {
-      try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
+      try {
+        const final = isUserKey(k) ? userPrefix() + k : k;
+        localStorage.setItem(final, JSON.stringify(v));
+      } catch (e) {}
       // 登录态下标记云端脏数据，稍后自动推送（见 cloud.js）
       if (global.Cloud) global.Cloud.markDirty();
     },
     getRaw: function (k) {
-      try { return localStorage.getItem(k); } catch (e) { return null; }
+      try {
+        const final = isUserKey(k) ? userPrefix() + k : k;
+        return localStorage.getItem(final);
+      } catch (e) { return null; }
     },
     setRaw: function (k, v) {
-      try { localStorage.setItem(k, v); } catch (e) {}
+      try {
+        const final = isUserKey(k) ? userPrefix() + k : k;
+        localStorage.setItem(final, v);
+      } catch (e) {}
     },
     key: KEY,
 
     /* ---- 动态 key（依赖 App.activeBank，库1 沿用老 key 兼容）---- */
+    /* 这些方法返回「裸 key」，调用方需通过 Store.get/set 访问（自动加用户前缀） */
     progressKey: function () {
       const b = (global.App && App.activeBank) || 1;
       return b === 1 ? 'v25_progress' : 'v27_progress_' + b;
@@ -984,11 +1017,36 @@ body {
       const b = (global.App && App.activeBank) || 1;
       return b === 1 ? 'v25_oplog' : 'v27_oplog_' + b;
     },
+
+    /* ---- 用户维度辅助（外部需要直接构造带前缀 key 时使用）---- */
+    isUserKey: isUserKey,
+    userPrefix: userPrefix,
+    /** 清空 localStorage 里所有带当前用户前缀的 key（切用户/退出登录时调用） */
+    clearUserLocal: function () {
+      const prefix = userPrefix();
+      if (!prefix) return 0;
+      const toRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.indexOf(prefix) === 0) toRemove.push(k);
+      }
+      toRemove.forEach(k => localStorage.removeItem(k));
+      return toRemove.length;
+    },
+    /** 清空所有用户维度数据（不论哪个用户，用于「重置所有」类操作） */
+    clearAllUsersLocal: function () {
+      const toRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && isUserKey(k)) toRemove.push(k);
+      }
+      toRemove.forEach(k => localStorage.removeItem(k));
+      return toRemove.length;
+    },
   };
 
   global.Store = Store;
 })(window);
-
 </script>
 <script>
 /* ============================================================
@@ -1898,10 +1956,13 @@ body {
       if (btn) { btn.disabled = true; btn.textContent = '登录中…'; }
       Cloud.login(nick)
         .then(function (res) {
-          // 云有数据 → 覆盖本地；云空（新用户）→ 用本地数据初始化云
+          // ★ 切用户前：清空本地所有「带用户前缀」的旧 key，避免新用户继承旧用户的进度/编辑题库
+          Store.clearAllUsersLocal();
+          // 云有数据 → 覆盖本地（applyToLocal 会按当前 userId 加前缀写入）；云空 → 本地为空
           if (res.data && Object.keys(res.data).length) {
             Cloud.applyToLocal(res.data);
           } else {
+            // 新用户：把当前干净的 localStorage 状态推上云（其实为空）
             Cloud.markDirty();
           }
           location.reload();

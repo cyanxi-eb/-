@@ -89,29 +89,35 @@
     },
 
     /* ---------- 数据收集 / 落盘 ---------- */
-    /* 判断某个 localStorage key 是否要同步上云 */
-    _shouldSync: function (key) {
-      if (key === NICK_KEY) return false;
-      if (/archives|oplog/.test(key)) return false;   // 编辑辅助数据不同步
-      return key.indexOf('v25_') === 0 || key.indexOf('v27_') === 0;
+    /* 剥掉用户前缀（u_<userId>_xxx → xxx），便于按"业务 key 名"判断 */
+    _stripPrefix: function (k) {
+      return k.replace(/^u_[^_]+_/, '');
     },
-    /* 收集本地所有可同步 key → { key: value } */
+    /* 判断某个 localStorage key 是否要同步上云（按剥前缀后的业务 key 判断） */
+    _shouldSync: function (key) {
+      const k = this._stripPrefix(key);
+      if (k === NICK_KEY) return false;
+      if (/archives|oplog/.test(k)) return false;   // 编辑辅助数据不同步
+      return k.indexOf('v25_') === 0 || k.indexOf('v27_') === 0;
+    },
+    /* 收集本地所有可同步 key → { 业务key: value }（已剥前缀，云端按业务 key 存） */
     collect: function () {
       const map = {};
       try {
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
           if (!k || !this._shouldSync(k)) continue;
-          map[k] = JSON.parse(localStorage.getItem(k));
+          map[this._stripPrefix(k)] = JSON.parse(localStorage.getItem(k));
         }
       } catch (e) {}
       return map;
     },
-    /* 把云数据 map 写回本地 localStorage */
+    /* 把云数据 map 写回本地 localStorage（按当前用户加前缀，userId 在登录后已设置） */
     applyToLocal: function (data) {
       const map = data || {};
+      const prefix = 'u_' + (this.userId || 'unknown') + '_';
       Object.keys(map).forEach(function (k) {
-        try { localStorage.setItem(k, JSON.stringify(map[k])); } catch (e) {}
+        try { localStorage.setItem(prefix + k, JSON.stringify(map[k])); } catch (e) {}
       });
     },
 
