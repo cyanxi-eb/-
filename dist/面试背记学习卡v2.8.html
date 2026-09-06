@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="a3G1UUzf9HxzYw8HhS2cIs">
-<head data-page-node-id="QN94hI6cpfdC0qSqu2zBzj">
-<meta charset="UTF-8" data-page-node-id="ZSizJZgaGZ5DS4IJxof4P6">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" data-page-node-id="2E2GOaz2tlCamLV5Vrpc4r">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>面试背记学习卡 v2.8</title>
 <style>
 /* ============================================================
@@ -447,160 +447,160 @@ body {
 
 </style>
 </head>
-<body data-page-node-id="tVPDLKEfsDbGEdOLkvEk8m">
+<body>
 
 <!-- 加载遮罩 -->
-<div id="dataLoading" data-page-node-id="9SsQycw2e2KOH9NKGzqaH1">
-  <div class="spinner" data-page-node-id="CFEYERTBEaZnM4zximlxuM"></div>
-  <div class="msg" id="loadingMsg" data-page-node-id="Uhryzcy6R5fCjVQSJ800Cn">题库加载中…</div>
+<div id="dataLoading">
+  <div class="spinner"></div>
+  <div class="msg" id="loadingMsg">题库加载中…</div>
 </div>
 
 <!-- 题库选择弹窗（首次打开 / 编辑模式切换） -->
-<div class="bank-picker-mask" id="bankPicker" style="display:none" data-page-node-id="stS3uflSNAsFd9sUK5Kr8F">
-  <div class="bank-picker" data-page-node-id="F8eJBqs7RTIjxE743ZZiCy">
-    <h3 data-page-node-id="15wUn5XD6X8j0ASqAn3eWb">📚 选择题库</h3>
-    <p class="bank-picker-desc" data-page-node-id="lKGeEEnkJnUXvl92SUzrKu">选择要加载的题库档位，题量越少越精简（可稍后在「编辑」中切换）</p>
-    <div class="bank-options" id="bankOptions" data-page-node-id="7mg8Emch8ORE7xBOHJzKnb"></div>
-    <div class="bank-picker-actions" data-page-node-id="BjkLyCsx9WpSho62FW04Zm">
-      <button class="btn" id="bankPickerCancel" data-page-node-id="ekhOLTCRoQ4Nq8DesRUtu7">取消</button>
-      <button class="btn primary" id="bankPickerConfirm" data-page-node-id="tD8dzEIz9GVOoPj13zZ9ln">确定</button>
+<div class="bank-picker-mask" id="bankPicker" style="display:none">
+  <div class="bank-picker">
+    <h3>📚 选择题库</h3>
+    <p class="bank-picker-desc">选择要加载的题库档位，题量越少越精简（可稍后在「编辑」中切换）</p>
+    <div class="bank-options" id="bankOptions"></div>
+    <div class="bank-picker-actions">
+      <button class="btn" id="bankPickerCancel">取消</button>
+      <button class="btn primary" id="bankPickerConfirm">确定</button>
     </div>
   </div>
 </div>
-<div class="bank-toast" id="bankToast" data-page-node-id="m3bdSISKswKyodbrDHXEIO"></div>
+<div class="bank-toast" id="bankToast"></div>
 
 <!-- 登录弹窗（云端同步） -->
-<div class="bank-picker-mask" id="loginPicker" style="display:none" data-page-node-id="lAZWHFYmDa1QfVCHhovHld">
-  <div class="bank-picker login-picker" data-page-node-id="EK9BGN1XhHsaDAW0x2Vh2q">
-    <h3 data-page-node-id="Eji5wscISpveAtoi7r0aRg">🔑 云端登录</h3>
-    <p class="bank-picker-desc" data-page-node-id="dXY2cMWxyIQp8uzAh5ZQYd">输入昵称即可登录。登录后「学习进度 / 设置 / 编辑的题库」自动保存到云端，换设备、换浏览器都能恢复。</p>
-    <div class="login-field" data-page-node-id="wjW3oYZFafdrk7tHVOJlTI">
-      <input type="text" id="loginNick" placeholder="输入昵称（最长 30 字）" maxlength="30" autocomplete="off" data-page-node-id="IQBQSGAyJ0l5LL2Rsrkcxc">
+<div class="bank-picker-mask" id="loginPicker" style="display:none">
+  <div class="bank-picker login-picker">
+    <h3>🔑 云端登录</h3>
+    <p class="bank-picker-desc">输入昵称即可登录。登录后「学习进度 / 设置 / 编辑的题库」自动保存到云端，换设备、换浏览器都能恢复。</p>
+    <div class="login-field">
+      <input type="text" id="loginNick" placeholder="输入昵称（最长 30 字）" maxlength="30" autocomplete="off">
     </div>
-    <div class="bank-picker-actions" data-page-node-id="4qSmOrorA5MtY2tz1E9JM4">
-      <button class="btn" id="loginLogout" style="display:none" data-page-node-id="kXvfakV5sBYepH5Jxs29ac">退出登录</button>
-      <button class="btn" id="loginCancel" data-page-node-id="feJDwA6nuzfCVQpYJgIFhg">取消</button>
-      <button class="btn primary" id="loginConfirm" data-page-node-id="sPFzYWs5OJCsRW2nGZgyY5">登录</button>
+    <div class="bank-picker-actions">
+      <button class="btn" id="loginLogout" style="display:none">退出登录</button>
+      <button class="btn" id="loginCancel">取消</button>
+      <button class="btn primary" id="loginConfirm">登录</button>
     </div>
   </div>
 </div>
 
 <!-- 顶部导航 -->
-<header class="topbar" data-page-node-id="zMGv642Y2KGPmN7Wrdmqy1">
-  <div class="topbar-content" data-page-node-id="R6XZidY0FErtMGKB9AlWHc">
-    <span class="topbar-title" data-page-node-id="Fw0GdGqWk1FzysmOLlptrJ">📚 面试背记学习卡 <b data-page-node-id="lGTxFAEwMTuQtHLs4zF7Pt">v2.8</b></span>
-    <div class="search-box" data-page-node-id="hpfzdrvd4tdkuDpVRoCfFr"><span class="search-icon" data-page-node-id="ZMMdPt0bJ4VBf1EAuVrpmg">🔍</span><input type="text" id="searchInput" placeholder="搜索题目或答案..." data-page-node-id="SENc1rQCwHMLWIjkC2QqJh"></div>
-    <div class="topbar-actions" data-page-node-id="OIeewHShHvVh4djVtAMs39">
-      <button class="icon-btn" id="shuffleBtn" title="重新打乱顺序" data-page-node-id="pUyl8uHV4MAlc6q9P9P5FB">🔀</button>
-      <button class="login-btn" id="loginBtn" title="登录后学习进度可云端同步" data-page-node-id="nVnpXZzqBCPn5CfGnkbrox">🔑 登录</button>
-      <button class="icon-btn" id="themeBtn" title="夜间模式" data-page-node-id="8h6KmbbKZcHH2QwbDJSQTn">🌙</button>
+<header class="topbar">
+  <div class="topbar-content">
+    <span class="topbar-title">📚 面试背记学习卡 <b>v2.8</b></span>
+    <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜索题目或答案..."></div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="shuffleBtn" title="重新打乱顺序">🔀</button>
+      <button class="login-btn" id="loginBtn" title="登录后学习进度可云端同步">🔑 登录</button>
+      <button class="icon-btn" id="themeBtn" title="夜间模式">🌙</button>
     </div>
   </div>
 </header>
 
 <!-- 模式切换 -->
-<div class="mode-tabs" data-page-node-id="1ABZNtBkhtxG12GCudieSB">
-  <button class="mode-tab active" id="modeFlashBtn" data-page-node-id="On0feZL9o44NludRQpLt9V">🎴 抽背卡(测试)</button>
-  <button class="mode-tab" id="modeMemoBtn" data-page-node-id="Yke06jC9MMEX5QeOKe0Q02">📖 记背知识(学习)</button>
-  <button class="mode-tab" id="modeGuideBtn" data-page-node-id="cmtPFlo4lZ70MMO6QgukQR">🎯 面试前指导(突击)</button>
-  <button class="mode-tab" id="modeEditorBtn" data-page-node-id="FQxQC9Jlz3Md3nSmCKacjD">✏️ 编辑</button>
-  <button class="mode-tab filter-trigger" id="filterTriggerBtn" data-page-node-id="GSpYXBH4d0lPvDG9xmu2rZ">🏷 分类 <span id="filterCount" data-page-node-id="kDZquhfcEvqJnVukGZ1u5P"></span></button>
+<div class="mode-tabs">
+  <button class="mode-tab active" id="modeFlashBtn">🎴 抽背卡(测试)</button>
+  <button class="mode-tab" id="modeMemoBtn">📖 记背知识(学习)</button>
+  <button class="mode-tab" id="modeGuideBtn">🎯 面试前指导(突击)</button>
+  <button class="mode-tab" id="modeEditorBtn">✏️ 编辑</button>
+  <button class="mode-tab filter-trigger" id="filterTriggerBtn">🏷 分类 <span id="filterCount"></span></button>
 </div>
 
 <!-- 分类筛选弹层（默认收起，点 🏷 展开） -->
-<div class="category-pop" id="categoryPop" data-page-node-id="SY1uLNshv8ImfFgZsrwW52">
-  <div class="category-pop-header" data-page-node-id="ocf9reaNxQSJvp03idOQDF">
-    <span data-page-node-id="x4Y2kA8EGkx2Gp4GC4XyCC">🏷 分类筛选</span>
-    <button class="category-pop-close" id="categoryPopClose" title="收起" data-page-node-id="uAYlyX92mhYISNFFfaOcYs">✕</button>
+<div class="category-pop" id="categoryPop">
+  <div class="category-pop-header">
+    <span>🏷 分类筛选</span>
+    <button class="category-pop-close" id="categoryPopClose" title="收起">✕</button>
   </div>
-  <div class="category-bar" id="categoryBar" data-page-node-id="uhhvCLGD65pm2hyCZJVzgz"></div>
+  <div class="category-bar" id="categoryBar"></div>
 </div>
 
 <!-- 抽背卡 -->
-<div class="view active" id="flashView" data-page-node-id="KjdGgFbH6GR7xUeqOp7dqr">
-  <div class="progress-section" data-page-node-id="5Fxi7GyVmfVPk0RA9TE0Kl">
-    <div class="progress-stats" data-page-node-id="4HCuTQtnDA4BtAK3fAwMpU">
-      <span id="progressText" data-page-node-id="iMgOgQNEVQhxAV3FguvsJo">第 0 / 0 题</span>
-      <div class="stats-badges" data-page-node-id="W02swhCDfbZliiqGvLF0BI">
-        <span class="stat-badge" id="totalCount" data-page-node-id="kF8trDtnkBqeMSRxuzCw5N">总计: 0</span>
-        <span class="stat-badge mastered" id="masteredCount" data-page-node-id="3YW0Xm21C4uVbTe2dAkoav">已掌握: 0</span>
-        <span class="stat-badge weak" id="weakCount" data-page-node-id="BOWfy1tcnes7rp5TEHPdDZ">薄弱: 0</span>
-        <span class="stat-badge" id="unlearnedCount" data-page-node-id="bcAOXyETlXWEvCWLCRRVHE">未学: 0</span>
+<div class="view active" id="flashView">
+  <div class="progress-section">
+    <div class="progress-stats">
+      <span id="progressText">第 0 / 0 题</span>
+      <div class="stats-badges">
+        <span class="stat-badge" id="totalCount">总计: 0</span>
+        <span class="stat-badge mastered" id="masteredCount">已掌握: 0</span>
+        <span class="stat-badge weak" id="weakCount">薄弱: 0</span>
+        <span class="stat-badge" id="unlearnedCount">未学: 0</span>
       </div>
     </div>
-    <div class="progress-bar" data-page-node-id="xXKQz83bpKZR1yIPWDn39z"><div class="progress-fill" id="progressFill" style="width:0%" data-page-node-id="0rC80NFhvcc0FtZ00hOSjQ"></div></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
   </div>
 
-  <div class="controls-bar" data-page-node-id="OydYHdPYX7OYzVgB4HpuES">
-    <span class="controls-toggles" data-page-node-id="ikKQEeiG5ycv4Iw2gyhONn">
-      <label class="toggle-switch" data-page-node-id="EXtVSGWMdOvDxZNHy3Arla"><input type="checkbox" id="weakOnlyToggle" data-page-node-id="y9lqV8UYiN3fOAe7kVn4VH"><span class="toggle-slider" data-page-node-id="GLNaTVElD7dGFsYBvIrE2a"></span><span data-page-node-id="pC8xHMJY2ECgkAhzNMenxA">只复习薄弱题</span></label>
-      <label class="toggle-switch" data-page-node-id="mL00KpW2hAGJElcZ3NcdC9"><input type="checkbox" id="randomToggle" checked data-page-node-id="0aOYrsU7TN7JJfICVdHoyg"><span class="toggle-slider" data-page-node-id="FObDBamM1giVFefRmDSy45"></span><span data-page-node-id="NlL7ZkOY9qMJDpSUrDHyXE">随机顺序</span></label>
-      <label class="toggle-switch" data-page-node-id="a4AVXAdKcem7SqFBZHvLeY"><input type="checkbox" id="coreToggle" checked data-page-node-id="MvcqGBh1rxWt4yU8jfBeCy"><span class="toggle-slider" data-page-node-id="rQyXHa9gTvVEz9VuxWVhZz"></span><span data-page-node-id="EzEQyP1Tig9DP7nn2c2nGv">必刷题</span></label>
-      <label class="toggle-switch" data-page-node-id="v205r9BKZuNIAmuVXt68UA"><input type="checkbox" id="extraToggle" data-page-node-id="Ayfatvy0USQQMvC2NdixrA"><span class="toggle-slider" data-page-node-id="FSsuyVwTz4keQLc7TLSPpt"></span><span data-page-node-id="YqxQaikatxUf4MDUFbt41a">拓展题</span></label>
+  <div class="controls-bar">
+    <span class="controls-toggles">
+      <label class="toggle-switch"><input type="checkbox" id="weakOnlyToggle"><span class="toggle-slider"></span><span>只复习薄弱题</span></label>
+      <label class="toggle-switch"><input type="checkbox" id="randomToggle" checked><span class="toggle-slider"></span><span>随机顺序</span></label>
+      <label class="toggle-switch"><input type="checkbox" id="coreToggle" checked><span class="toggle-slider"></span><span>必刷题</span></label>
+      <label class="toggle-switch"><input type="checkbox" id="extraToggle"><span class="toggle-slider"></span><span>拓展题</span></label>
     </span>
-    <div class="font-control" data-page-node-id="ehHFZBWo4gGlhkzVKjUWdQ">
-      <button class="font-btn" id="fontDownBtn" title="减小字体" data-page-node-id="1y9ZuglEr5eqnWGjp7b2Th">Ａ−</button>
-      <span id="fontSizeLabel" data-page-node-id="2wwlgalztAQxCcZuCJSGAv">100%</span>
-      <button class="font-btn" id="fontUpBtn" title="增大字体" data-page-node-id="8KHNWfutf2Qm8Bd3eCQsKB">Ａ＋</button>
+    <div class="font-control">
+      <button class="font-btn" id="fontDownBtn" title="减小字体">Ａ−</button>
+      <span id="fontSizeLabel">100%</span>
+      <button class="font-btn" id="fontUpBtn" title="增大字体">Ａ＋</button>
     </div>
   </div>
 
-  <div class="card-wrapper" data-page-node-id="LpKCPp9xRIRrVNrblOl8Ev">
-    <div class="card-container" data-page-node-id="f2b80YJXGzBuEMMjv8oBT3">
-      <div class="flashcard" id="flashcard" data-page-node-id="njS2NfrdSBBfq8PoLhJPWt">
-        <div class="card-face card-front" id="cardFront" data-page-node-id="HwGhr8iuYJIpJ5lNu5FCP8">
-          <div class="card-question" id="cardQuestion" data-page-node-id="EaFshcHyuoErVVruJBXItC">点击卡片开始复习</div>
-          <div class="card-front-footer" data-page-node-id="6L8cWxuSa4xEHGusBFQNEf">
-            <span class="card-category-badge" id="frontCategory" data-page-node-id="wScIp3BJemYH6RFq2MKaGl">准备开始</span>
-            <span id="frontIndex" data-page-node-id="wzrq5oGLYOzq5WUzaNmlS9"></span>
+  <div class="card-wrapper">
+    <div class="card-container">
+      <div class="flashcard" id="flashcard">
+        <div class="card-face card-front" id="cardFront">
+          <div class="card-question" id="cardQuestion">点击卡片开始复习</div>
+          <div class="card-front-footer">
+            <span class="card-category-badge" id="frontCategory">准备开始</span>
+            <span id="frontIndex"></span>
           </div>
-          <div class="flip-hint" data-page-node-id="GCgxQa4Aqc6v5J86XrMcEb">点击卡片或按空格键查看答案 →</div>
+          <div class="flip-hint">点击卡片或按空格键查看答案 →</div>
         </div>
-        <div class="card-face card-back" id="cardBack" data-page-node-id="LMgOiTwF9H6iOJ1xUGPqVB">
-          <div class="card-answer-wrapper" data-page-node-id="QVEGHAK3TdX4ZCiRpewzm6"><div class="card-answer" id="cardAnswer" data-page-node-id="lLVyLIODUteVQZV8B4prKe"></div></div>
-          <div class="card-back-actions" data-page-node-id="zaFfEJ8fiBzLVsbzaDRwfi">
-            <button class="review-btn btn-know" id="knowBtn" data-page-node-id="r480ON0IxmrIR8ohCatkTo">✓ 记得 (G)</button>
-            <button class="review-btn btn-unknown" id="unknownBtn" data-page-node-id="kkZ53PE5eVaDTmIRINzjLj">✗ 没记住 (B)</button>
+        <div class="card-face card-back" id="cardBack">
+          <div class="card-answer-wrapper"><div class="card-answer" id="cardAnswer"></div></div>
+          <div class="card-back-actions">
+            <button class="review-btn btn-know" id="knowBtn">✓ 记得 (G)</button>
+            <button class="review-btn btn-unknown" id="unknownBtn">✗ 没记住 (B)</button>
           </div>
-          <div class="card-back-footer" data-page-node-id="w2GW1QVzu1PNVF98xIliWT"><span id="backCategory" data-page-node-id="v1qt6DaPKI4bNDfZV1Vqeb">分类</span><span id="backIndex" data-page-node-id="RQfcrW96pkoRW5owbcRmre"></span></div>
+          <div class="card-back-footer"><span id="backCategory">分类</span><span id="backIndex"></span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="nav-buttons" data-page-node-id="AcFgAEiCfQoO1qBJXNaxN8">
-    <button class="nav-btn" id="prevBtn" data-page-node-id="ugy9P8TQqDQw9ZRHD1usl6">← 上一题</button>
-    <button class="nav-btn" id="nextBtn" data-page-node-id="Bx1PeaG9egl5eUDY3YNnYr">下一题 →</button>
+  <div class="nav-buttons">
+    <button class="nav-btn" id="prevBtn">← 上一题</button>
+    <button class="nav-btn" id="nextBtn">下一题 →</button>
   </div>
 
-  <div class="footer" data-page-node-id="saIEIyHggTFkh7cux7grep">
-    <button class="btn" id="exportJsonBtn" data-page-node-id="V0soBiqWLCaicDytEntiJ8">导出薄弱题 (JSON)</button>
-    <button class="btn" id="exportTxtBtn" data-page-node-id="g1HzJjlqsqGjfdmMQSlWR2">导出薄弱题 (TXT)</button>
-    <button class="btn" id="resetBtn" data-page-node-id="GgoTr0BEsXoAJOwdNMZ1gL">重置学习进度</button>
+  <div class="footer">
+    <button class="btn" id="exportJsonBtn">导出薄弱题 (JSON)</button>
+    <button class="btn" id="exportTxtBtn">导出薄弱题 (TXT)</button>
+    <button class="btn" id="resetBtn">重置学习进度</button>
   </div>
 
-  <div class="shortcuts-hint" data-page-node-id="a5DBBc0Pcejjl1uixy0OQ7">
-    <kbd data-page-node-id="EdNVGn3bfEJo9cFffegj3a">空格</kbd> 翻转 <kbd data-page-node-id="nc6xFJ1I5jBQexjNDQeGFG">←</kbd>/<kbd data-page-node-id="4zesK1HONYTp2X73hQV2Tp">→</kbd> 翻页 <kbd data-page-node-id="lb8usqDWo9bva5KvctPkAU">G</kbd> 记得 <kbd data-page-node-id="IAD3nFxpFN7a3J4XD31awS">B</kbd> 没记住 <kbd data-page-node-id="CvjKXxhpdcATRN2tl24ELN">M</kbd> 切换模式 <kbd data-page-node-id="C3g2LZ6cWaGlIZPxXkgqoo">⇠⇢</kbd> 滑动翻卡
+  <div class="shortcuts-hint">
+    <kbd>空格</kbd> 翻转 <kbd>←</kbd>/<kbd>→</kbd> 翻页 <kbd>G</kbd> 记得 <kbd>B</kbd> 没记住 <kbd>M</kbd> 切换模式 <kbd>⇠⇢</kbd> 滑动翻卡
   </div>
 </div>
 
 <!-- 记背知识 -->
-<div class="view" id="memoView" data-page-node-id="ZmQJTAtV2dBZG7BYhXLQw4">
-  <div class="memo-toolbar" data-page-node-id="3lj7R2ptcrcDtWFadx5VBX">
-    <h2 data-page-node-id="P4yoRUK4DgT8sTjw3ZnSEf">📖 记背知识</h2><span id="memoTotal" data-page-node-id="1QXlOz1z0JCCjGdGhGHLHN"></span>
-    <div class="memo-actions" data-page-node-id="7wJ9sR6PYd1Fia61ElmvEb">
-      <button class="btn" id="memoExpandAllBtn" data-page-node-id="BDyK7f82KNQUC2DbK33HOI">全部展开</button>
-      <button class="btn" id="memoCollapseAllBtn" data-page-node-id="7duCEdj8ziJOLrKghqSSjK">全部收起</button>
+<div class="view" id="memoView">
+  <div class="memo-toolbar">
+    <h2>📖 记背知识</h2><span id="memoTotal"></span>
+    <div class="memo-actions">
+      <button class="btn" id="memoExpandAllBtn">全部展开</button>
+      <button class="btn" id="memoCollapseAllBtn">全部收起</button>
     </div>
   </div>
-  <div id="memorizeList" data-page-node-id="GbX5au5D6bSl09LAgEuqJ6"></div>
+  <div id="memorizeList"></div>
 </div>
 
 <!-- 面试前指导 -->
-<div class="view" id="guideView" data-page-node-id="FBBNiSZ7K53EoBHIuFBTVC"></div>
+<div class="view" id="guideView"></div>
 
 <!-- 编辑模式 -->
-<div class="view" id="editorView" data-page-node-id="rIaXpa5ifgdbbmpAJhEEf5"></div>
+<div class="view" id="editorView"></div>
 
 <script>
 /* ============================================================
@@ -794,7 +794,7 @@ body {
 
   /* ★★★ 在这里填入你的 Supabase 项目配置（开通步骤见 docs/supabase-setup.md）★★★ */
   const SUPABASE_URL = 'https://imbzbrtgexcpofllelok.supabase.co';        // 正确：不带 /rest/v1/ 后缀（代码内部会自动拼）
-  const SUPABASE_ANON_KEY = '';   // ★ 请去 Supabase → Settings → API 复制 "anon public" 完整 JWT（以 eyJ 开头、很长）
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltYnpicnRnZXhjcG9mbGxlbG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2OTE1ODgsImV4cCI6MjEwNDI2NzU4OH0.SXadb7QX287584mCvJHjGCb9X8433kfY6SBGop-cJiY';   // anon public key（Legacy JWT，已恢复原填值）
 
   const NICK_KEY = 'v27_nickname';   // 本地记住「当前登录昵称」（不同步上云）
   const PUSH_DELAY = 500;            // 停止操作后多久自动推送（毫秒）
