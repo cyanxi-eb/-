@@ -812,6 +812,23 @@ body {
   const NICK_KEY = 'v27_nickname';   // 本地记住「当前登录昵称」（不同步上云）
   const USERID_KEY = 'v27_userid';   // 当前登录用户的 Supabase userId（不同步上云）
   const PUSH_DELAY = 500;            // 停止操作后多久自动推送（毫秒）
+  const REQ_TIMEOUT = 8000;          // 云端请求超时（毫秒），避免国内访问海外 Supabase 时永久挂起
+
+  // fetch 加超时（带 AbortController 真取消请求），避免海外 API 永远 pending 卡住页面
+  const _fetchWithTimeout = (url, opts, ms) => {
+    const ctlr = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const finalOpts = ctlr ? Object.assign({}, opts, { signal: ctlr.signal }) : opts;
+    return new Promise(function (resolve, reject) {
+      const timer = setTimeout(function () {
+        if (ctlr) try { ctlr.abort(); } catch (e) {}
+        reject(new Error('云端请求超时 ' + ms + 'ms（请检查网络）'));
+      }, ms);
+      fetch(url, finalOpts).then(
+        function (r) { clearTimeout(timer); resolve(r); },
+        function (e) { clearTimeout(timer); reject(e); }
+      );
+    });
+  };
 
   const Cloud = {
     enabled: false,
@@ -850,11 +867,11 @@ body {
       };
     },
     _req: function (method, path, body) {
-      return fetch(SUPABASE_URL + '/rest/v1/' + path, {
+      return _fetchWithTimeout(SUPABASE_URL + '/rest/v1/' + path, {
         method: method,
         headers: this._headers(),
         body: body == null ? undefined : JSON.stringify(body),
-      }).then(function (r) {
+      }, REQ_TIMEOUT).then(function (r) {
         if (!r.ok) throw new Error('云端请求失败 HTTP ' + r.status);
         const ct = r.headers.get('content-type') || '';
         return ct.indexOf('json') >= 0 ? r.json() : null;
@@ -2047,7 +2064,10 @@ body {
 
       // 已登录：先从云拉最新数据覆盖本地再启动；失败/未登录则直接用本地
       if (Cloud.isLoggedIn()) {
-        Cloud.pullAndApply().then(boot, boot);
+        Cloud.pullAndApply().then(boot, function (err) {
+          console.warn('[cloud] pullAndApply 失败，降级为本地模式：', err && err.message);
+          boot();
+        });
       } else {
         boot();
       }

@@ -114,11 +114,12 @@ function buildWeb(data, banks, counts) {
     background_color: '#f5f7fa', theme_color: '#4299e1', icons: [],
   }, null, 2), 'utf8');
 
-  const sw = `const CACHE = 'fc-v31';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
+  const sw = `const CACHE = 'fc-v32';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
 // bump 记录：
 //   v29: bump fc-v28→fc-v29（修复"配置类资源被 SW cache 掩盖"问题）
 //   v30: bump fc-v29→fc-v30（修复"多用户数据共享污染"问题——store.js/cloud.js 加用户前缀）
 //   v31: bump fc-v30→fc-v31（修复"老登录态缺 userId → fetch id=eq.null 400 → 卡加载页"问题）
+//   v32: bump fc-v31→fc-v32（修复"Cloud._req 无超时→国内访问海外 Supabase 挂起→boot 永不启动→卡加载页"问题）
 const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/cloud.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));

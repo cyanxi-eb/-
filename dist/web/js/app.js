@@ -393,7 +393,10 @@
 
       // 已登录：先从云拉最新数据覆盖本地再启动；失败/未登录则直接用本地
       if (Cloud.isLoggedIn()) {
-        Cloud.pullAndApply().then(boot, boot);
+        Cloud.pullAndApply().then(boot, function (err) {
+          console.warn('[cloud] pullAndApply 失败，降级为本地模式：', err && err.message);
+          boot();
+        });
       } else {
         boot();
       }
