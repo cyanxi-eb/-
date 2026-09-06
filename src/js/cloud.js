@@ -11,8 +11,8 @@
   'use strict';
 
   /* ★★★ 在这里填入你的 Supabase 项目配置（开通步骤见 docs/supabase-setup.md）★★★ */
-  const SUPABASE_URL = 'https://imbzbrtgexcpofllelok.supabase.co';        // 正确：不带 /rest/v1/ 后缀（代码内部会自动拼）
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltYnpicnRnZXhjcG9mbGxlbG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2OTE1ODgsImV4cCI6MjEwNDI2NzU4OH0.SXadb7QX287584mCvJHjGCb9X8433kfY6SBGop-cJiY';   // anon public key（Legacy JWT，已恢复原填值）
+  const SUPABASE_URL = 'https://imbzbrtgexcpofllelok.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltYnpicnRnZXhjcG9mbGxlbG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2OTE1ODgsImV4cCI6MjEwNDI2NzU4OH0.SXadb7QX287584mCvJHjGCb9X8433kfY6SBGop-cJiY';   // anon public key（Legacy JWT）
 
   const NICK_KEY = 'v27_nickname';   // 本地记住「当前登录昵称」（不同步上云）
   const PUSH_DELAY = 500;            // 停止操作后多久自动推送（毫秒）
