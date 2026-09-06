@@ -20,6 +20,26 @@ const VERSION = '2.8';
 const CSS_FILES = ['base.css', 'flashcard.css', 'memo.css', 'guide.css', 'editor.css'];
 const JS_FILES = ['markdown.js', 'data-loader.js', 'cloud.js', 'store.js', 'flashcard.js', 'memo.js', 'guide.js', 'editor.js', 'app.js'];
 
+// ---------- 0. JS 语法检查（避免 `*/` 在注释里提前结束块注释导致 SyntaxError）----------
+function syntaxCheckAll() {
+  const { execSync } = require('child_process');
+  const errors = [];
+  for (const f of JS_FILES) {
+    const full = path.join(SRC, 'js', f);
+    try {
+      execSync(`node --check "${full}"`, { stdio: 'pipe' });
+    } catch (e) {
+      errors.push(`${f}: ${e.stderr ? e.stderr.toString().split('\n')[0] : e.message}`);
+    }
+  }
+  if (errors.length) {
+    console.error('✗ JS 语法检查失败（中止构建）：');
+    errors.forEach(e => console.error('  ' + e));
+    process.exit(1);
+  }
+  console.log(`✓ JS 语法检查通过（${JS_FILES.length} 个文件）`);
+}
+
 // ---------- 1. 读取 + 校验 ----------
 function loadData() {
   const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
@@ -150,6 +170,7 @@ self.addEventListener('fetch', e => {
 // ---------- 主流程 ----------
 function main() {
   console.log('=== 构建 面试背记学习卡 v' + VERSION + ' ===');
+  syntaxCheckAll();  // 先做语法检查，避免 `*/` 在注释里提前结束块注释导致 SyntaxError 推到线上
   const data = loadData();
   const banks = groupByBank(data);
   const counts = calcCounts(banks, data.length);
