@@ -15,6 +15,7 @@
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltYnpicnRnZXhjcG9mbGxlbG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2OTE1ODgsImV4cCI6MjEwNDI2NzU4OH0.SXadb7QX287584mCvJHjGCb9X8433kfY6SBGop-cJiY';
 
   const NICK_KEY = 'v27_nickname';   // 本地记住「当前登录昵称」（不同步上云）
+  const USERID_KEY = 'v27_userid';   // 当前登录用户的 Supabase userId（不同步上云）
   const PUSH_DELAY = 500;            // 停止操作后多久自动推送（毫秒）
 
   const Cloud = {
@@ -28,7 +29,17 @@
     init: function () {
       this.enabled = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
       if (!this.enabled) return;
-      try { this.nickname = localStorage.getItem(NICK_KEY) || null; } catch (e) { this.nickname = null; }
+      try {
+        this.nickname = localStorage.getItem(NICK_KEY) || null;
+        this.userId = localStorage.getItem(USERID_KEY) || null;
+        // ★ 防御：旧版未记 userId，强制降级为本地模式（避免 fetch id=eq.null 400 报错）
+        if (this.nickname && !this.userId) {
+          console.warn('[cloud] 检测到旧登录态（缺 userId），自动降级为本地模式，请重新登录');
+          this.nickname = null;
+          this.userId = null;
+          try { localStorage.removeItem(NICK_KEY); } catch (e) {}
+        }
+      } catch (e) { this.nickname = null; this.userId = null; }
     },
 
     isLoggedIn: function () { return this.enabled && !!this.nickname; },
@@ -76,7 +87,7 @@
           self.nickname = nickname;
           self.userId = res.userId;
           self._data = res.data || {};
-          try { localStorage.setItem(NICK_KEY, nickname); } catch (e) {}
+          try { localStorage.setItem(NICK_KEY, nickname); localStorage.setItem(USERID_KEY, res.userId); } catch (e) {}
           return res;
         });
     },
@@ -85,7 +96,7 @@
       this.nickname = null;
       this.userId = null;
       this._data = null;
-      try { localStorage.removeItem(NICK_KEY); } catch (e) {}
+      try { localStorage.removeItem(NICK_KEY); localStorage.removeItem(USERID_KEY); } catch (e) {}
     },
 
     /* ---------- 数据收集 / 落盘 ---------- */

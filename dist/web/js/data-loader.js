@@ -4,9 +4,21 @@
    兼容 file:// 与 http(s)。
    banks 结构：{ 1:[bank==1 的题], 2:[...], 3:[...], 4:[...] }（单档，无重叠）
    meta 结构：{ total, counts:{1:244,2:209,3:174,4:95} }
+   v2.8：fetch 加 8s 超时保护，避免 SW 或网络异常时永久卡在加载页
    ============================================================ */
 (function (global) {
   'use strict';
+
+  // fetch 加超时：超时返回 reject，避免永久挂起
+  const fetchWithTimeout = (url, opts, ms) => {
+    return new Promise(function (resolve, reject) {
+      const timer = setTimeout(function () { reject(new Error('timeout ' + ms + 'ms')); }, ms);
+      fetch(url, opts).then(
+        function (r) { clearTimeout(timer); resolve(r); },
+        function (e) { clearTimeout(timer); reject(e); }
+      );
+    });
+  };
 
   const Loader = {
     /* 加载题库，回调 onProgress(loaded,total,msg) / onDone(banks, meta) / onFail(err) */
@@ -24,7 +36,8 @@
 
       // 2. 分片 banks（dist 版）：读 banks.manifest.json 后 fetch bank-N.json
       const base = './';
-      fetch(base + 'banks.manifest.json', { cache: 'no-cache' })
+      const TIMEOUT = 8000;
+      fetchWithTimeout(base + 'banks.manifest.json', { cache: 'no-cache' }, TIMEOUT)
         .then(r => r.json())
         .then(function (manifest) {
           const banks = (manifest.banks || [1, 2, 3, 4]);
@@ -38,21 +51,21 @@
             }
             const b = banks[i++];
             onProgress(i, banks.length, '加载题库 ' + b + '…');
-            fetch(base + 'banks/bank-' + b + '.json', { cache: 'no-cache' })
+            fetchWithTimeout(base + 'banks/bank-' + b + '.json', { cache: 'no-cache' }, TIMEOUT)
               .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
               .then(function (arr) { result[b] = arr || []; next(); })
               .catch(function () {
                 // 单档失败重试一次
-                fetch(base + 'banks/bank-' + b + '.json', { cache: 'no-cache' })
+                fetchWithTimeout(base + 'banks/bank-' + b + '.json', { cache: 'no-cache' }, TIMEOUT)
                   .then(r => r.json())
                   .then(function (arr) { result[b] = arr || []; next(); })
-                  .catch(function () { onFail('题库分片加载失败: bank-' + b + '，请检查网络或重新部署'); });
+                  .catch(function (err) { onFail('题库分片加载失败: bank-' + b + '（' + (err.message || err) + '）'); });
               });
           }
           next();
         })
-        .catch(function () {
-          onFail('未找到题库数据（banks.manifest.json）');
+        .catch(function (err) {
+          onFail('未找到题库数据（banks.manifest.json）：' + (err.message || err));
         });
     }
   };
