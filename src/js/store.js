@@ -14,11 +14,14 @@
     font: 'v25_font',
   };
 
-  // 唯一不分用户的本地 key（跨用户保留"上次登录的昵称"提示）
+  // 登录态元数据（不分用户、不随数据同步、绝不能被 clearAllUsersLocal 清掉）
   const NICK_KEY = 'v27_nickname';
+  const USERID_KEY = 'v27_userid';
 
   // 判定某个 key 是否属于「用户维度数据」（需要按用户隔离）
-  const isUserKey = (k) => k !== NICK_KEY && (/^v25_/.test(k) || /^v27_/.test(k));
+  // ★ 必须排除 v27_nickname / v27_userid 这两个登录态元数据，
+  //   否则 clearAllUsersLocal() 会把刚写入的 v27_userid 一起删掉 → reload 后降级本地、登录失效
+  const isUserKey = (k) => k !== NICK_KEY && k !== USERID_KEY && (/^v25_/.test(k) || /^v27_/.test(k));
 
   // 当前登录用户的 key 前缀（未登录返回空）
   const userPrefix = () => {
@@ -90,12 +93,14 @@
       toRemove.forEach(k => localStorage.removeItem(k));
       return toRemove.length;
     },
-    /** 清空所有用户维度数据（不论哪个用户，用于「重置所有」类操作） */
+    /** 清空所有用户维度数据（不论哪个用户，用于「切用户/登录」类操作；保留登录态元数据 v27_nickname/v27_userid） */
     clearAllUsersLocal: function () {
       const toRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
-        if (k && isUserKey(k)) toRemove.push(k);
+        if (!k) continue;
+        // 无前缀用户数据（v25_*/v27_*，已排除登录态元数据）或带 u_<userId>_ 前缀的历史用户数据
+        if (isUserKey(k) || /^u_[^_]+_/.test(k)) toRemove.push(k);
       }
       toRemove.forEach(k => localStorage.removeItem(k));
       return toRemove.length;

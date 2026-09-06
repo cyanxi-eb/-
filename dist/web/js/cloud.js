@@ -128,14 +128,26 @@
       if (/archives|oplog/.test(k)) return false;   // 编辑辅助数据不同步
       return k.indexOf('v25_') === 0 || k.indexOf('v27_') === 0;
     },
-    /* 收集本地所有可同步 key → { 业务key: value }（已剥前缀，云端按业务 key 存） */
+    /* 收集本地所有可同步 key → { 业务key: value }（已剥前缀，云端按业务 key 存）
+       登录态只收集「当前用户前缀」的数据，未登录只收集无前缀数据，
+       避免把其它用户的残留数据（u_<otherId>_*）误推上云造成污染 */
     collect: function () {
       const map = {};
+      const prefix = this.isLoggedIn() ? 'u_' + this.userId + '_' : '';
       try {
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
-          if (!k || !this._shouldSync(k)) continue;
-          map[this._stripPrefix(k)] = JSON.parse(localStorage.getItem(k));
+          if (!k) continue;
+          if (prefix) {
+            if (k.indexOf(prefix) !== 0) continue;      // 只要当前用户
+            const biz = k.slice(prefix.length);
+            if (!this._shouldSync(biz)) continue;
+            map[biz] = JSON.parse(localStorage.getItem(k));
+          } else {
+            if (k.indexOf('u_') === 0) continue;          // 未登录不碰任何带前缀数据
+            if (!this._shouldSync(k)) continue;
+            map[k] = JSON.parse(localStorage.getItem(k));
+          }
         }
       } catch (e) {}
       return map;
