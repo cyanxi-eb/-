@@ -333,13 +333,25 @@
           Store.clearAllUsersLocal();
           // ★ 3. 把云数据写回本地（applyToLocal 总是跑；空数据 no-op）
           Cloud.applyToLocal(res.data || {});
-          // ★ 4. 总是触发一次 push：把迁移后/本地最新状态推上云（若云端空，本地非空会补推）
-          Cloud.markDirty();
+          // ★ 4. 真正推一次（await）→ push 成功/失败都进 then 再 reload
+          //   修 v2.11 fc-v36：原来的 markDirty() debounced 500ms 会被 location.reload() 砍掉，
+          //   导致「编辑修改没推到云→下次登录又被云端旧版覆盖→看到 builtin 或空壳」；
+          //   现在用 sync push() 真正等推送完成（push 失败 catch 里 markDirty 自动重试）
+          return Cloud.push();
+        })
+        .then(function () {
+          // push 真正成功（或 push catch 里 schedule 的 markDirty 已安排）后再 reload
           location.reload();
         })
         .catch(function (err) {
-          alert('登录失败：' + (err && err.message ? err.message : err));
-          if (btn) { btn.disabled = false; btn.textContent = originText; }
+          // login() 阶段失败 → 弹错；push 失败已被 cloud.js catch 内部 markDirty 重试，这里只 warn 不打断 reload
+          if (err && /登录|未配置|昵称|HTTP/.test(err.message || '')) {
+            alert('登录失败：' + (err.message || err));
+            if (btn) { btn.disabled = false; btn.textContent = originText; }
+            return;
+          }
+          console.warn('[confirmLogin] push 阶段异常，仍 reload：', err && err.message);
+          location.reload();
         });
     },
     doLogout: function () {

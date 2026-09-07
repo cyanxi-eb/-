@@ -1,4 +1,4 @@
-const CACHE = 'fc-v35';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
+const CACHE = 'fc-v36';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
 // bump 记录：
 //   v29: bump fc-v28→fc-v29（修复"配置类资源被 SW cache 掩盖"问题）
 //   v30: bump fc-v29→fc-v30（修复"多用户数据共享污染"问题——store.js/cloud.js 加用户前缀）
@@ -7,6 +7,10 @@ const CACHE = 'fc-v35';  // ★ cache name 变更会强制 Service Worker 重装
 //   v33: bump fc-v32→fc-v33（修复"store.js 注释 v25_*/v27_* 提前结束块注释 SyntaxError"——上次只改源码没 bump，SW 仍缓存旧 store.js）
 //   v34: bump fc-v33→fc-v34（v2.9 内容扩充+分类重组：题库 244→271、分类图标 🏷→🔖、新增 Git/LangChain/RAG/Redis 题）
 //   v35: bump fc-v34→fc-v35（v2.10 多用户数据恢复与登录稳定性：applyToLocal 总是跑 / push 失败重试 / POST 409 GET 重试 / 本地无前缀数据自动迁移 / pullAndApply 二次重试）
+//   v36: bump fc-v35→fc-v36（v2.11 修复"confirmLogin 中 markDirty debounced 500ms 被 location.reload 砍掉 → push 没真上云"问题；
+//                          改 await Cloud.push() 真正等推送完成再 reload；
+//                          编辑工具栏新增「☁️ 从云端拉取」「🔍 诊断」两个应急按钮，
+//                          以后题库空白再发生不用再修代码，一键恢复 + 一键 dump 状态给 AI 定位）
 const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/cloud.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));

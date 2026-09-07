@@ -21,6 +21,7 @@
 | **v2.8** | 2026-09-06 | 云端同步：可选接入 Supabase，昵称登录后学习进度/设置/编辑题库自动上云，换设备不丢（未接入时回退纯本地） |
 | **v2.9** | 2026-09-07 | 内容扩充+分类重组：拆「大模型应用」→大语言模型/RAG/LangChain，新增 Git 分类，题库 244→271 题，分类图标 🏷→🔖 |
 | **v2.10** | 2026-09-07 | 多用户数据恢复+登录稳定性 5 项加固：applyToLocal 总是跑 / push 失败自动 markDirty 重试 / POST 409 自动 GET 重试 / v2.7 本地无前缀数据自动迁移到 u_<id>_ 前缀 / pullAndApply 失败 3s 后二次 retry |
+| **v2.11** | 2026-09-07 | 修 confirmLogin 中 markDirty debounced 500ms 被 location.reload() 砍掉导致"修改后再登录题库空白"的潜在根因：改用 await Cloud.push() 真正等推送完成再 reload；编辑工具栏新增「☁️ 从云端拉取」和「🔍 诊断」两个应急按钮；bump SW CACHE fc-v35→fc-v36 |
 
 ---
 

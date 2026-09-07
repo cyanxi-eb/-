@@ -116,6 +116,8 @@
         + '<button class="btn" id="edExport">⬇️ 导出JSON</button>'
         + '<button class="btn" id="edImport">⬆️ 导入JSON</button>'
         + '<button class="btn" id="edReset">♻️ 恢复内置题库</button>'
+        + '<button class="btn" id="edPullFromCloud" title="把云端最新数据完整覆盖本地（修题库空白等异常）">☁️ 从云端拉取</button>'
+        + '<button class="btn" id="edDiagnose" title="打印登录态/题库/localStorage 详细状态到 Console">🔍 诊断</button>'
         + '<span class="ed-note">共 ' + cards.length + ' 题 · 操作日志 ' + this.history.length + ' 条 · 存档点 ' + this.archives.length + ' 个</span>'
         + '</div>'
         + form
@@ -157,7 +159,12 @@
       const archive = document.getElementById('edArchive'); if (archive) archive.addEventListener('click', () => { const n = prompt('存档备注（可选）：', '手动存档'); this.archive(n || '手动存档'); this.render(); });
       const exp = document.getElementById('edExport'); if (exp) exp.addEventListener('click', () => App.download(JSON.stringify(App.data, null, 2), 'questions-edit.json', 'application/json'));
       const imp = document.getElementById('edImport'); if (imp) imp.addEventListener('click', () => this._import());
-      const reset = document.getElementById('edReset'); if (reset) reset.addEventListener('click', () => { if (confirm('恢复内置题库？所有编辑将丢失。')) { Store.set(Store.bankKey(), []); App.data = JSON.parse(JSON.stringify(App.builtin)); this.saveBank(); App.reload(); this.render(); } });
+      const reset = document.getElementById('edReset');
+      if (reset) reset.addEventListener('click', () => { if (confirm('恢复内置题库？所有编辑将丢失。')) { Store.set(Store.bankKey(), []); App.data = JSON.parse(JSON.stringify(App.builtin)); this.saveBank(); App.reload(); this.render(); } });
+      const pullBtn = document.getElementById('edPullFromCloud');
+      if (pullBtn) pullBtn.addEventListener('click', () => this._pullFromCloud());
+      const diagBtn = document.getElementById('edDiagnose');
+      if (diagBtn) diagBtn.addEventListener('click', () => this._diagnose());
       box.querySelectorAll('[data-arch]').forEach(b => b.addEventListener('click', () => this.restore(parseInt(b.dataset.arch, 10))));
       const save = document.getElementById('f-save'); if (save) save.addEventListener('click', () => this.save());
       const cancel = document.getElementById('f-cancel'); if (cancel) cancel.addEventListener('click', () => { this.editing = null; this.render(); });
@@ -227,6 +234,72 @@
       this.log('delete', item, null);
       this.saveBank();
       this.render();
+    },
+
+    /* ★ v2.11 fc-v36 新增：编辑工具栏「☁️ 从云端拉取」按钮 —— 应急恢复题库用
+       用途：题库出现空白/丢失/与他人混了时，一键用云端最新版本覆盖本地。
+       行为：调 Cloud.pullAndApply()（v2.10 已实现），拉云端 data 按 u_<id>_<key> 写回本地 → reload */
+    _pullFromCloud: async function () {
+      if (!window.Cloud || !window.Cloud.isLoggedIn()) {
+        alert('请先登录后再使用此功能（未登录没有云端可拉）');
+        return;
+      }
+      if (!confirm('⚠️ 从云端拉取最新数据覆盖本地？\n\n· 本地的所有未推送编辑/进度将被云端版本覆盖\n· 建议仅在「题库空白」「数据错乱」等异常时使用\n· 正常修改请直接走「自动同步」，无需点此按钮')) return;
+      const btn = document.getElementById('edPullFromCloud');
+      const originText = btn ? btn.textContent : '';
+      try {
+        if (btn) { btn.disabled = true; btn.textContent = '拉取中…'; }
+        console.log('[pullFromCloud] 开始，云端 userId =', window.Cloud.userId);
+        const data = await window.Cloud.pullAndApply();
+        console.log('[pullFromCloud] 成功，云端 data keys =', data && Object.keys(data));
+        if (data && data.v25_bank) {
+          console.log('[pullFromCloud] v25_bank.length =', data.v25_bank.length);
+        }
+        // 写完本地后 reload，重新走 init → boot 用新的 saved（云端覆盖后的本地）
+        location.reload();
+      } catch (e) {
+        console.error('[pullFromCloud] 失败：', e && e.message);
+        alert('拉取失败：' + (e && e.message ? e.message : e));
+        if (btn) { btn.disabled = false; btn.textContent = originText; }
+      }
+    },
+
+    /* ★ v2.11 fc-v36 新增：编辑工具栏「🔍 诊断」按钮 —— 把登录态/题库/localStorage 全打到 Console
+       用途：题库空白/异常时，让用户一键 dump 状态贴给我，便于精准定位根因 */
+    _diagnose: function () {
+      console.group('🔍 v2.11 题库诊断（' + new Date().toLocaleString() + '）');
+      try {
+        const C = window.Cloud, S = window.Store, A = window.App;
+        console.log('1. 登录态：', C && {
+          enabled: C.enabled,
+          nickname: C.nickname,
+          userId: C.userId,
+          _data_keys: C._data && Object.keys(C._data),
+          _data_v25_bank_length: C._data && C._data.v25_bank && C._data.v25_bank.length,
+        });
+        console.log('2. App 状态：', A && {
+          data_length: A.data && A.data.length,
+          activeBank: A.activeBank,
+          builtin_length: A.builtin && A.builtin.length,
+        });
+        if (A && A.data && A.data.length) {
+          console.log('3. App.data 前 3 项（注意 code/question 是否为空）：');
+          A.data.slice(0, 3).forEach((c, i) => console.log('   Q' + (i + 1) + ':', JSON.stringify(c)));
+        }
+        console.log('4. localStorage 全部 key（按前缀分类）：');
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+        keys.sort().forEach(function (k) {
+          const v = localStorage.getItem(k);
+          const tag = /^(v25_|v27_|u_[^_]+_)/.test(k) ? '[USER] ' : '[META] ';
+          console.log('   ' + tag + k, '→', v == null ? 'null' : (v.length > 250 ? v.substring(0, 250) + '...[' + v.length + ' 字符]' : v));
+        });
+        console.log('5. userPrefix:', S && S.userPrefix());
+      } catch (e) {
+        console.error('诊断脚本异常：', e);
+      }
+      console.groupEnd();
+      alert('诊断信息已输出到 Console（F12 → Console），请把这段截图或复制给我');
     },
   };
 
