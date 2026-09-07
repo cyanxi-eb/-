@@ -20,6 +20,7 @@
 | **v2.7** | 2026-09-05 | 多主题库重构：4 级压缩（完整/标准/精简/极简）+ 首次选择题库 + 编辑切换 + 并入 903/904/905/LLM0903 增量 + 加回 v2.0~v2.4 重要高频题 |
 | **v2.8** | 2026-09-06 | 云端同步：可选接入 Supabase，昵称登录后学习进度/设置/编辑题库自动上云，换设备不丢（未接入时回退纯本地） |
 | **v2.9** | 2026-09-07 | 内容扩充+分类重组：拆「大模型应用」→大语言模型/RAG/LangChain，新增 Git 分类，题库 244→271 题，分类图标 🏷→🔖 |
+| **v2.10** | 2026-09-07 | 多用户数据恢复+登录稳定性 5 项加固：applyToLocal 总是跑 / push 失败自动 markDirty 重试 / POST 409 自动 GET 重试 / v2.7 本地无前缀数据自动迁移到 u_<id>_ 前缀 / pullAndApply 失败 3s 后二次 retry |
 
 ---
 
@@ -319,6 +320,29 @@ bh-mindmaps 部分题目存在"同一内容被隔断成多块"的撕裂问题。
 | M5 | PWA 远程化 | ⏳ 待做 |
 | M6 | 编辑模式 + 代码换行 | ⏳ 待做 |
 | M7 | 高亮 + 全功能回归 | ⏳ 待做 |
+
+### 4.12 v2.10 多用户数据恢复 + 登录稳定性（2026-09-07）
+
+**用户报告**：v2.9 部署后实测发现 3 个问题——VCV 修改后重新登录题库修改丢失（看到 builtin 271 题但云端 v25_bank=268 题）、test123 显示 269 题但云端 268 题（push 未及时同步）、小写 vcv 登录报 HTTP 409（UNIQUE 约束冲突）。
+
+**根因**：
+- A. `confirmLogin` 的 `if (res.data && Object.keys(res.data).length)` 太严格，data 为空时跳过 applyToLocal → 本地干净状态永远不上云
+- B. `push()` 失败 catch 里只 `console.warn` 没重试（注释里说"稍后重试"但代码没实现）
+- C. `POST profiles` 遇到 UNIQUE 约束冲突直接抛 409，没 GET 重试
+- D. v2.7 时代本地无前缀 `v25_bank` 没被自动迁移到 `u_<id>_v25_bank` → 老用户登录后 `Store.get('v25_bank')` 永远找不到 → 用 builtin
+- E. `pullAndApply` 失败只降级本地，没二次 retry
+
+**修复（5 项）**：
+
+1. **cloud.js login 改为 doGet + doPost 模式**：POST 409 自动 GET 重试拿 userId，彻底消除 409 报错
+2. **cloud.js push() catch 加 markDirty 重试**：3 秒后自动触发，确保 push 失败不丢失
+3. **cloud.js 新增 migrateLocalToUser(userId)**：把本地无前缀 `v25_*/v27_*` 迁移到 `u_<id>_*`（v2.7 老用户数据无缝衔接）
+4. **app.js confirmLogin 流程加固**：migrate → clearAll → applyToLocal（总是跑） → markDirty（总是跑）
+5. **app.js init() pullAndApply 二次 retry**：失败后 3 秒再 retry，仍失败才彻底降级本地
+
+**构建**：VERSION 2.9→2.10、SW CACHE `fc-v34→fc-v35`、新增 `tools/sim-v210.js` 回归测试脚本。
+
+**产物**：`dist/面试背记学习卡v2.10.html`（416 KB）+ `dist/web/` 分片 PWA 版。
 
 ---
 
