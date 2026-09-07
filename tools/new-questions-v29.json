@@ -1,0 +1,272 @@
+[
+  {
+    "code": "GIT-2",
+    "category": "Git",
+    "question": "Git 的三大区域分别是什么？数据如何在它们之间流转？",
+    "answer": "**三大区域：**\n- **工作区（Working Directory）**：你实际编辑文件的项目文件夹\n- **暂存区（Stage / Index）**：`.git/index`，临时存放待提交的变更\n- **本地仓库（Repository）**：`.git/`，保存所有版本快照（commit 对象）\n\n**数据流转：**\n- `git add <file>`：工作区 → 暂存区\n- `git commit -m \"msg\"`：暂存区 → 本地仓库\n- `git commit -am \"msg\"`：工作区 → 本地仓库（跳过暂存，仅限已跟踪文件）\n- `git restore --staged <file>`：暂存区 → 工作区（撤销 add）\n- `git restore <file>`：本地仓库 → 工作区（撤销修改）",
+    "extend": "**面试追问：** 所有 git 命令本质都是在三大区域之间搬运数据，理解了这一点任何命令都能推出来。\n**易错：** `git commit -am` 只对**已跟踪**文件生效，新文件仍需先 `git add`。\n**补充：** `git rm --cached <file>` 把已跟踪文件从暂存区移除但保留工作区文件（常用于把已提交文件加入 .gitignore）。",
+    "source": "0907",
+    "star": 5,
+    "bank": 4
+  },
+  {
+    "code": "GIT-3",
+    "category": "Git",
+    "question": "Git 底层的三大对象模型是什么？Git 存储的是快照还是差异？",
+    "answer": "`.git/objects/` 下存放 Git 的全部对象，每个对象由 **SHA-1 哈希**（40 位十六进制）唯一标识：\n\n- **blob（Binary Large Object）**：存文件内容（**不包含文件名**）\n- **tree（树）**：存目录结构，记录文件名 + 权限 + 指向 blob/tree 的 SHA\n- **commit（提交）**：存 tree id、父 commit、作者（author/committer）、备注\n\n**关键洞察：** Git 存储的是**快照（snapshot）**，不是差异（diff）。未变更的文件通过 SHA-1 引用复用，不重复占用空间。",
+    "extend": "**动手验证：** `git cat-file -t <sha>` 查看对象类型（blob/tree/commit）、`git cat-file -p <sha>` 查看对象内容。\n**面试加分：** Git 本质是「内容寻址的文件系统 + 版本控制前端」——一切皆对象，对象靠 SHA-1 寻址，对象之间用指针构成 DAG 历史。\n**易错：** blob 只存内容不存文件名，文件名存在 tree 对象里，所以重命名文件 Git 能识别为同一内容。",
+    "source": "0907",
+    "star": 5,
+    "bank": 3
+  },
+  {
+    "code": "GIT-4",
+    "category": "Git",
+    "question": "HEAD、分支（branch）、标签（Tag）三者的本质是什么？有什么区别？",
+    "answer": "三者**本质都是指针**，存放在 `.git/refs/` 下：\n\n| 概念 | 本质 | 特点 |\n|------|------|------|\n| **HEAD** | 指向当前所在分支（间接指针） | 一般指向分支名 |\n| **分支 branch** | 指向某个 commit 的可变指针 | 41 字节文件，随提交自动前进 |\n| **Tag** | 指向某个 commit 的不可变指针 | 标记发布版本 |\n\n**关键：** 切换分支 = 移动 HEAD 并用目标 commit 快照覆盖工作区+暂存区；创建分支 = 写一个 41 字节文件存 commit SHA，几乎瞬时完成。",
+    "extend": "**面试追问：** detached HEAD 是什么？—— HEAD 直接指向某个 commit 而非分支名（如 `git checkout <commit-id>`），此时提交不会被任何分支引用，需新建分支才能保留。\n**易错：** Tag 分轻量（`git tag v1.0`）和附注（`git tag -a v1.0 -m \"msg\"`），附注 tag 是完整对象（含作者/日期/备注），发布推荐附注 tag。",
+    "source": "0907",
+    "star": 5,
+    "bank": 3
+  },
+  {
+    "code": "GIT-5",
+    "category": "Git",
+    "question": "git reset 和 git revert 的区别？各自适用什么场景？",
+    "answer": "**git reset**（移动 HEAD，改写历史）：\n- `--soft <id>`：移动 HEAD，变更保留在**暂存区**\n- `--mixed <id>`（默认）：移动 HEAD，变更留在**工作区**\n- `--hard <id>`：移动 HEAD，**丢弃**工作区和暂存区（危险）\n\n**git revert <id>**（新增反向 commit）：生成一个新 commit 反向修改，**不改写历史**。\n\n**面试区分：**\n- reset 会**改写历史**（删除 commit）→ 只用于**本地未推送**分支\n- revert 是**新增反向 commit** → **已推送公共分支**回滚首选",
+    "extend": "**代码：** 撤销最后一次 commit 保留修改：`git reset --soft HEAD~1`（回暂存区）/ `git reset --mixed HEAD~1`（回工作区）。\n**易错：** 公共分支执行 `git reset --hard` + `git push --force` 会覆盖他人提交，属危险操作；正确做法是 `git revert` + 普通 push。\n**补充：** `git revert` 可一次撤销多个 commit，遇到冲突需手动解决后 `git revert --continue`。",
+    "source": "0907",
+    "star": 5,
+    "bank": 4
+  },
+  {
+    "code": "GIT-6",
+    "category": "Git",
+    "question": "git merge 和 git rebase 的区别？",
+    "answer": "**git merge <name>**：把 name 分支合并到当前分支，**保留分叉历史**，产生一个 merge commit（可能有两个父节点）。\n\n**git rebase <name>**：把当前分支的提交「接」到 name 分支之后，**历史线性化**（无分叉、无 merge commit）。\n\n**选型：**\n- merge：保留完整历史，团队协作合并功能分支常用\n- rebase：历史干净线性，适合**推送前整理本地提交**\n- ⚠️ rebase 会改写提交哈希，**只能用于本地未推送分支**",
+    "extend": "**易错：** 对已推送分支 rebase 会导致历史哈希改变，协作者本地出现分叉，必须 force push，极易引发事故。\n**黄金法则：** 公共分支用 merge，私有分支用 rebase 整理。\n**补充：** `git pull --rebase` = fetch + rebase，拉取远程更新时保持本地历史线性，是推荐的 pull 方式。",
+    "source": "0907",
+    "star": 5,
+    "bank": 4
+  },
+  {
+    "code": "GIT-7",
+    "category": "Git",
+    "question": "常见的 Git 分支管理策略有哪些？各自特点与适用场景？",
+    "answer": "**① Git Flow（经典重型）**：\n- master（生产）+ develop（集成）+ feature/* + release/* + hotfix/*\n- 分支层级清晰，适合多版本并行的大型项目，但流程偏重\n\n**② GitHub Flow（轻量推荐）**：\n- main 永远可部署，任何功能/Bug 都开新分支 → PR 评审 → 合并\n- 适合持续部署的互联网产品\n\n**③ GitLab Flow（带环境分支）**：\n- master → pre-production → production，通过合并 PR / 打标签发布\n- 适合需要区分环境（测试/预发/生产）的项目",
+    "extend": "**选型建议：** 小团队/快速迭代 → GitHub Flow；大型多版本 → Git Flow；需要环境隔离 → GitLab Flow。\n**面试追问：** 为什么 feature 分支要频繁合并 main？—— 避免长期分叉导致合并冲突爆炸。\n**补充：** 无论哪种策略，核心都围绕「主干稳定 + 分支隔离 + PR 评审」。",
+    "source": "0907",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "GIT-8",
+    "category": "Git",
+    "question": "git stash 的使用场景和常用命令？",
+    "answer": "**场景：** 正在某分支开发，突然要切到别的分支修紧急 bug，但当前修改还没写完不想 commit → 用 stash 暂存。\n\n**常用命令：**\n- `git stash`：暂存当前未提交修改\n- `git stash list`：查看所有 stash\n- `git stash pop`：恢复最近一次 stash 并删除\n- `git stash apply stash@{0}`：恢复指定 stash 但**不删除**\n- `git stash drop stash@{0}`：删除指定 stash\n\n**典型流程：** git stash → 切分支修 bug → 切回 → git stash pop",
+    "extend": "**易错：** pop 和 apply 的区别——pop 恢复后删除，apply 恢复后保留（可多次应用）。\n**补充：** `git stash pop` 恢复时若与当前工作区冲突，stash 不会被自动删除，需解决冲突后手动 `git stash drop`。\n**进阶：** `git stash -u` 可连同未跟踪文件一起暂存。",
+    "source": "0907",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "GIT-9",
+    "category": "Git",
+    "question": "git pull 和 git fetch 的区别？",
+    "answer": "**git fetch origin**：只拉取远程更新到本地仓库，**不合并**到当前分支。\n\n**git pull origin <branch>**：`fetch` + `merge`，**自动合并**到当前分支。\n\n**最佳实践：** 推荐用 `git fetch origin && git rebase origin/master` 或 `git pull --rebase`，避免产生不必要的 merge commit，保持历史线性。",
+    "extend": "**易错：** `git pull` 默认是 fetch + merge，多人协作时频繁 pull 会产生大量 merge commit 污染历史。\n**面试追问：** 为什么先 fetch 再决定合并方式更安全？—— fetch 只下载不改变工作区，可先 `git diff origin/master` 查看差异再决定 merge 还是 rebase。",
+    "source": "0907",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "GIT-10",
+    "category": "Git",
+    "question": "Git 合并冲突是如何产生的？如何解决？",
+    "answer": "**产生：** 两个分支修改了同一文件的同一区域，Git 无法自动合并时产生冲突。\n\n**解决流程：**\n1. `git merge feature/x` 触发冲突，Git 提示 `CONFLICT (content): Merge conflict in a.txt`\n2. 手动编辑冲突文件，解决 `<<<<<<< HEAD` 与 `>>>>>>> feature/x` 之间的内容\n3. `git add a.txt` 标记为已解决\n4. `git commit` 完成合并",
+    "extend": "**冲突标记解读：** `<<<<<<< HEAD` 到 `=======` 是当前分支内容，`=======` 到 `>>>>>>> feature/x` 是合并进来的分支内容。\n**易错：** 解决冲突后忘记 `git add` 就 commit，Git 会报错；`git status` 会列出「both modified」文件。\n**补充：** `git merge --abort` 放弃合并回到合并前状态；`git rebase --continue` 继续变基。",
+    "source": "0907",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "GIT-11",
+    "category": "Git",
+    "question": ".gitignore 的作用是什么？常见忽略规则有哪些？",
+    "answer": "**作用：** 指定 Git 不跟踪的文件/目录（如依赖、构建产物、敏感信息），避免污染仓库、泄露密钥。\n\n**常见规则：**\n```gitignore\n# 系统文件\n.DS_Store / Thumbs.db\n# 编辑器\n.idea/  .vscode/  *.swp\n# 依赖\nnode_modules/  venv/  __pycache__/  *.pyc\n# 构建产物\ndist/  build/  target/\n# 日志\n*.log\n# 环境变量（含密钥）\n.env  .env.local\n# 临时文件\n*.tmp  *.bak\n```",
+    "extend": "**语法要点：** `/dir/` 忽略目录、`*.log` 通配、`!important.log` 取反（重新包含）、`#` 注释。\n**易错：** 已被跟踪的文件加入 .gitignore 不生效，需先 `git rm --cached <file>` 取消跟踪。\n**面试追问：** 为什么 .env 必须忽略？—— 含数据库密码、API key 等敏感信息，一旦提交到公共仓库即视为泄露。",
+    "source": "0907",
+    "star": 3,
+    "bank": 2
+  },
+  {
+    "code": "LLM-21",
+    "category": "LangChain",
+    "question": "LangChain 的 Model I/O 是什么？由哪几部分组成？",
+    "answer": "**Model I/O** 是 LangChain 中「负责给大模型发送消息、接收消息」的核心模块，包括 3 部分：\n\n1. **提示词模板（Prompts）**：把用户输入 + 上下文动态拼装成高质量 Prompt（PromptTemplate / ChatPromptTemplate）\n2. **模型调用（LLM / ChatModel）**：统一封装各类模型接口，`llm.invoke(...)` 执行\n3. **输出解析（Output Parsers）**：把模型的文本输出解析成结构化数据（StrOutputParser / JSON 解析 / Pydantic）\n\n**完整链路：** `prompt | llm | output_parser`，输入 topic → 拼 Prompt → 调模型 → 解析输出。",
+    "extend": "**面试追问：** 为什么要用输出解析器？—— 模型输出是纯文本，结构化抽取需要把文本转成 JSON/Pydantic 对象供下游使用。\n**易错：** Model I/O 是 LangChain 最基础的抽象，Chains/Agents 都构建在它之上。\n**代码：** `chain = prompt | llm | StrOutputParser()`，用 LCEL 管道把三部分串起来。",
+    "source": "LLM0903",
+    "star": 5,
+    "bank": 4
+  },
+  {
+    "code": "LLM-22",
+    "category": "LangChain",
+    "question": "LangChain 中的三类模型（LLM / ChatModel / Embeddings）有什么区别？",
+    "answer": "**① LLM（非对话模型）**：\n- 输入：文本字符串或 promptValue 对象\n- 输出：文本字符串\n- 不支持多轮对话上下文，每次调用独立处理\n- 适用：单次文本任务（如续写、翻译）\n\n**② ChatModel（对话模型）**：\n- 输入：消息列表 `list[BaseMessage]`，每条消息指定角色（system/human/ai）\n- 输出：带角色的消息对象\n- 支持多轮对话，能关联历史\n- 适用：对话系统、客服、聊天机器人\n\n**③ Embeddings（嵌入模型）**：\n- 把文本转换为向量（数值表示）\n- 用于 RAG 检索、语义相似度计算",
+    "extend": "**抽象类对应：** LLM→`BaseLLM`、ChatModel→`BaseChatModel`、Embeddings→`Embeddings`。\n**易错：** 现代大模型（GPT-4o、DeepSeek 等）基本都是 ChatModel（对话模型），纯 LLM 接口已逐渐被淘汰。\n**补充：** ChatModel 的消息类型有 SystemMessage（设定角色）、HumanMessage（用户）、AIMessage（模型回复），SystemMessage 用于固定模型人设。",
+    "source": "LLM0903",
+    "star": 5,
+    "bank": 3
+  },
+  {
+    "code": "LLM-23",
+    "category": "LangChain",
+    "question": "LangChain 的 Models 层核心价值是什么？",
+    "answer": "**核心价值：统一封装各类 LLM / Embedding 接口，实现「换模型零成本」。**\n\n- LangChain 本身**不训练模型**，而是把 OpenAI、Anthropic、通义千问、Ollama 等各家模型统一成标准接口\n- 所有模型都实现统一的 `invoke / stream / batch` 方法\n- 切换模型只需改一行初始化代码（`ChatOpenAI` → `ChatAnthropic`），业务代码不变\n\n**为什么重要：** 直接调用各家 API 时接口各不相同，切换供应商要重写大量胶水代码；LangChain 把这种差异抹平。",
+    "extend": "**易错：** Models 层是「适配器」角色，不提升模型能力，只统一访问方式。\n**面试追问：** 换模型时要注意什么？—— 不同模型对 Prompt 的敏感度、上下文窗口、输出格式不同，换模型后需回归测试。\n**补充：** 合作伙伴库（langchain-openai / langchain-anthropic）只依赖 langchain-core，轻量解耦。",
+    "source": "LLM0903",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "LLM-24",
+    "category": "LangChain",
+    "question": "PromptTemplate 和 ChatPromptTemplate 有什么区别？如何创建？",
+    "answer": "**PromptTemplate（普通字符串模板）**：用于非对话 LLM，输出单个字符串。\n- 构造函数：`PromptTemplate(template='根据{topic}生成描述', input_variables=['topic'])`\n- 快捷方法：`PromptTemplate.from_template(...)`\n\n**ChatPromptTemplate（多角色消息模板）**：用于 ChatModel，输出消息列表，每条带角色。\n- 构造函数：`ChatPromptTemplate([('system','...'),('human','{input}'),('ai','...')])`\n- 快捷方法：`ChatPromptTemplate.from_messages(...)`\n\n**调用：** 两者都支持 `.format(**vars)` 和 `.invoke(dict)`，invoke 返回 PromptValue 对象。",
+    "extend": "**面试追问：** 为什么要用提示词模板？—— 支持内容复用、可扩展、可阅读、可维护；模板与数据分离。\n**易错：** `prompt.format()` 返回字符串，`prompt.invoke()` 返回 PromptValue 对象（需 `.text` 取文本），二者不要混用。\n**补充：** 消息模板可用 `HumanMessagePromptTemplate.from_template()` + `SystemMessage` 组合；生产环境提示词常存 YAML/配置文件统一管理。",
+    "source": "LLM0903",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "LLM-25",
+    "category": "LangChain",
+    "question": "什么是 token？大模型的 token 生成机制是什么？",
+    "answer": "**token：** 大模型处理的最小单元，模型按 token 计费。中文一个字约 1-2 个 token，英文一个单词约 1-3 个 token。\n\n**生成机制：** 每个新 token 的生成都**基于之前所有 token 的上下文**，形成**链式预测**结构（自回归）。\n\n**交互表现：** 对话框中的文字是一个个连续弹出的，直观展示 token 的逐字生成过程。\n\n**影响：** token 决定了上下文窗口大小和费用——输入 token（prompt）+ 输出 token（生成）都计费。",
+    "extend": "**面试追问：** 为什么模型有上下文窗口限制？—— 自回归模型每次生成都要处理之前所有 token，token 越多计算量越大，受模型最大窗口（如 4K/8K/128K）限制。\n**易错：** token 不是「字」也不是「字节」，是分词器（BPE 等）切出的子词单元，中英文 token 占比不同。\n**补充：** `max_tokens` 参数限制单次生成的最大长度，避免超长输出。",
+    "source": "LLM0903",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "LLM-26",
+    "category": "LangChain",
+    "question": "LangChain 的 Memory 模块有什么作用？有哪些类型？",
+    "answer": "**作用：** 保存对话历史、用户信息，让 LLM 在多轮对话中**记住之前的内容**，实现带记忆的对话。\n\n**常见 Memory 类型：**\n| 类型 | 特点 |\n|------|------|\n| `ConversationBufferMemory` | 完整保存所有对话 |\n| `ConversationSummaryMemory` | LLM 总结后只存摘要（省 token） |\n| `ConversationBufferWindowMemory` | 只保留最近 K 轮 |\n| `ConversationSummaryBufferMemory` | 混合：近期全存 + 远的总结 |\n\n**存储：** 可存到共享数据中心（redis、数据库、向量数据库），实现跨会话持久化。",
+    "extend": "**版本变化：** v0.3 起 Memory 模块大改，多数迁移到 **LangGraph 的 Checkpointer** 机制（自动 checkpoint 对话状态）。\n**面试追问：** 为什么不能把所有历史都塞进 prompt？—— 超出上下文窗口 + token 费用暴涨，需要 summary / window 策略裁剪。\n**补充：** 生产环境对话记忆通常存 Redis，按 session 维度隔离，避免串号。",
+    "source": "LLM0903",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "LLM-27",
+    "category": "LangChain",
+    "question": "什么是 ReAct Agent？它的工作循环是怎样的？",
+    "answer": "**ReAct = Reasoning + Acting（推理 + 行动）**，是一种让 LLM **自主决策**的智能体范式。\n\n**工作循环：**\n```\n用户任务 → LLM 思考 → 选择工具 → 执行 → 观察结果 → 再思考 → ... → 最终答案\n```\n\n**核心：** 不再手动一步步指挥模型，而是让模型根据问题**自主选择工具、决定顺序**，直到完成任务。\n\n**示例：** 问「今天深圳天气怎么样，适合去哪玩」→ Agent 自主调用天气查询工具 → 拿到天气 → 再调用旅游推荐工具 → 综合回答。",
+    "extend": "**常见实现：** `zero-shot-react-description`、`react-docstore`。\n**与 Chains 的区别：** Chains 是**固定流程**（写死步骤），Agent 是**动态决策**（模型自己选下一步）。\n**进阶：** LangGraph 是新一代 Agent 框架，把 Agent 建模为「节点 + 边」的图，支持有状态、人机协作、多 Agent 协同。",
+    "source": "LLM0903",
+    "star": 5,
+    "bank": 3
+  },
+  {
+    "code": "LLM-28",
+    "category": "RAG",
+    "question": "RAG 知识库的文档解析有哪些技术难点？分别如何解决？",
+    "answer": "**文档解析是 RAG 的数据入口，难点包括：**\n\n1. **多格式解析**：PDF/Word/网页/数据库等，需覆盖 8+ 种格式\n2. **复杂排版文档**：分栏、页眉页脚、目录，需清洗干扰信息\n3. **表格解析**：把表格提取为结构化数据\n4. **扫描件 OCR**：纯图片 PDF 需 OCR 识别，低质量图片需预处理增强\n5. **跨页数据合并**：表格/段落跨页断开，需按语义合并\n6. **大文件解析**：读一部分解析一部分，保证数据连贯性\n\n**策略：** 解析后做「清理和补全」，根据文档情况和业务需求定制清洗策略。",
+    "extend": "**面试追问：** 表格跨页怎么合并？—— 通过表头重复检测 + 结构对齐，把跨页的表格行合并为完整记录。\n**易错：** 扫描件直接提取会得到空文本，必须先 OCR；低质量图片可做去噪、纠偏、增强后再识别。\n**补充：** 解析质量直接决定 RAG 上限，垃圾进垃圾出（GIGO），解析是很多 RAG 项目最容易忽视的环节。",
+    "source": "LLM0903",
+    "star": 5,
+    "bank": 3
+  },
+  {
+    "code": "LLM-29",
+    "category": "RAG",
+    "question": "RAG 的文档分块（Chunking）策略有哪些？各自优缺点？",
+    "answer": "分块好坏直接决定 RAG 效果上限：块太小语义不完整，块太大向量噪声大。五大策略：\n\n| 策略 | 原理 | 优点 | 缺点 |\n|------|------|------|------|\n| **固定长度** | 按字符/token 数硬切 | 简单快速 | 易切断语义 |\n| **递归字符** | 按 `\\n\\n → \\n → 。` 优先级递归切 | 平衡语义和大小，工业最常用 | 复杂文档仍可能切碎 |\n| **语义分块** | 相邻片段相似度下降超阈值则切 | 语义最完整 | 慢、贵 |\n| **结构化分块** | 利用标题/Markdown 层级切 | 适合结构化文档 | 依赖文档格式 |\n| **LLM 分块** | 调用大模型让模型切 | 效果最好 | 最贵、最慢 |\n\n**参数：** `chunk_size` 一般 512–2048 tokens；`chunk_overlap` 取 10%–20% 防止边界信息丢失。",
+    "extend": "**代码（LangChain 默认）：** `RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50, separators=[\"\\n\\n\",\"\\n\",\"。\",\"！\",\"？\",\" \",\"\"])`，切割优先级段落→行→句→空格→字符。\n**易错：** overlap=0 会导致边界信息丢失；chunk 过大会混入多个主题导致相似度匹配不准。\n**面试加分：** 父子结构分块——先用大块保证上下文完整，再切小块用于精确检索，兼顾召回与精准。",
+    "source": "LLM0903",
+    "star": 5,
+    "bank": 3
+  },
+  {
+    "code": "LLM-30",
+    "category": "RAG",
+    "question": "RAG 中 Embedding（嵌入）模型如何选型？",
+    "answer": "**选型三要素：功能、费用、数据安全。**\n\n常用 Embedding 模型：\n| 模型 | 维度 | 适用 |\n|------|------|------|\n| `text-embedding-3-small` (OpenAI) | 1536 | 通用、中文一般 |\n| `text-embedding-3-large` (OpenAI) | 3072 | 通用、高精度 |\n| `BAAI/bge-large-zh-v1.5` | 1024 | **中文推荐** |\n| `moka-ai/m3e-base` | 768 | 中文、轻量 |\n| `qwen3.7-text-embedding-flash` | - | 通义千问、中文友好 |\n\n**选型考量：** 中文场景优先 bge / m3e / 通义；数据敏感需私有化部署（bge/m3e 可本地跑）；成本敏感选小维度模型。",
+    "extend": "**面试追问：** 为什么中文要用中文优化的模型？—— 通用英文模型对中文语义捕捉弱，检索效果差。\n**易错：** 查询和文档必须用**同一个 Embedding 模型**，否则向量空间不对齐，检索失效。\n**补充：** 相似度算法常用余弦相似度 `cos(A,B)=A·B/(|A|·|B|)`；点积在向量已归一化时等价于余弦。",
+    "source": "LLM0903",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "LLM-31",
+    "category": "RAG",
+    "question": "什么是 Rerank（重排序）？为什么要 Rerank？",
+    "answer": "**问题：** 向量检索是**双塔模型**，query 和 chunk 独立编码再算相似度，精度有限（粗排）。\n\n**方案：** 用 **Cross-Encoder（交叉编码器）** 把 query 和每个 chunk **一起编码**，重新打分，筛出 top-N：\n```\n向量检索召回 top-20 → Rerank 模型重打分 → 取 top-3 → LLM\n```\n\n**效果：** 精度提升显著，但速度慢（每对 query-chunk 都要前向传播一次）。\n\n**常用 Rerank 模型：** `bge-reranker-large`、`Cohere Rerank`。",
+    "extend": "**面试追问：** 为什么双塔精度有限？—— 双塔把 query 和 doc 分别编码成向量，交互信息少；Cross-Encoder 把两者拼接一起过 transformer，能捕捉精细交互。\n**易错：** Rerank 很慢，只能对 top-K（如 top-20）候选做精排，不能全量 rerank。\n**补充：** 「召回（Recall）+ 精排（Rerank）」是工业界标准两段式检索，兼顾速度与精度。",
+    "source": "LLM0903",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "LLM-32",
+    "category": "RAG",
+    "question": "混合检索（Hybrid Search）是什么？向量检索和关键词检索如何融合？",
+    "answer": "**混合检索 = 向量检索 + 关键词检索（BM25）的结合：**\n```\n最终得分 = α × 向量相似度 + (1-α) × BM25 得分\n```\n\n**互补关系：**\n- 向量检索擅长**语义**匹配（同义改写、口语化表达）\n- BM25 擅长**精确关键词**（专有名词、缩写、数字、代码）\n\n**为什么需要：** 纯向量检索对「GPT-4」「Redis」这类精确术语可能召回不准；纯关键词检索对语义改写（「怎么解决内存不够」vs「内存淘汰」）无能为力。两者融合取长补短。",
+    "extend": "**面试追问：** 融合方式？—— 常见有加权求和（RRF 倒数排名融合）或分数归一化后加权，α 权重可调。\n**易错：** 向量和 BM25 分数不在同一量纲，直接相加需先归一化。\n**补充：** 检索后还可加 Rerank 精排，形成「混合召回 + 精排」的完整链路。",
+    "source": "LLM0903",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "LLM-33",
+    "category": "RAG",
+    "question": "RAG 的 Query 改写、HyDE、Multi-Query 分别是什么？",
+    "answer": "**问题：** 用户问题可能口语化、不完整、歧义，直接检索效果差。三者都是「检索前」的优化手段：\n\n1. **Query Rewrite（查询改写）**：用 LLM 把口语化问题改写为正式检索词\n2. **HyDE（假设文档嵌入）**：让 LLM 先**假设性生成一个答案**，再用这个答案的向量去检索真实文档（假设答案比问题更接近真实文档的表达）\n3. **Multi-Query（多查询）**：让 LLM 把一个问题生成**多个角度**的检索 query，召回后合并去重",
+    "extend": "**面试追问：** HyDE 为什么有效？—— 问题往往简短，而文档是长文本，用假设答案的长文本向量检索，语义空间更接近文档。\n**易错：** HyDE 假设答案可能包含错误信息，但只用于「检索」不用于「回答」，最终答案仍基于真实文档。\n**补充：** 检索后还有上下文压缩、引用溯源等优化，全链路可概括为「检索前改写、检索中混合、检索后精排」。",
+    "source": "LLM0903",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "LLM-34",
+    "category": "RAG",
+    "question": "什么是 GraphRAG？它解决什么问题？适用什么场景？",
+    "answer": "**GraphRAG（知识图谱增强 RAG）**：把文档抽取成知识图谱（实体-关系-实体），用**图查询**辅助 RAG 检索。\n\n**解决什么问题：** 传统 RAG 是「切块 + 向量检索」，难以应对需要**跨文档综合推理**的问题（如「A 和 B 的关系」需要关联多个分散的实体）。\n\n**适用场景：** 实体关系密集、需要多跳推理的领域（如人物关系、供应链、知识网络）。\n\n**代价：** 图谱构建成本高，需要实体识别 + 关系抽取，工程复杂度远高于普通 RAG。",
+    "extend": "**面试追问：** GraphRAG 和普通 RAG 怎么选？—— 简单问答用普通 RAG 即可；需要跨文档多跳推理才上 GraphRAG。\n**易错：** GraphRAG 不是银弹，构建和维护知识图谱的成本很高，小场景用反而过度设计。\n**补充：** 也可「混合」：先图检索找相关实体，再向量检索找相关文本，最后喂给 LLM。",
+    "source": "LLM0903",
+    "star": 3,
+    "bank": 2
+  },
+  {
+    "code": "DB-69",
+    "category": "缓存与Redis",
+    "question": "布隆过滤器（Bloom Filter）的原理是什么？为什么会有误判？",
+    "answer": "**原理：** 用多个哈希函数把 key 映射到一个位数组上，判断 key 是否存在：\n\n- 插入：对 key 做 k 次哈希，把位数组对应位置置 1\n- 查询：对 key 做同样 k 次哈希，若所有位置都为 1 则「**可能存在**」，有任一为 0 则「**一定不存在**」\n\n**为什么有误判：** 不同 key 的哈希可能撞到相同位，导致不存在的 key 也被判为存在（假阳性）。\n\n**应用：** 缓存穿透防护——启动时把所有合法 key 灌入布隆过滤器，请求先过 BF，拦截不存在的 key。",
+    "extend": "**特性总结：** 「存在不一定存在，不存在一定不存在」；误判率可通过位数组大小和哈希函数数量控制；只增不删（删除需计数型布隆过滤器）。\n**易错：** 布隆过滤器**省内存但不存原值**，无法返回原始数据，只能做存在性预判。\n**补充：** 典型实现 RedisBloom 模块；误判率 1% 时约每个元素 10 bit 即可。",
+    "source": "0907",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "DB-70",
+    "category": "缓存与Redis",
+    "question": "缓存击穿的「逻辑过期」方案如何实现？相比分布式锁有什么优势？",
+    "answer": "**逻辑过期（永不过期）方案：**\n- Redis 的 key **不设置物理 TTL**（永不过期）\n- value 内部存一个「逻辑过期时间」字段\n- 读到逻辑过期后，返回旧值，同时**后台异步线程**去查 DB 更新缓存\n- 更新完成前，所有请求继续用旧值\n\n**相比分布式锁的优势：** 无锁、无阻塞，用户永远能拿到数据（哪怕是旧值），体验最佳。\n\n**分布式锁方案的问题：** 缓存失效时只有一个线程能查 DB 写缓存，其他线程阻塞等待，会有短暂延迟。",
+    "extend": "**面试追问：** 逻辑过期会不会一直返回旧值？—— 不会，异步线程更新成功后新请求就拿到新值；更新失败可重试或降级。\n**易错：** 逻辑过期方案需处理「缓存重建期间 DB 也挂了」的兜底，否则旧值过期后无值可用。\n**补充：** 三大缓存问题的方案可组合：穿透用布隆/空值、击穿用逻辑过期/互斥锁、雪崩用随机 TTL/高可用。",
+    "source": "0907",
+    "star": 4,
+    "bank": 3
+  },
+  {
+    "code": "DB-71",
+    "category": "缓存与Redis",
+    "question": "Redis 哨兵（Sentinel）如何选主？Cluster 集群如何分片？",
+    "answer": "**哨兵选主流程：**\n1. 多个 Sentinel 心跳发现 Master 失联\n2. 主观下线 SDown（单个 Sentinel 认为下线）→ 客观下线 ODown（多数 Sentinel 认可）\n3. 选举 Leader Sentinel 执行故障转移\n4. 按优先级选新 Master：`replica-priority` > 复制偏移量 > runid 最小\n5. 让其他 Slave 切换新 Master，客户端连 Sentinel 获取新地址\n\n**Cluster 分片：**\n- 键空间划分为 **16384 个哈希槽**\n- 每个 key 用 `CRC16(key) % 16384` 算出属于哪个槽\n- 每个 Master 负责一部分槽，Slave 复制 Master 提供备份\n- 请求路由错节点时返回 `MOVED` 重定向",
+    "extend": "**易错：** 哨兵解决**高可用**（自动故障转移）但不解决**水平扩容**（仍单 Master 写）；Cluster 解决扩容+高可用，但不支持跨槽多键事务。\n**面试追问：** Cluster 为什么是 16384 个槽？—— 够用且心跳消息体积小（对比 65536）。\n**补充：** 选型：数据量 <10GB、QPS<10w → 哨兵；更大规模 → Cluster。",
+    "source": "0907",
+    "star": 4,
+    "bank": 3
+  }
+]
