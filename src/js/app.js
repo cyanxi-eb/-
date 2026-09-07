@@ -326,15 +326,15 @@
       if (btn) { btn.disabled = true; btn.textContent = '登录中…'; }
       Cloud.login(nick)
         .then(function (res) {
-          // ★ 切用户前：清空本地所有「带用户前缀」的旧 key，避免新用户继承旧用户的进度/编辑题库
+          // ★ 1. 登录成功后先迁移「本地无前缀旧数据」到当前用户前缀（v2.7 时代本地数据不丢）
+          Cloud.migrateLocalToUser(res.userId);
+          // ★ 2. 清空本地所有「带用户前缀」的旧 key（避免新用户继承旧用户数据）
+          //     注意：migrateLocalToUser 已把无前缀数据迁到新前缀，clearAllUsersLocal 会清掉其它用户的残留
           Store.clearAllUsersLocal();
-          // 云有数据 → 覆盖本地（applyToLocal 会按当前 userId 加前缀写入）；云空 → 本地为空
-          if (res.data && Object.keys(res.data).length) {
-            Cloud.applyToLocal(res.data);
-          } else {
-            // 新用户：把当前干净的 localStorage 状态推上云（其实为空）
-            Cloud.markDirty();
-          }
+          // ★ 3. 把云数据写回本地（applyToLocal 总是跑；空数据 no-op）
+          Cloud.applyToLocal(res.data || {});
+          // ★ 4. 总是触发一次 push：把迁移后/本地最新状态推上云（若云端空，本地非空会补推）
+          Cloud.markDirty();
           location.reload();
         })
         .catch(function (err) {
@@ -393,9 +393,17 @@
 
       // 已登录：先从云拉最新数据覆盖本地再启动；失败/未登录则直接用本地
       if (Cloud.isLoggedIn()) {
+        // ★ pullAndApply 失败时先降级本地 boot，同时 3s 后再 retry 一次（修海外 API 慢导致丢失云数据）
         Cloud.pullAndApply().then(boot, function (err) {
           console.warn('[cloud] pullAndApply 失败，降级为本地模式：', err && err.message);
           boot();
+          setTimeout(function () {
+            Cloud.pullAndApply().then(function () {
+              console.log('[cloud] 第二次 pullAndApply 成功，云数据已恢复');
+            }, function (e2) {
+              console.warn('[cloud] 第二次 pullAndApply 也失败，保持本地模式：', e2 && e2.message);
+            });
+          }, 3000);
         });
       } else {
         boot();

@@ -83,7 +83,7 @@
       });
     },
 
-    /* ---------- 登录：查昵称，不存在则创建 ---------- */
+    /* ---------- 登录：查昵称，不存在则创建（POST 409 时重试 GET） ---------- */
     login: function (nickname) {
       if (!this.enabled) return Promise.reject(new Error('云端未配置（见 docs/supabase-setup.md）'));
       nickname = String(nickname == null ? '' : nickname).trim();
@@ -91,22 +91,40 @@
       if (nickname.length > 30) return Promise.reject(new Error('昵称最长 30 个字符'));
       const self = this;
       const enc = encodeURIComponent(nickname);
-      return this._req('GET', 'profiles?nickname=eq.' + enc + '&select=id,nickname,data')
-        .then(function (rows) {
-          if (rows && rows.length) return { userId: rows[0].id, data: rows[0].data || {} };
-          return self._req('POST', 'profiles', { nickname: nickname, data: {} })
-            .then(function (created) {
-              const row = Array.isArray(created) ? created[0] : created;
-              return { userId: row.id, data: row.data || {} };
-            });
-        })
-        .then(function (res) {
-          self.nickname = nickname;
-          self.userId = res.userId;
-          self._data = res.data || {};
-          try { localStorage.setItem(NICK_KEY, nickname); localStorage.setItem(USERID_KEY, res.userId); } catch (e) {}
-          return res;
-        });
+      const doGet = function () {
+        return self._req('GET', 'profiles?nickname=eq.' + enc + '&select=id,nickname,data')
+          .then(function (rows) {
+            if (rows && rows.length) return { userId: rows[0].id, data: rows[0].data || {} };
+            return null;  // 没找到
+          });
+      };
+      const doPost = function () {
+        return self._req('POST', 'profiles', { nickname: nickname, data: {} })
+          .then(function (created) {
+            const row = Array.isArray(created) ? created[0] : created;
+            return { userId: row.id, data: row.data || {} };
+          })
+          .catch(function (postErr) {
+            // ★ POST 可能因 UNIQUE 约束 409（GET 失败/竞态/大小写敏感），此时再 GET 一次拿 userId
+            if (postErr && /HTTP\s*409/.test(postErr.message)) {
+              console.warn('[cloud] POST 409（nickname 唯一约束），再 GET 一次...');
+              return doGet().then(function (r) {
+                if (r) return r;
+                throw postErr;  // 仍然找不到，让外层报错
+              });
+            }
+            throw postErr;
+          });
+      };
+      return doGet().then(function (r) {
+        return r || doPost();
+      }).then(function (res) {
+        self.nickname = nickname;
+        self.userId = res.userId;
+        self._data = res.data || {};
+        try { localStorage.setItem(NICK_KEY, nickname); localStorage.setItem(USERID_KEY, res.userId); } catch (e) {}
+        return res;
+      });
     },
 
     logout: function () {
@@ -176,7 +194,9 @@
         data: data,
         updated_at: new Date().toISOString(),
       }).catch(function (err) {
-        console.warn('[cloud] 推送失败，稍后重试：', err && err.message);
+        // ★ push 失败时 markDirty 自动重试（防止网络抖动/海外 API 慢导致丢失编辑）
+        console.warn('[cloud] 推送失败，3s 后重试：', err && err.message);
+        setTimeout(function () { Cloud.markDirty(); }, 3000);
       });
     },
 
@@ -191,6 +211,38 @@
           self.applyToLocal(self._data);
           return self._data;
         });
+    },
+
+    /* 本地无前缀数据迁移到带当前用户前缀（解决 v2.7 时代本地数据在 v2.8+ 登录态"丢失"的问题）
+       迁移完成后立即 markDirty() 把迁移后的本地状态推上云 */
+    migrateLocalToUser: function (userId) {
+      if (!userId) return 0;
+      const prefix = 'u_' + userId + '_';
+      let n = 0;
+      try {
+        const toMigrate = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (!k) continue;
+          // 跳过已有前缀数据、跳过登录态元数据、跳过非用户维度 key
+          if (k.indexOf('u_') === 0) continue;
+          if (k === NICK_KEY || k === USERID_KEY) continue;
+          if (!/^v25_/.test(k) && !/^v27_/.test(k)) continue;
+          toMigrate.push(k);
+        }
+        toMigrate.forEach(function (k) {
+          try {
+            const v = localStorage.getItem(k);
+            if (v !== null && localStorage.getItem(prefix + k) === null) {
+              localStorage.setItem(prefix + k, v);
+              localStorage.removeItem(k);
+              n++;
+            }
+          } catch (e) {}
+        });
+        if (n > 0) console.log('[cloud] 迁移本地无前缀数据到 ' + prefix + '* (' + n + ' 个 key)');
+      } catch (e) {}
+      return n;
     },
   };
 

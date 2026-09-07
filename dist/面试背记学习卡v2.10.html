@@ -488,7 +488,7 @@ body {
 <!-- 顶部导航 -->
 <header class="topbar">
   <div class="topbar-content">
-    <span class="topbar-title">📚 面试背记学习卡 <b>v2.9</b></span>
+    <span class="topbar-title">📚 面试背记学习卡 <b>v2.10</b></span>
     <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜索题目或答案..."></div>
     <div class="topbar-actions">
       <button class="icon-btn" id="shuffleBtn" title="重新打乱顺序">🔀</button>
@@ -878,7 +878,7 @@ body {
       });
     },
 
-    /* ---------- 登录：查昵称，不存在则创建 ---------- */
+    /* ---------- 登录：查昵称，不存在则创建（POST 409 时重试 GET） ---------- */
     login: function (nickname) {
       if (!this.enabled) return Promise.reject(new Error('云端未配置（见 docs/supabase-setup.md）'));
       nickname = String(nickname == null ? '' : nickname).trim();
@@ -886,22 +886,40 @@ body {
       if (nickname.length > 30) return Promise.reject(new Error('昵称最长 30 个字符'));
       const self = this;
       const enc = encodeURIComponent(nickname);
-      return this._req('GET', 'profiles?nickname=eq.' + enc + '&select=id,nickname,data')
-        .then(function (rows) {
-          if (rows && rows.length) return { userId: rows[0].id, data: rows[0].data || {} };
-          return self._req('POST', 'profiles', { nickname: nickname, data: {} })
-            .then(function (created) {
-              const row = Array.isArray(created) ? created[0] : created;
-              return { userId: row.id, data: row.data || {} };
-            });
-        })
-        .then(function (res) {
-          self.nickname = nickname;
-          self.userId = res.userId;
-          self._data = res.data || {};
-          try { localStorage.setItem(NICK_KEY, nickname); localStorage.setItem(USERID_KEY, res.userId); } catch (e) {}
-          return res;
-        });
+      const doGet = function () {
+        return self._req('GET', 'profiles?nickname=eq.' + enc + '&select=id,nickname,data')
+          .then(function (rows) {
+            if (rows && rows.length) return { userId: rows[0].id, data: rows[0].data || {} };
+            return null;  // 没找到
+          });
+      };
+      const doPost = function () {
+        return self._req('POST', 'profiles', { nickname: nickname, data: {} })
+          .then(function (created) {
+            const row = Array.isArray(created) ? created[0] : created;
+            return { userId: row.id, data: row.data || {} };
+          })
+          .catch(function (postErr) {
+            // ★ POST 可能因 UNIQUE 约束 409（GET 失败/竞态/大小写敏感），此时再 GET 一次拿 userId
+            if (postErr && /HTTP\s*409/.test(postErr.message)) {
+              console.warn('[cloud] POST 409（nickname 唯一约束），再 GET 一次...');
+              return doGet().then(function (r) {
+                if (r) return r;
+                throw postErr;  // 仍然找不到，让外层报错
+              });
+            }
+            throw postErr;
+          });
+      };
+      return doGet().then(function (r) {
+        return r || doPost();
+      }).then(function (res) {
+        self.nickname = nickname;
+        self.userId = res.userId;
+        self._data = res.data || {};
+        try { localStorage.setItem(NICK_KEY, nickname); localStorage.setItem(USERID_KEY, res.userId); } catch (e) {}
+        return res;
+      });
     },
 
     logout: function () {
@@ -971,7 +989,9 @@ body {
         data: data,
         updated_at: new Date().toISOString(),
       }).catch(function (err) {
-        console.warn('[cloud] 推送失败，稍后重试：', err && err.message);
+        // ★ push 失败时 markDirty 自动重试（防止网络抖动/海外 API 慢导致丢失编辑）
+        console.warn('[cloud] 推送失败，3s 后重试：', err && err.message);
+        setTimeout(function () { Cloud.markDirty(); }, 3000);
       });
     },
 
@@ -986,6 +1006,38 @@ body {
           self.applyToLocal(self._data);
           return self._data;
         });
+    },
+
+    /* 本地无前缀数据迁移到带当前用户前缀（解决 v2.7 时代本地数据在 v2.8+ 登录态"丢失"的问题）
+       迁移完成后立即 markDirty() 把迁移后的本地状态推上云 */
+    migrateLocalToUser: function (userId) {
+      if (!userId) return 0;
+      const prefix = 'u_' + userId + '_';
+      let n = 0;
+      try {
+        const toMigrate = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (!k) continue;
+          // 跳过已有前缀数据、跳过登录态元数据、跳过非用户维度 key
+          if (k.indexOf('u_') === 0) continue;
+          if (k === NICK_KEY || k === USERID_KEY) continue;
+          if (!/^v25_/.test(k) && !/^v27_/.test(k)) continue;
+          toMigrate.push(k);
+        }
+        toMigrate.forEach(function (k) {
+          try {
+            const v = localStorage.getItem(k);
+            if (v !== null && localStorage.getItem(prefix + k) === null) {
+              localStorage.setItem(prefix + k, v);
+              localStorage.removeItem(k);
+              n++;
+            }
+          } catch (e) {}
+        });
+        if (n > 0) console.log('[cloud] 迁移本地无前缀数据到 ' + prefix + '* (' + n + ' 个 key)');
+      } catch (e) {}
+      return n;
     },
   };
 
@@ -2014,15 +2066,15 @@ body {
       if (btn) { btn.disabled = true; btn.textContent = '登录中…'; }
       Cloud.login(nick)
         .then(function (res) {
-          // ★ 切用户前：清空本地所有「带用户前缀」的旧 key，避免新用户继承旧用户的进度/编辑题库
+          // ★ 1. 登录成功后先迁移「本地无前缀旧数据」到当前用户前缀（v2.7 时代本地数据不丢）
+          Cloud.migrateLocalToUser(res.userId);
+          // ★ 2. 清空本地所有「带用户前缀」的旧 key（避免新用户继承旧用户数据）
+          //     注意：migrateLocalToUser 已把无前缀数据迁到新前缀，clearAllUsersLocal 会清掉其它用户的残留
           Store.clearAllUsersLocal();
-          // 云有数据 → 覆盖本地（applyToLocal 会按当前 userId 加前缀写入）；云空 → 本地为空
-          if (res.data && Object.keys(res.data).length) {
-            Cloud.applyToLocal(res.data);
-          } else {
-            // 新用户：把当前干净的 localStorage 状态推上云（其实为空）
-            Cloud.markDirty();
-          }
+          // ★ 3. 把云数据写回本地（applyToLocal 总是跑；空数据 no-op）
+          Cloud.applyToLocal(res.data || {});
+          // ★ 4. 总是触发一次 push：把迁移后/本地最新状态推上云（若云端空，本地非空会补推）
+          Cloud.markDirty();
           location.reload();
         })
         .catch(function (err) {
@@ -2081,9 +2133,17 @@ body {
 
       // 已登录：先从云拉最新数据覆盖本地再启动；失败/未登录则直接用本地
       if (Cloud.isLoggedIn()) {
+        // ★ pullAndApply 失败时先降级本地 boot，同时 3s 后再 retry 一次（修海外 API 慢导致丢失云数据）
         Cloud.pullAndApply().then(boot, function (err) {
           console.warn('[cloud] pullAndApply 失败，降级为本地模式：', err && err.message);
           boot();
+          setTimeout(function () {
+            Cloud.pullAndApply().then(function () {
+              console.log('[cloud] 第二次 pullAndApply 成功，云数据已恢复');
+            }, function (e2) {
+              console.warn('[cloud] 第二次 pullAndApply 也失败，保持本地模式：', e2 && e2.message);
+            });
+          }, 3000);
         });
       } else {
         boot();
