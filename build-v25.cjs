@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * build-v25.cjs — 构建脚本（v2.7：多题库档位）
+ * build-v25.cjs — 构建脚本（多题库档位）
  * 读取 questions.json + src/ 源码 → 生成：
- *   ① dist/面试背记学习卡v2.7.html   单文件版（CSS/JS/4档题库全内联，双击可用）
+ *   ① dist/面试背记学习卡v<VER>.html   单文件版（CSS/JS/4档题库全内联，双击可用）
  *   ② dist/web/                       分片 PWA 版（css/js 分文件 + 4档 banks/*.json + manifest + sw.js）
  * 题库档位：bank 字段 1-4，值越大越核心；主题库 N = 所有 bank>=N 的题。
  * 用法: node build-v25.cjs
@@ -15,10 +15,10 @@ const DATA_FILE = path.join(ROOT, 'questions.json');
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
 const WEB = path.join(DIST, 'web');
-const VERSION = '2.12';
+const VERSION = '2.13';
 
 const CSS_FILES = ['base.css', 'flashcard.css', 'memo.css', 'guide.css', 'editor.css'];
-const JS_FILES = ['markdown.js', 'data-loader.js', 'cloud.js', 'store.js', 'flashcard.js', 'memo.js', 'guide.js', 'editor.js', 'app.js'];
+const JS_FILES = ['markdown.js', 'data-loader.js', 'cloud.js', 'store.js', 'flashcard.js', 'memo.js', 'guide.js', 'editor.js', 'app.js', 'sw-register.js'];
 
 // ---------- 0. JS 语法检查（避免 `*/` 在注释里提前结束块注释导致 SyntaxError）----------
 function syntaxCheckAll() {
@@ -95,7 +95,7 @@ function buildSingle(data, banks, counts) {
   const metaScript = '<script>window.__FC_BANK_META = ' + JSON.stringify({ total: data.length, counts: counts }) + ';</script>';
   html = html.replace('<!-- __FC_DATA_PLACEHOLDER__ -->', () => banksScript + metaScript);
 
-  const out = path.join(DIST, '面试背记学习卡v2.12.html');
+  const out = path.join(DIST, '面试背记学习卡v2.13.html');
   fs.writeFileSync(out, html, 'utf8');
   const kb = (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0);
   console.log(`✓ 单文件版：${out}（${kb} KB）`);
@@ -134,7 +134,8 @@ function buildWeb(data, banks, counts) {
     background_color: '#f5f7fa', theme_color: '#4299e1', icons: [],
   }, null, 2), 'utf8');
 
-  const sw = `const CACHE = 'fc-v37';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
+  const sw = `/* 本文件由 build-v25.cjs 生成，请勿直接手改 dist/web/sw.js */
+const CACHE = 'fc-v38';  // ★ cache name 变更会强制 Service Worker 重装 + 清理旧缓存
 // bump 记录：
 //   v29: bump fc-v28→fc-v29（修复"配置类资源被 SW cache 掩盖"问题）
 //   v30: bump fc-v29→fc-v30（修复"多用户数据共享污染"问题——store.js/cloud.js 加用户前缀）
@@ -152,29 +153,56 @@ function buildWeb(data, banks, counts) {
 //                          SQLAlchemy / AI 场景设计 共 7 个新分类；
 //                          来源：ai-agents-from-zero 教材题库、LLM0903 实战课、SQLAlchemy 文档；
 //                          档位上限适当放宽：库3<200→<320、库4<100→<180）
-const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/cloud.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js'];
-self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())));
-self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
+//   v38: bump fc-v37→fc-v38（v2.13 修掉"每次发布都要用户硬刷新"的缺陷：
+//                          ① 同源资源由 cache-first 改为 network-first（fetch 带 cache:'no-cache' 强制回源校验），
+//                             HTML 与 JS/CSS 永远来自同一次部署，不会新旧混用；
+//                          ② 新增 src/js/sw-register.js：注册用 updateViaCache:'none' 让 sw.js 绕过
+//                             GitHub Pages 的 max-age=600，并在 controllerchange 时自动 reload 一次；
+//                          ③ 修掉隐患：跨域请求（Supabase 登录/同步的用户数据）此前会被 SW 拦截缓存）
+const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/cloud.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js','./js/sw-register.js'];
+/* 安装：尽力预缓存静态资源（单个失败不阻断安装，避免"装不上就永远是旧版"），随后立即接管 */
+self.addEventListener('install', e => e.waitUntil(
+  caches.open(CACHE)
+    .then(c => Promise.all(ASSETS.map(u => c.add(new Request(u, { cache: 'no-cache' })).catch(() => null))))
+    .then(() => self.skipWaiting())
+));
+
+/* 激活：清掉旧版本缓存，并立即接管已打开的页面（用户无需重开标签页） */
+self.addEventListener('activate', e => e.waitUntil(
+  caches.keys()
+    .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    .then(() => self.clients.claim())
+));
+
+/* 取数据：同源 GET 一律 network-first（cache:'no-cache' 强制向服务器校验）
+   —— 保证 HTML / JS / CSS / 题库分片永远来自同一次部署，不会新旧混用；
+   网络不可用时降级到缓存，保住离线可用。 */
 self.addEventListener('fetch', e => {
-  const req = e.request; if (req.method !== 'GET') return;
-  const isData = /banks\\/bank-\\d+\\.json|banks\\.manifest\\.json/.test(req.url);
-  const isConfig = /cloud\\.js/.test(req.url);  // ★ cloud.js 含密钥，必须 network-first（避免缓存陈旧值）
-  if (isData || isConfig) {
-    // network-first：先网络再缓存；离线/失败时降级到缓存
-    e.respondWith(fetch(req).then(res => { const c = res.clone(); caches.open(CACHE).then(x => x.put(req, c)).catch(()=>{}); return res; }).catch(() => caches.match(req)));
-    return;
-  }
-  // 其它资源：cache-first（首装快+离线可用）；失败时降级到缓存
-  e.respondWith(caches.match(req).then(c => c || fetch(req).then(res => { const cc = res.clone(); caches.open(CACHE).then(x => x.put(req, cc)).catch(()=>{}); return res; }).catch(() => c)));
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  let url;
+  try { url = new URL(req.url); } catch (err) { return; }
+  // ★ 跨域请求（Supabase 登录 / 云端同步）交给浏览器直连，SW 绝不缓存用户数据
+  if (url.origin !== self.location.origin) return;
+  const isNavigate = req.mode === 'navigate';
+  e.respondWith(
+    fetch(req, { cache: 'no-cache' })
+      .then(res => {
+        // 导航请求不入缓存（离线兜底统一走预缓存的 ./index.html）
+        if (res && res.ok && !isNavigate) {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      })
+      .catch(() => caches.match(req).then(c => c || (isNavigate ? caches.match('./index.html') : undefined)))
+  );
 });
 `;
   fs.writeFileSync(path.join(WEB, 'sw.js'), sw, 'utf8');
 
-  // 注册 SW 到 index.html
-  let webHtml = fs.readFileSync(path.join(WEB, 'index.html'), 'utf8');
-  webHtml = webHtml.replace('<script>App.init();</script>',
-    '<script>if(\'serviceWorker\' in navigator){navigator.serviceWorker.register(\'./sw.js\').catch(()=>{});}</script>\n<script>App.init();</script>');
-  fs.writeFileSync(path.join(WEB, 'index.html'), webHtml, 'utf8');
+  // SW 注册已移入源码 src/js/sw-register.js（v2.13 起由 JS_FILES 统一复制/内联），
+  // 此处不再注入内联脚本，避免"注册逻辑在源码与产物两处维护"。
 
   console.log(`✓ 分片 PWA 版：dist/web/（4 档 banks/*.json + manifest + sw.js）`);
 }

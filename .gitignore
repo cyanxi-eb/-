@@ -1,9 +1,42 @@
-# 临时截图（Edge headless 验证产物）
-tools/_shots/
+# ============================================================
+# 面试背记学习卡 · .gitignore
+# ------------------------------------------------------------
+# 原则：仓库只保留「构建真正需要的东西 + 人类可读的文档」。
+#   构建需要 = questions.json（数据真源） + build-v25.cjs + src/ + .github/
+#   其余一律视为本地文件，不上传。
+# ============================================================
 
-# Node 依赖
+# ---------- 构建产物（CI 会自动重建并发布，无需入库）----------
+# dist/ 由 `node build-v25.cjs` 生成。GitHub Actions 在每次 push 后重新
+# 构建 dist/web 并发布到 Pages，所以产物入库只会带来版本间冗余，
+# 以及"陈旧产物被误推上线"的风险。
+dist/
+
+# ---------- 依赖 ----------
 node_modules/
 
-# 系统文件
+# ---------- ★ 本地诊断快照：含真实用户数据，严禁上传 ----------
+# 例如 tools/vcv-cloud-snapshot.json、tools/test123-cloud-snapshot.json：
+# 这些是从 Supabase profiles 表导出的真实用户资料（昵称、userId、完整题库）。
+# 本仓库是公开仓库，一旦提交即造成用户数据泄露。
+tools/*-cloud-snapshot.json
+tools/*-cloud-now.json
+tools/*cloud*.json
+
+# ---------- 题库备份 / 数据转储（单个 300KB+，可随时重新生成）----------
+tools/questions.backup-*.json
+tools/_*.json
+tools/_v*.json
+
+# ---------- 一次性脚本与运行期中间产物 ----------
+tools/_*.cjs
+tools/_shots/
+*.log
+*.tmp
+
+# ---------- 编辑器 / 系统 ----------
 .DS_Store
 Thumbs.db
+desktop.ini
+.idea/
+.vscode/
