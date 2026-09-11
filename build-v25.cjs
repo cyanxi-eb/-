@@ -15,7 +15,7 @@ const DATA_FILE = path.join(ROOT, 'questions.json');
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
 const WEB = path.join(DIST, 'web');
-const VERSION = '2.11';
+const VERSION = '2.12';
 
 const CSS_FILES = ['base.css', 'flashcard.css', 'memo.css', 'guide.css', 'editor.css'];
 const JS_FILES = ['markdown.js', 'data-loader.js', 'cloud.js', 'store.js', 'flashcard.js', 'memo.js', 'guide.js', 'editor.js', 'app.js'];
@@ -95,7 +95,7 @@ function buildSingle(data, banks, counts) {
   const metaScript = '<script>window.__FC_BANK_META = ' + JSON.stringify({ total: data.length, counts: counts }) + ';</script>';
   html = html.replace('<!-- __FC_DATA_PLACEHOLDER__ -->', () => banksScript + metaScript);
 
-  const out = path.join(DIST, '面试背记学习卡v2.11.html');
+  const out = path.join(DIST, '面试背记学习卡v2.12.html');
   fs.writeFileSync(out, html, 'utf8');
   const kb = (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0);
   console.log(`✓ 单文件版：${out}（${kb} KB）`);
@@ -134,7 +134,7 @@ function buildWeb(data, banks, counts) {
     background_color: '#f5f7fa', theme_color: '#4299e1', icons: [],
   }, null, 2), 'utf8');
 
-  const sw = `const CACHE = 'fc-v36';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
+  const sw = `const CACHE = 'fc-v37';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
 // bump 记录：
 //   v29: bump fc-v28→fc-v29（修复"配置类资源被 SW cache 掩盖"问题）
 //   v30: bump fc-v29→fc-v30（修复"多用户数据共享污染"问题——store.js/cloud.js 加用户前缀）
@@ -147,6 +147,11 @@ function buildWeb(data, banks, counts) {
 //                          改 await Cloud.push() 真正等推送完成再 reload；
 //                          编辑工具栏新增「☁️ 从云端拉取」「🔍 诊断」两个应急按钮，
 //                          以后题库空白再发生不用再修代码，一键恢复 + 一键 dump 状态给 AI 定位）
+//   v37: bump fc-v36→fc-v37（v2.12 题库扩充+分类扩展：271→361 题；
+//                          新增 MCP / LangGraph / Agent 智能体 / AI 应用工程 / 提示词工程 /
+//                          SQLAlchemy / AI 场景设计 共 7 个新分类；
+//                          来源：ai-agents-from-zero 教材题库、LLM0903 实战课、SQLAlchemy 文档；
+//                          档位上限适当放宽：库3<200→<320、库4<100→<180）
 const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/cloud.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
@@ -184,12 +189,13 @@ function main() {
   console.log('✓ 题库档位：bank1=' + banks[1].length + ' bank2=' + banks[2].length + ' bank3=' + banks[3].length + ' bank4=' + banks[4].length);
   console.log('✓ 主题库：库1=' + counts[1] + ' 库2=' + counts[2] + ' 库3=' + counts[3] + ' 库4=' + counts[4]);
 
-  // 自检断言
-  const ok4 = counts[4] < 100;
-  const ok3 = counts[3] < 200;
-  if (!ok4) { console.error('✗ 自检失败：库4 = ' + counts[4] + ' 超过 100'); process.exit(1); }
-  if (!ok3) { console.error('✗ 自检失败：库3 = ' + counts[3] + ' 超过 200'); process.exit(1); }
-  console.log('✓ 自检通过：库3(' + counts[3] + ') < 200，库4(' + counts[4] + ') < 100');
+  // 自检断言（v2.12 起随题库扩充"适当放宽"上限：原 库3<200 / 库4<100）
+  const LIMIT3 = 320, LIMIT4 = 180;
+  const ok4 = counts[4] < LIMIT4;
+  const ok3 = counts[3] < LIMIT3;
+  if (!ok4) { console.error('✗ 自检失败：库4 = ' + counts[4] + ' 超过 ' + LIMIT4); process.exit(1); }
+  if (!ok3) { console.error('✗ 自检失败：库3 = ' + counts[3] + ' 超过 ' + LIMIT3); process.exit(1); }
+  console.log('✓ 自检通过：库3(' + counts[3] + ') < ' + LIMIT3 + '，库4(' + counts[4] + ') < ' + LIMIT4);
 
   fs.mkdirSync(DIST, { recursive: true });
   buildSingle(data, banks, counts);

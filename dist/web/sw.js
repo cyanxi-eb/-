@@ -1,4 +1,4 @@
-const CACHE = 'fc-v36';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
+const CACHE = 'fc-v37';  // ★ cache name 变更会强制 Service Worker 重装+清理旧缓存（用户访问过旧版时必备）
 // bump 记录：
 //   v29: bump fc-v28→fc-v29（修复"配置类资源被 SW cache 掩盖"问题）
 //   v30: bump fc-v29→fc-v30（修复"多用户数据共享污染"问题——store.js/cloud.js 加用户前缀）
@@ -11,6 +11,11 @@ const CACHE = 'fc-v36';  // ★ cache name 变更会强制 Service Worker 重装
 //                          改 await Cloud.push() 真正等推送完成再 reload；
 //                          编辑工具栏新增「☁️ 从云端拉取」「🔍 诊断」两个应急按钮，
 //                          以后题库空白再发生不用再修代码，一键恢复 + 一键 dump 状态给 AI 定位）
+//   v37: bump fc-v36→fc-v37（v2.12 题库扩充+分类扩展：271→361 题；
+//                          新增 MCP / LangGraph / Agent 智能体 / AI 应用工程 / 提示词工程 /
+//                          SQLAlchemy / AI 场景设计 共 7 个新分类；
+//                          来源：ai-agents-from-zero 教材题库、LLM0903 实战课、SQLAlchemy 文档；
+//                          档位上限适当放宽：库3<200→<320、库4<100→<180）
 const ASSETS = ['./index.html','./manifest.webmanifest','./css/base.css','./css/flashcard.css','./css/memo.css','./css/guide.css','./css/editor.css','./js/markdown.js','./js/data-loader.js','./js/cloud.js','./js/store.js','./js/flashcard.js','./js/memo.js','./js/guide.js','./js/editor.js','./js/app.js'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));

@@ -22,6 +22,7 @@
 | **v2.9** | 2026-09-07 | 内容扩充+分类重组：拆「大模型应用」→大语言模型/RAG/LangChain，新增 Git 分类，题库 244→271 题，分类图标 🏷→🔖 |
 | **v2.10** | 2026-09-07 | 多用户数据恢复+登录稳定性 5 项加固：applyToLocal 总是跑 / push 失败自动 markDirty 重试 / POST 409 自动 GET 重试 / v2.7 本地无前缀数据自动迁移到 u_<id>_ 前缀 / pullAndApply 失败 3s 后二次 retry |
 | **v2.11** | 2026-09-07 | 修 confirmLogin 中 markDirty debounced 500ms 被 location.reload() 砍掉导致"修改后再登录题库空白"的潜在根因：改用 await Cloud.push() 真正等推送完成再 reload；编辑工具栏新增「☁️ 从云端拉取」和「🔍 诊断」两个应急按钮；bump SW CACHE fc-v35→fc-v36 |
+| **v2.12** | 2026-09-11 | 题库扩充+分类扩展：271→361 题（新增 90 题）；新增 MCP(7) / LangGraph(8) / Agent 智能体(10) / AI 应用工程(10) / 提示词工程(5) / SQLAlchemy(5) / AI 场景设计(8) 共 7 个分类，并扩展 LangChain(+12) / RAG(+11) / 大语言模型(+7) / 缓存与Redis(+4) / 软技能(+3)；来源为 `ai-agents-from-zero` 教材题库、`C:\LLM0903` 实战课、SQLAlchemy 2.0 文档与 Comate 异步 ORM 指南；档位上限适当放宽（库3<200→<320、库4<100→<180）；bump SW CACHE fc-v36→fc-v37 |
 
 ---
 
